@@ -1,7 +1,6 @@
 # Crosslingual Rule-Following
 
-Research codebase for **"Failure Modes and Enforcement of Rule-Following in Multilingual Language Models"** (working draft, July 2026).
-
+Research codebase for **"Failure Modes and Enforcement of Rule-Following in Multilingual Language Models"**.
 ## Research questions
 
 - **RQ1 — failure localization.** When a model violates a rule in a low-resource language, is it a *fidelity* failure (never encoded), an *acceptance* failure (encoded but causally inert), or an *execution* failure (encoded, engaged, but insufficient)?
