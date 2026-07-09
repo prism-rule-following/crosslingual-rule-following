@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment / secrets
+.env
+.env.*
+*.key
+
+# Model weights, checkpoints, caches
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+.cache/
+checkpoints/
+hf_cache/
+
+# Large generated artefacts (activations, datasets, results)
+*.npy
+*.npz
+*.h5
+*.parquet
+activations/
+!results/**/README.md
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Testing / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
