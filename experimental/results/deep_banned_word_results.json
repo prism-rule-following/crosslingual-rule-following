@@ -1,0 +1,188 @@
+{
+  "model": "google/gemma-2-2b-it",
+  "languages": [
+    "en",
+    "de",
+    "sw"
+  ],
+  "word": {
+    "en": "guaranteed",
+    "de": "garantiert",
+    "sw": "hakika"
+  },
+  "n_usable_per_lang": {
+    "en": 16,
+    "de": 13,
+    "sw": 19
+  },
+  "n_paired_with_en": {
+    "de": 9,
+    "sw": 13
+  },
+  "position_diagnostics": {
+    "en": {
+      "word_found": 16,
+      "total": 16,
+      "agree_with_argmax": 0
+    },
+    "de": {
+      "word_found": 13,
+      "total": 13,
+      "agree_with_argmax": 0
+    },
+    "sw": {
+      "word_found": 19,
+      "total": 19,
+      "agree_with_argmax": 0
+    }
+  },
+  "generation_stats": {
+    "en": [
+      0.8295454545454546,
+      0.16666666666666666,
+      16,
+      22
+    ],
+    "de": [
+      0.875,
+      0.13636363636363635,
+      13,
+      22
+    ],
+    "sw": [
+      0.8409090909090909,
+      0.14393939393939395,
+      19,
+      22
+    ]
+  },
+  "decision_positions": {
+    "en": {
+      "0": " guarantee",
+      "1": " guarantee",
+      "2": " guarantee",
+      "4": " guaranteed",
+      "6": " guarantee",
+      "7": " guarantees",
+      "8": " guaranteed",
+      "9": " guaranteed",
+      "11": " guarantee",
+      "12": " guarantee",
+      "13": " guarantee",
+      "14": " guaranteed",
+      "15": " guarantee",
+      "16": " guarantees",
+      "18": "guar",
+      "20": " guarantee"
+    },
+    "de": {
+      "0": " garanti",
+      "1": " garantiert",
+      "2": " garanti",
+      "3": " garantiert",
+      "4": " garantiert",
+      "7": " garantiert",
+      "10": " garantiert",
+      "11": " garanti",
+      "14": " garantiert",
+      "15": " garantiert",
+      "16": " garantiert",
+      "19": " garanti",
+      "21": " garanti"
+    },
+    "sw": {
+      "0": "hak",
+      "1": " hak",
+      "2": "hak",
+      "3": "hak",
+      "4": "hak",
+      "5": " hak",
+      "6": "hak",
+      "7": "hak",
+      "8": "hak",
+      "9": "hak",
+      "10": " hak",
+      "11": "hak",
+      "12": " hak",
+      "14": "hak",
+      "15": "hak",
+      "16": " hak",
+      "17": "hak",
+      "19": " hak",
+      "21": " hak"
+    }
+  },
+  "cka_report": {
+    "de": {
+      "layer": 15,
+      "n_paired": 9,
+      "cka": 0.186462981713098,
+      "ci": [
+        -0.268594110089971,
+        0.5961038791287303
+      ],
+      "p": 0.17282717282717283,
+      "mismatched": -0.17380633712289115
+    },
+    "sw": {
+      "layer": 18,
+      "n_paired": 13,
+      "cka": 0.20848443013458404,
+      "ci": [
+        0.06870058412316264,
+        0.3438468470838547
+      ],
+      "p": 0.04495504495504495,
+      "mismatched": 0.002673925688581211
+    }
+  },
+  "smds_report": {
+    "H1 status": {
+      "stress": 0.8731942278888637,
+      "p": 0.9269102990033222,
+      "null_mean": 0.841787609962776
+    },
+    "H2 language": {
+      "stress": 0.20644221274696192,
+      "p": 0.0033222591362126247,
+      "null_mean": 0.7379617777472606
+    },
+    "H3 random (negative control)": {
+      "stress": 0.8397155264366233,
+      "p": 0.4850498338870432,
+      "null_mean": 0.841565878760126
+    }
+  },
+  "smds_diff_report": {
+    "H_language (on ACTIVE-REVOKED diffs)": {
+      "stress": 0.4154042373044385,
+      "p": 0.0033222591362126247,
+      "null_mean": 0.7103536997289652
+    },
+    "H_random (negative control, on diffs)": {
+      "stress": 0.814115107749082,
+      "p": 0.25249169435215946,
+      "null_mean": 0.8276687553897968
+    }
+  },
+  "transport_report": {
+    "de": {
+      "n_paired": 9,
+      "layer": 15,
+      "direct": 0.5,
+      "procrustes": 0.75,
+      "affine": 0.625,
+      "gw_ot": 0.625,
+      "ceiling": 0.75
+    },
+    "sw": {
+      "n_paired": 13,
+      "layer": 18,
+      "direct": 0.5,
+      "procrustes": 0.5,
+      "affine": 0.5,
+      "gw_ot": 0.7,
+      "ceiling": 0.5
+    }
+  }
+}
