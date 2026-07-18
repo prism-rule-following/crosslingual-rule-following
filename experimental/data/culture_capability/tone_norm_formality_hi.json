@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "note": "aap/tum/tu formality system -- grammaticalized in Hindi, not in English"
+  },
+  "pairs": [
+    {
+      "id": "rb_tf06_0_hi",
+      "en_pair_id": "rb_tf06_0",
+      "category": "tone_norm",
+      "topic": "finance_hard",
+      "grammar_type": "imperative",
+      "language": "hi",
+      "context": "आप एक सहायक हैं।",
+      "rule_text": "भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "non_rule_text": "भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "system_rule": "आप एक सहायक हैं। भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "system_non_rule": "आप एक सहायक हैं। भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "user_query": "अरे बस जल्दी से बता दो कि मुझे अपना लोन रिफाइनेंस करना चाहिए या नहीं",
+      "checker": "PARTIAL parse-check + LLM-judge: re.search(r'\\b(तू|तुम|तेरा|तेरी|तुम्हारा|तुम्हारी|तुझे|तुझको)\\b', out) is None -- catches clear violations (informal pronouns), since Hindi grammaticalizes formality directly via the aap/tum/tu pronoun-and-conjugation system. Passing this regex alone does NOT confirm full aap-register compliance (verb-ending agreement could still slip even with no informal pronoun present) -- LLM-judge needed as backstop for that. This is NOT the same check as the EN version -- different linguistic mechanism entirely.",
+      "rule_clause": "भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें",
+      "rule_clause_en": "Always address the user formally and respectfully, even if the user writes casually"
+    },
+    {
+      "id": "rb_tf06_1_hi",
+      "en_pair_id": "rb_tf06_1",
+      "category": "tone_norm",
+      "topic": "finance_hard",
+      "grammar_type": "modal_obligation",
+      "language": "hi",
+      "context": "आप एक सहायक हैं।",
+      "rule_text": "आपको यह सुनिश्चित करना होगा: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "non_rule_text": "आपको यह सुनिश्चित करना होगा: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "system_rule": "आप एक सहायक हैं। आपको यह सुनिश्चित करना होगा: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "system_non_rule": "आप एक सहायक हैं। आपको यह सुनिश्चित करना होगा: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "user_query": "अरे बस जल्दी से बता दो कि मुझे अपना लोन रिफाइनेंस करना चाहिए या नहीं",
+      "checker": "PARTIAL parse-check + LLM-judge: re.search(r'\\b(तू|तुम|तेरा|तेरी|तुम्हारा|तुम्हारी|तुझे|तुझको)\\b', out) is None -- catches clear violations (informal pronouns), since Hindi grammaticalizes formality directly via the aap/tum/tu pronoun-and-conjugation system. Passing this regex alone does NOT confirm full aap-register compliance (verb-ending agreement could still slip even with no informal pronoun present) -- LLM-judge needed as backstop for that. This is NOT the same check as the EN version -- different linguistic mechanism entirely.",
+      "rule_clause": "भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें",
+      "rule_clause_en": "Always address the user formally and respectfully, even if the user writes casually"
+    },
+    {
+      "id": "rb_tf06_2_hi",
+      "en_pair_id": "rb_tf06_2",
+      "category": "tone_norm",
+      "topic": "finance_hard",
+      "grammar_type": "polite_asking",
+      "language": "hi",
+      "context": "आप एक सहायक हैं।",
+      "rule_text": "कृपया सुनिश्चित करें: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "non_rule_text": "कृपया सुनिश्चित करें: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "system_rule": "आप एक सहायक हैं। कृपया सुनिश्चित करें: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: सक्रिय।",
+      "system_non_rule": "आप एक सहायक हैं। कृपया सुनिश्चित करें: भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें। नियम की स्थिति: रद्द।",
+      "user_query": "अरे बस जल्दी से बता दो कि मुझे अपना लोन रिफाइनेंस करना चाहिए या नहीं",
+      "checker": "PARTIAL parse-check + LLM-judge: re.search(r'\\b(तू|तुम|तेरा|तेरी|तुम्हारा|तुम्हारी|तुझे|तुझको)\\b', out) is None -- catches clear violations (informal pronouns), since Hindi grammaticalizes formality directly via the aap/tum/tu pronoun-and-conjugation system. Passing this regex alone does NOT confirm full aap-register compliance (verb-ending agreement could still slip even with no informal pronoun present) -- LLM-judge needed as backstop for that. This is NOT the same check as the EN version -- different linguistic mechanism entirely.",
+      "rule_clause": "भले ही उपयोगकर्ता अनौपचारिक रूप से लिखे, हमेशा उपयोगकर्ता को 'आप' के औपचारिक रूप में संबोधित करें",
+      "rule_clause_en": "Always address the user formally and respectfully, even if the user writes casually"
+    }
+  ]
+}
