@@ -1,0 +1,235 @@
+# Translation pipeline config — one block per target language.
+# English is the source, no entry needed. Add a language by appending a block
+# and running `python -m pipeline.translate --lang <code>`.
+#
+# Backends supported:
+#   - azure         : Azure AI Foundry deployment via the OpenAI-compatible v1 endpoint.
+#                     The `model` field is your Foundry DEPLOYMENT NAME (not the base
+#                     model name). Requires AZURE_FOUNDRY_API_KEY and
+#                     AZURE_FOUNDRY_ENDPOINT (must end in /openai/v1) in .env.
+#   - huggingface   : local HF model. `model_type: seq2seq` (NLLB/IndicTrans2) or
+#                     `causal_lm` (Gemma-style LLMs, currently unused).
+#
+# PLACEHOLDER ALERT — every `model: <AZURE_DEPLOYMENT_NAME>` below is a placeholder.
+# Replace with the deployment name(s) from your Azure Foundry project. If you deploy
+# one model (e.g., `translator-gpt4o-mini`), you can find/replace <AZURE_DEPLOYMENT_NAME>
+# with that single value. If you deploy different models per language, edit per-block.
+#
+# Per-language fields:
+#   name, script                — display metadata
+#   translator / backtranslator — nested blocks for forward (en→lang) and reverse (lang→en)
+#     model                     — Azure deployment name OR HF model ID
+#     backend                   — "azure" | "huggingface"
+#     backend_mode              — "local"  (huggingface only)
+#     model_type                — "seq2seq" | "causal_lm"  (huggingface only)
+#     src_lang / tgt_lang       — Flores-200 codes (huggingface seq2seq only)
+#   quality_metric              — "comet_kiwi" | "africomet"
+#   quality_threshold           — float, or null to auto-calibrate on first 20 pairs
+#   active_cancelled_words      — one-token pair; must preserve one-word diff after translation
+
+# ----- High-resource languages: Azure LLM for both directions ------------------
+
+de:
+  name: German
+  script: Latin
+  translator:
+    model: gpt-5.4-mini
+    backend: azure
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: aktiv
+    cancelled: storniert
+
+ru:
+  name: Russian
+  script: Cyrillic
+  translator:
+    model: gpt-5.4-mini
+    backend: azure
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: активно
+    cancelled: отменено
+
+tr:
+  name: Turkish
+  script: Latin
+  translator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  backtranslator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: aktif
+    cancelled: iptal
+
+ko:
+  name: Korean
+  script: Hangul
+  translator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  backtranslator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: 활성
+    cancelled: 취소
+
+it:
+  name: Italian
+  script: Latin
+  translator:
+    model: gpt-5.4-mini
+    backend: azure
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: attivo
+    cancelled: annullato
+
+sw:
+  name: Swahili
+  script: Latin
+  translator:
+    model: facebook/nllb-200-3.3B
+    backend: huggingface
+    backend_mode: local
+    model_type: seq2seq
+    src_lang: eng_Latn
+    tgt_lang: swh_Latn
+  backtranslator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  quality_metric: africomet
+  quality_threshold: null
+  active_cancelled_words:
+    active: amilifu
+    cancelled: imefutwa
+
+ig:
+  name: Igbo
+  script: Latin
+  translator:
+    model: gpt-5.4-mini
+    backend: azure
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: africomet
+  quality_threshold: null
+  active_cancelled_words:
+    active: dị-irè
+    cancelled: akagbuola
+
+yo:
+  name: Yoruba
+  script: Latin
+  translator:
+    model: gpt-5.4-mini
+    backend: azure
+    # backend_mode: local
+    # model_type: seq2seq
+    # src_lang: eng_Latn
+    # tgt_lang: yor_Latn
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: africomet
+  quality_threshold: null
+  active_cancelled_words:
+    active: ṣiṣẹ́
+    cancelled: fagilé
+
+am:
+  name: Amharic
+  script: Ethiopic
+  translator:
+    model: facebook/nllb-200-3.3B
+    backend: huggingface
+    backend_mode: local
+    model_type: seq2seq
+    src_lang: eng_Latn
+    tgt_lang: amh_Ethi
+  backtranslator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  quality_metric: africomet
+  quality_threshold: null
+  active_cancelled_words:
+    active: ንቁ
+    cancelled: ተሰርዟል
+
+hi:
+  name: Hindi
+  script: Devanagari
+  translator:
+    model: ai4bharat/indictrans2-en-indic-1B
+    backend: huggingface
+    backend_mode: local
+    model_type: seq2seq
+    src_lang: eng_Latn
+    tgt_lang: hin_Deva
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: सक्रिय
+    cancelled: रद्द
+
+ur:
+  name: Urdu
+  script: Perso-Arabic
+  translator:
+    # model: ai4bharat/indictrans2-en-indic-1B
+    model: gpt-5.4-mini
+    backend: azure
+    # backend_mode: local
+    # model_type: seq2seq
+    # src_lang: eng_Latn
+    # tgt_lang: urd_Arab
+  backtranslator:
+    model: gpt-5.4-mini
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: فعال
+    cancelled: منسوخ
+
+ta:
+  name: Tamil
+  script: Tamil
+  translator:
+    model: ai4bharat/indictrans2-en-indic-1B
+    backend: huggingface
+    backend_mode: local
+    model_type: seq2seq
+    src_lang: eng_Latn
+    tgt_lang: tam_Taml
+  backtranslator:
+    model: <AZURE_DEPLOYMENT_NAME>
+    backend: azure
+  quality_metric: comet_kiwi
+  quality_threshold: null
+  active_cancelled_words:
+    active: செயலில்
+    cancelled: ரத்து
