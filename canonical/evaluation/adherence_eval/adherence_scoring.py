@@ -74,8 +74,9 @@ Treat any adherence numbers that went through that path as first-pass.
 """
 
 import re
+import string
 from collections import defaultdict
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 try:
     from langdetect import detect, DetectorFactory
@@ -86,13 +87,13 @@ except Exception:
 
 from llm_judge import llm_judge_compliance  # reused, not reimplemented
 
-
+ARTICLES = {"a", "an", "the"}
 # ---------------------------------------------------------------------------
 # Deterministic checkers -- carried over from Design1Experiments.ipynb
 # ---------------------------------------------------------------------------
 
 def check_uppercase(output: str) -> bool:
-    """See KNOWN LIMITATION above re: cased vs. caseless scripts."""
+    """Category dropped."""
     letters = [c for c in output if c.isalpha()]
     if not letters:
         return False
@@ -100,6 +101,7 @@ def check_uppercase(output: str) -> bool:
 
 
 def check_lowercase(output: str) -> bool:
+    """Category dropped"""
     letters = [c for c in output if c.isalpha()]
     if not letters:
         return False
@@ -144,6 +146,54 @@ def check_italic(output: str) -> bool:
     return re.search(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", without_bold, flags=re.DOTALL) is not None
 
 
+def check_bold_html(output: str) -> bool:
+    # Satisfied if the answer contains a bold HTML span: <b>...</b> or <strong>...</strong>
+    # (case-insensitive, spans newlines, non-empty content). Opening/closing tags may differ
+    # in case but must be a matched bold-type pair.
+    return re.search(r"<(b|strong)\b[^>]*>.+?</(b|strong)>", output,
+                     flags=re.DOTALL | re.IGNORECASE) is not None
+ 
+ 
+def check_italic_html(output: str) -> bool:
+    # Satisfied if the answer contains an italic HTML span: <i>...</i> or <em>...</em>
+    # (case-insensitive, spans newlines, non-empty content).
+    return re.search(r"<(i|em)\b[^>]*>.+?</(i|em)>", output,
+                     flags=re.DOTALL | re.IGNORECASE) is not None
+
+
+def check_second_word(output: str, target: str) -> bool:
+    # Rule satisfied if the SECOND word of the output equals `target` (case-insensitive).
+    # Words are whitespace-split after stripping leading punctuation/quotes/markdown, and
+    # each token's own surrounding punctuation is stripped before comparison
+    # (so 'Hello, Yes there' -> tokens [Hello, Yes, there] -> second = 'Yes').
+    if target is None:
+        return False
+    lead = string.whitespace + string.punctuation
+    cleaned = output.lstrip(lead)
+    toks = cleaned.split()
+    if len(toks) < 2:
+        return False
+    second_tok = toks[1].strip(string.punctuation).lower()
+    return second_tok == target.strip(string.punctuation).lower()
+ 
+ 
+def check_single_word(output: str) -> bool:
+    # Rule satisfied if the answer is EXACTLY ONE word and that word is not an
+    # article. Leading/trailing whitespace, punctuation, quotes and markdown are
+    # stripped before counting, so '**Berlin.**' and '"Berlin"' both count as one
+    # word.
+    lead = string.whitespace + string.punctuation
+    cleaned = output.strip().strip(lead).strip()
+    toks = cleaned.split()
+    if len(toks) != 1:
+        return False
+    word = toks[0].strip(string.punctuation).lower()
+    if not word:
+        return False
+    return word not in ARTICLES
+
+
+
 # ---------------------------------------------------------------------------
 # New checkers -- categories the methodology doc names (banned-word,
 # uppercase, language-adherence, word-count, bold/formatting, include-word,
@@ -169,6 +219,8 @@ def check_start_with_token(output: str, token: Optional[str]) -> Optional[bool]:
 
 
 def check_ack_invert(output: str) -> bool:
+    # Auto-check could only be preliminary.
+    # Only needs LLM judging if it passes this check
     """From the 3B patching notebook's check_rule_following -- kept as the
     corrected FULL-match version. The prefix-only original would count
     'Understood, no -- let me explain more' as compliant; this requires the
@@ -192,8 +244,11 @@ def parse_target(category: str, full_rule: str) -> Optional[Any]:
         return m.group(1) if m else None
     if category == "language":
         m = re.search(r"in (\w+)\.", full_rule)
-        langmap = {"French": "fr", "Spanish": "es", "German": "de", "Italian": "it",
-                   "Russian": "ru", "Swahili": "sw", "Hindi": "hi"}
+        langmap = {
+            "French": "fr", "Spanish": "es", "German": "de", 
+            "Italian": "it", "Russian": "ru", "Swahili": "sw",
+            "Hindi": "hi", "Korean": "ko", "Japanese": "ja", "Chinese": "zh",
+        }
         return langmap.get(m.group(1)) if m else None
     if category == "word_count":
         words = {"three": 3, "four": 4, "five": 5, "six": 6, "seven": 7}
@@ -221,6 +276,7 @@ def _resolve_target(row: Dict[str, Any], explicit_key: str, category: str) -> Op
 _DETERMINISTIC_CATEGORIES = {
     "uppercase", "lowercase", "bold", "italic", "banned_word",
     "include_word", "language", "word_count", "start_with_token", "ack_invert",
+    "bold_html", "italic_html", "second_word", "single_word",
 }
 
 
@@ -246,9 +302,17 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
     if cat == "word_count":
         return check_word_count(output, _resolve_target(row, "target_count", cat))
     if cat == "start_with_token":
-        return check_start_with_token(output, _resolve_target(row, "token", cat))
+        return check_start_with_token(output, _resolve_target(row, "anchor_token", cat))
     if cat == "ack_invert":
         return check_ack_invert(output)
+    if cat == "bold_html":
+        return check_bold_html(output)
+    if cat == "italic_html":
+        return check_italic_html(output)
+    if cat == "second_word":
+        return check_second_word(output, _resolve_target(row, "target_word", cat))
+    if cat == "single_word":
+        return check_single_word(output)
     return None
 
 
@@ -399,6 +463,16 @@ if __name__ == "__main__":
     assert check_start_with_token("Sure, Understood later", "Understood") is False
     assert check_ack_invert("Understood, no.") is True
     assert check_ack_invert("Understood, no -- let me explain more") is False
+    assert check_bold_html("This is <b>bold</b> text") is True
+    assert check_bold_html("This is <strong>bold</strong> text") is True
+    assert check_bold_html("This is not bold") is False
+    assert check_italic_html("This is <i>italic</i> text") is True
+    assert check_italic_html("This is <em>italic</em> text") is True
+    assert check_italic_html("This is not italic") is False
+    assert check_second_word("Hello, Yes there", "Yes") is True
+    assert check_second_word("Hello, no there", "Yes") is False
+    assert check_single_word("Berlin") is True
+    assert check_single_word("the Berlin") is False
     print("All deterministic checker sanity checks passed.")
 
     # explicit-field dispatch path
