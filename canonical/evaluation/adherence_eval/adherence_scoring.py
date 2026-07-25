@@ -614,8 +614,9 @@ if __name__ == "__main__":
     assert "correctness_error" in r_with_corr  # but the failure was caught and reported, not raised
     print(f"check_correctness=True attempted it and caught the expected failure gracefully: "
           f"{r_with_corr['correctness_error']}")
-    print("(This will actually succeed and return a real correctness label in Colab/Lambda,")
-    print("where correctness_checker.py's embedder can actually download.)")
+    print("(This should succeed and return a real correctness label in Colab/Lambda, where")
+    print("correctness_checker.py's embedder can actually download -- not yet confirmed there,")
+    print("only confirmed to fail gracefully here where there's no network access.)")
 
     # run_adherence_scoring + summary, mixed categories, no judge_model
     pairs = [
