@@ -352,9 +352,10 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
 # ---------------------------------------------------------------------------
 
 def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
-                     judge_scale: str = "yn", check_correctness: bool = True) -> Dict[str, Any]:
+                     judge_scale: str = "yn", independent_judge_fn=None,
+                     check_correctness: bool = True) -> Dict[str, Any]:
     """
-    Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"llm_judge_numeric"|"unscored", ...}.
+    Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"llm_judge_numeric"|"independent_judge"|"unscored", ...}.
     "llm_judge*" results also carry the judge's own fields (p_comply/entropy for
     "yn", score_comply/norm_entropy for "numeric") straight from llm_judge.py.
 
@@ -365,6 +366,13 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
     Neither has been validated on non-English data yet; "yn" already has a
     documented English-only failure (100% low-confidence at 1B) -- treat
     "numeric" as unvalidated until it's actually run against real generations.
+
+    independent_judge_fn: a callable judge_fn(rule_clause, response) -> dict
+    from llm_judge.make_independent_judge -- a genuinely separate judge model
+    via API, not the model being evaluated. Directly addresses Anu's point:
+    judge_model still works, but whatever local model gets passed there has
+    in practice always been the same model as the generator (self-judging).
+    If independent_judge_fn is given, it takes priority over judge_model.
 
     check_correctness: if True (default) AND the row carries an
     "expected_answer" field, ALSO computes a correctness label via
@@ -381,10 +389,12 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
          isn't explicitly flagged for manual/judge scoring (row["checker"]
          containing "manual" or "llm-judge", the convention already used in
          the 3B notebook's data) -> deterministic checker.
-      2. Otherwise, if judge_model is supplied -> llm_judge_compliance or
+      2. Otherwise, if independent_judge_fn is supplied -> that, in preference
+         to judge_model, since it's the genuinely independent option.
+      3. Otherwise, if judge_model is supplied -> llm_judge_compliance or
          llm_judge_compliance_numeric depending on judge_scale (tone_norm and
          any other category with no ground-truth checker lands here).
-      3. Otherwise -> method="unscored", explicit rather than a silent None,
+      4. Otherwise -> method="unscored", explicit rather than a silent None,
          so a batch summary reports "N rows need a judge you didn't supply"
          instead of quietly counting them as failures.
 
@@ -397,6 +407,10 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
 
     if cat in _DETERMINISTIC_CATEGORIES and not forced_manual:
         result = {"compliant": evaluate_deterministic(row, response), "method": "checker"}
+    elif independent_judge_fn is not None:
+        rule_clause = row.get("rule_clause") or row.get("full_rule") or ""
+        result = independent_judge_fn(rule_clause, response)
+        result["method"] = "independent_judge"
     elif judge_model is not None:
         rule_clause = row.get("rule_clause") or row.get("full_rule") or ""
         if judge_scale == "numeric":
@@ -407,7 +421,7 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
             result["method"] = "llm_judge"
     else:
         result = {"compliant": None, "method": "unscored",
-                   "note": f"category '{cat}' has no deterministic checker and no judge_model was passed"}
+                   "note": f"category '{cat}' has no deterministic checker and neither judge_model nor independent_judge_fn was passed"}
 
     result["correctness"] = None
     result["correctness_similarity"] = None
@@ -434,14 +448,14 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
 
 def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
                            language: str, judge_model=None, judge_scale: str = "yn",
-                           check_correctness: bool = True) -> Dict[str, Any]:
+                           independent_judge_fn=None, check_correctness: bool = True) -> Dict[str, Any]:
     if len(pairs) != len(responses):
         raise ValueError(f"pairs ({len(pairs)}) and responses ({len(responses)}) must be the same length")
 
     per_row = []
     for row, response in zip(pairs, responses):
-        result = score_adherence(row, response, judge_model=judge_model,
-                                  judge_scale=judge_scale, check_correctness=check_correctness)
+        result = score_adherence(row, response, judge_model=judge_model, judge_scale=judge_scale,
+                                  independent_judge_fn=independent_judge_fn, check_correctness=check_correctness)
         per_row.append({"id": row.get("id"), "category": row.get("category"),
                          "language": language, "response": response, **result})
 
@@ -595,6 +609,25 @@ if __name__ == "__main__":
     r_num = score_adherence({"category": "tone_norm"}, "some response", judge_model=None, judge_scale="numeric")
     assert r_yn["method"] == "unscored" and r_num["method"] == "unscored"
     print("judge_scale parameter accepted and routed correctly (no judge_model -> both stay unscored).")
+
+    # --- independent_judge_fn routing: mock judge, no real API call needed
+    # to test the ROUTING logic (does it get called, does it take priority
+    # over judge_model when both are given) ---
+    def _mock_independent_judge(rule_clause, response):
+        return {"compliant": True, "coherent": True, "raw": "mock"}
+
+    r_indep = score_adherence({"category": "tone_norm", "rule_clause": "be polite"}, "some response",
+                                independent_judge_fn=_mock_independent_judge)
+    assert r_indep["method"] == "independent_judge" and r_indep["compliant"] is True
+    print("independent_judge_fn routes correctly and its result is used.")
+
+    # priority check: when BOTH independent_judge_fn and judge_model are given,
+    # independent_judge_fn should win (per the docstring's stated priority)
+    r_priority = score_adherence({"category": "tone_norm", "rule_clause": "be polite"}, "some response",
+                                   judge_model="pretend-local-model-object",
+                                   independent_judge_fn=_mock_independent_judge)
+    assert r_priority["method"] == "independent_judge"
+    print("independent_judge_fn correctly takes priority over judge_model when both are given.")
 
     # --- correctness-checker wiring: check_correctness=False skips it entirely
     # (no embedder call attempted, safe to run here with no network) ---

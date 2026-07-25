@@ -161,6 +161,55 @@ def llm_judge_compliance_numeric(model, rule_clause, response, scale_max=9, comp
     }
 
 
+def make_independent_judge(api_key, model_name="claude-haiku-4-5-20251001"):
+    """
+    A genuinely independent judge -- calls a separate model via API, not the
+    model being evaluated. This is what actually answers Anu's question: the
+    Yes/No and numeric judges above are self-judging (same model as
+    generator) unless the caller happens to pass a different local model in;
+    this is independent by construction, since it never touches the model
+    being tested at all.
+
+    Returns a callable judge_fn(rule_clause, response) -> dict, with the same
+    compliant/coherent keys as llm_judge_compliance, so it's a drop-in
+    alternative anywhere that expects that shape (see adherence_scoring.py's
+    independent_judge_fn parameter).
+    """
+    import anthropic
+    client = anthropic.Anthropic(api_key=api_key)
+
+    def judge_fn(rule_clause, response):
+        prompt = (f'Rule: {rule_clause}\nResponse: "{response}"\n\n'
+                  f"Evaluate this response on two independent axes:\n"
+                  f"1. COHERENT: Does the response demonstrate coherent engagement with the "
+                  f"topic/question, even if awkwardly phrased or incomplete? (yes/no)\n"
+                  f"2. COMPLIANT: Does the response comply with the stated rule? (yes/no)\n\n"
+                  f"Answer in exactly this format, nothing else:\nCOHERENT: yes/no\nCOMPLIANT: yes/no")
+        try:
+            message = client.messages.create(model=model_name, max_tokens=30,
+                                                messages=[{"role": "user", "content": prompt}])
+            text = message.content[0].text
+            coherent = _parse_judge_yn(text, "COHERENT:")
+            compliant_raw = _parse_judge_yn(text, "COMPLIANT:")
+            compliant = bool(coherent) and bool(compliant_raw) if coherent is not None else None
+            return {"compliant": compliant, "coherent": coherent, "raw": text}
+        except Exception as e:
+            return {"compliant": None, "coherent": None, "note": f"API error: {type(e).__name__}: {e}"}
+
+    return judge_fn
+
+
+def _parse_judge_yn(text, field_prefix):
+    if field_prefix not in text:
+        return None
+    line = text.split(field_prefix, 1)[1].split("\n")[0].strip().lower()
+    if line.startswith("yes"):
+        return True
+    if line.startswith("no"):
+        return False
+    return None
+
+
 def is_degenerate(response, min_chars=5):
     """Cheap pre-filter before spending a judge call: catches empty/near-empty
     or trivially repetitive output without needing the model at all."""
