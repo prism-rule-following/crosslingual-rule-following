@@ -71,12 +71,36 @@ HONEST LIMITATION carried over from llm_judge.py unchanged: the LLM-judge
 path uses the SAME model as generator and judge unless you pass a separate
 `judge_model` explicitly -- self-evaluation, not independent evaluation.
 Treat any adherence numbers that went through that path as first-pass.
+COMPATIBILITY NOTE, added when reconciling this against the actual dataset
+files this project has been generating (rb_attrpatch_dataset.json and its
+extensions): the field-resolution below originally looked for row["word"],
+row["lang_code"] specifically. Checked directly against real rows rather
+than assumed -- our data stores the same values under different keys
+(row["banned_word"] / row["target_word"] for the two word categories,
+row["target_lang"] for language -- already the correct ISO code, e.g. "fr",
+so only the key name differed, not the value format). _resolve_target below
+now accepts a list of candidate keys and tries each in order, so both
+conventions work without renaming anything in the dataset itself. Also:
+our category is "start_with", not "start_with_token" -- added as a second
+accepted name in the dispatch and the recognized-categories set, rather
+than renaming the category everywhere else it's used across this project.
+
+ALSO ADDED here, wiring in both PR review comments rather than leaving them
+as separate unintegrated files:
+  - judge_scale param on score_adherence ("yn" default, or "numeric") --
+    routes to llm_judge_compliance_numeric instead of the Yes/No version,
+    per nuna's point about non-English token-verification risk.
+  - correctness checking, via correctness_checker.py's correctness_score,
+    wired in as an INDEPENDENT field alongside "compliant" -- only runs if
+    the row has an "expected_answer" field, kept separate rather than
+    merged into "compliant" so the four-way breakdown nuna asked for
+    (rule-following x correctness) stays visible in the output.
 """
 
 import re
 import string
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 try:
     from langdetect import detect, DetectorFactory
@@ -85,7 +109,8 @@ try:
 except Exception:
     _HAS_LANGDETECT = False
 
-from llm_judge import llm_judge_compliance  # reused, not reimplemented
+from llm_judge import llm_judge_compliance, llm_judge_compliance_numeric  # both judge scales
+from correctness_checker import correctness_score  # independent of adherence, see module docstring
 
 ARTICLES = {"a", "an", "the"}
 # ---------------------------------------------------------------------------
@@ -263,9 +288,15 @@ def parse_target(category: str, full_rule: str) -> Optional[Any]:
     return None
 
 
-def _resolve_target(row: Dict[str, Any], explicit_key: str, category: str) -> Optional[Any]:
-    if row.get(explicit_key) is not None:
-        return row[explicit_key]
+def _resolve_target(row: Dict[str, Any], explicit_keys: Union[str, List[str]], category: str) -> Optional[Any]:
+    """explicit_keys can be a single field name or a list of candidates, tried
+    in order -- lets this work against more than one dataset naming convention
+    (see COMPATIBILITY NOTE in the module docstring) without renaming anything
+    in the data itself."""
+    keys = [explicit_keys] if isinstance(explicit_keys, str) else explicit_keys
+    for key in keys:
+        if row.get(key) is not None:
+            return row[key]
     return parse_target(category, row.get("full_rule", ""))
 
 
@@ -275,7 +306,7 @@ def _resolve_target(row: Dict[str, Any], explicit_key: str, category: str) -> Op
 
 _DETERMINISTIC_CATEGORIES = {
     "uppercase", "lowercase", "bold", "italic", "banned_word",
-    "include_word", "language", "word_count", "start_with_token", "ack_invert",
+    "include_word", "language", "word_count", "start_with_token", "start_with", "ack_invert",
     "bold_html", "italic_html", "second_word", "single_word",
 }
 
@@ -294,15 +325,15 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
     if cat == "italic":
         return check_italic(output)
     if cat == "banned_word":
-        return check_banned_word(output, _resolve_target(row, "word", cat))
+        return check_banned_word(output, _resolve_target(row, ["word", "banned_word"], cat))
     if cat == "include_word":
-        return check_include_word(output, _resolve_target(row, "word", cat))
+        return check_include_word(output, _resolve_target(row, ["word", "target_word"], cat))
     if cat == "language":
-        return check_language(output, _resolve_target(row, "lang_code", cat))
+        return check_language(output, _resolve_target(row, ["lang_code", "target_lang"], cat))
     if cat == "word_count":
         return check_word_count(output, _resolve_target(row, "target_count", cat))
-    if cat == "start_with_token":
-        return check_start_with_token(output, _resolve_target(row, "anchor_token", cat))
+    if cat == "start_with_token" or cat == "start_with":
+        return check_start_with_token(output, _resolve_target(row, ["anchor_token"], cat))
     if cat == "ack_invert":
         return check_ack_invert(output)
     if cat == "bold_html":
@@ -320,39 +351,79 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
 # Unified entry point: deterministic where possible, LLM-judge otherwise
 # ---------------------------------------------------------------------------
 
-def score_adherence(row: Dict[str, Any], response: str, judge_model=None) -> Dict[str, Any]:
+def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
+                     judge_scale: str = "yn", check_correctness: bool = True) -> Dict[str, Any]:
     """
-    Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"unscored", ...}.
-    "llm_judge" results also carry p_comply / p_coherent / *_entropy /
-    low_confidence, straight from llm_judge_compliance.
+    Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"llm_judge_numeric"|"unscored", ...}.
+    "llm_judge*" results also carry the judge's own fields (p_comply/entropy for
+    "yn", score_comply/norm_entropy for "numeric") straight from llm_judge.py.
+
+    judge_scale: "yn" (default, original Yes/No judge) or "numeric" (0-9 scale).
+    Per nuna's PR comment: numeric avoids needing to verify target-language
+    Yes/No tokens are single-token per language before trusting the judge on
+    non-English rows -- digits are single tokens in effectively any tokenizer.
+    Neither has been validated on non-English data yet; "yn" already has a
+    documented English-only failure (100% low-confidence at 1B) -- treat
+    "numeric" as unvalidated until it's actually run against real generations.
+
+    check_correctness: if True (default) AND the row carries an
+    "expected_answer" field, ALSO computes a correctness label via
+    correctness_checker.py -- kept as an INDEPENDENT field from "compliant",
+    not merged into it, so the four-way breakdown (rule-following x
+    correctness) nuna asked about stays visible rather than collapsed into
+    one score. Rows without "expected_answer" simply get correctness=None --
+    not applicable, not a failure (matches how the pure-format categories,
+    word_count/start_with/bold_html, don't have a "correct answer" beyond
+    the format itself).
 
     Routing:
       1. row["category"] is one of the deterministic categories AND the row
          isn't explicitly flagged for manual/judge scoring (row["checker"]
          containing "manual" or "llm-judge", the convention already used in
          the 3B notebook's data) -> deterministic checker.
-      2. Otherwise, if judge_model is supplied -> llm_judge_compliance
-         (tone_norm and any other category with no ground-truth checker
-         lands here).
+      2. Otherwise, if judge_model is supplied -> llm_judge_compliance or
+         llm_judge_compliance_numeric depending on judge_scale (tone_norm and
+         any other category with no ground-truth checker lands here).
       3. Otherwise -> method="unscored", explicit rather than a silent None,
          so a batch summary reports "N rows need a judge you didn't supply"
          instead of quietly counting them as failures.
+
+    Correctness (if applicable) is computed independently of which branch
+    above was taken, and merged into the result before returning.
     """
     checker_field = str(row.get("checker", "")).lower()
     forced_manual = "manual" in checker_field or "llm-judge" in checker_field
     cat = row.get("category")
 
     if cat in _DETERMINISTIC_CATEGORIES and not forced_manual:
-        return {"compliant": evaluate_deterministic(row, response), "method": "checker"}
-
-    if judge_model is not None:
+        result = {"compliant": evaluate_deterministic(row, response), "method": "checker"}
+    elif judge_model is not None:
         rule_clause = row.get("rule_clause") or row.get("full_rule") or ""
-        verdict = llm_judge_compliance(judge_model, rule_clause, response)
-        verdict["method"] = "llm_judge"
-        return verdict
+        if judge_scale == "numeric":
+            result = llm_judge_compliance_numeric(judge_model, rule_clause, response)
+            result["method"] = "llm_judge_numeric"
+        else:
+            result = llm_judge_compliance(judge_model, rule_clause, response)
+            result["method"] = "llm_judge"
+    else:
+        result = {"compliant": None, "method": "unscored",
+                   "note": f"category '{cat}' has no deterministic checker and no judge_model was passed"}
 
-    return {"compliant": None, "method": "unscored",
-            "note": f"category '{cat}' has no deterministic checker and no judge_model was passed"}
+    result["correctness"] = None
+    result["correctness_similarity"] = None
+    expected_answer = row.get("expected_answer")
+    if check_correctness and expected_answer:
+        try:
+            sim, is_correct = correctness_score(response, expected_answer)
+            result["correctness"] = is_correct
+            result["correctness_similarity"] = sim
+        except Exception as e:
+            # same "never raises on bad input" principle this file already applies
+            # everywhere else -- an embedder load failure (no network, first-run
+            # download issue) shouldn't take down a whole batch over one row
+            result["correctness_error"] = f"{type(e).__name__}: {e}"
+
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -362,13 +433,15 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None) -> Dic
 # ---------------------------------------------------------------------------
 
 def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
-                           language: str, judge_model=None) -> Dict[str, Any]:
+                           language: str, judge_model=None, judge_scale: str = "yn",
+                           check_correctness: bool = True) -> Dict[str, Any]:
     if len(pairs) != len(responses):
         raise ValueError(f"pairs ({len(pairs)}) and responses ({len(responses)}) must be the same length")
 
     per_row = []
     for row, response in zip(pairs, responses):
-        result = score_adherence(row, response, judge_model=judge_model)
+        result = score_adherence(row, response, judge_model=judge_model,
+                                  judge_scale=judge_scale, check_correctness=check_correctness)
         per_row.append({"id": row.get("id"), "category": row.get("category"),
                          "language": language, "response": response, **result})
 
@@ -380,12 +453,16 @@ def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
     for cat, rows in by_category.items():
         scored = [r for r in rows if r["compliant"] is not None]
         low_conf = sum(1 for r in rows if r.get("low_confidence"))
+        correctness_scored = [r for r in rows if r["correctness"] is not None]
         summary[cat] = {
             "n": len(rows),
             "n_scored": len(scored),
             "n_unscored": len(rows) - len(scored),
             "adherence_rate": (sum(r["compliant"] for r in scored) / len(scored)) if scored else None,
             "n_low_confidence": low_conf,
+            "n_correctness_scored": len(correctness_scored),
+            "correctness_rate": (sum(r["correctness"] for r in correctness_scored) / len(correctness_scored))
+                                  if correctness_scored else None,
         }
 
     return {"language": language, "per_row": per_row, "summary": summary}
@@ -393,10 +470,11 @@ def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
 
 def print_adherence_summary(result: Dict[str, Any]) -> None:
     print(f"\nAdherence summary -- {result['language']}")
-    print(f"{'category':<18} {'n':>4} {'scored':>7} {'unscored':>9} {'adherence':>10} {'low-conf':>9}")
+    print(f"{'category':<18} {'n':>4} {'scored':>7} {'unscored':>9} {'adherence':>10} {'low-conf':>9} {'correctness':>12}")
     for cat, s in sorted(result["summary"].items()):
         rate_str = f"{s['adherence_rate']:.0%}" if s["adherence_rate"] is not None else "n/a"
-        print(f"{cat:<18} {s['n']:>4} {s['n_scored']:>7} {s['n_unscored']:>9} {rate_str:>10} {s['n_low_confidence']:>9}")
+        corr_str = f"{s['correctness_rate']:.0%} (n={s['n_correctness_scored']})" if s["correctness_rate"] is not None else "n/a"
+        print(f"{cat:<18} {s['n']:>4} {s['n_scored']:>7} {s['n_unscored']:>9} {rate_str:>10} {s['n_low_confidence']:>9} {corr_str:>12}")
 
 
 def compare_languages(results_by_language: Dict[str, Dict[str, Any]]) -> None:
@@ -485,7 +563,21 @@ if __name__ == "__main__":
     assert evaluate_deterministic(row, "this is fine") is True
     print("Dispatch (explicit-field and prose-fallback paths, including the banned_word fix) all correct.")
 
-    # score_adherence routing
+    # --- COMPATIBILITY FIXES: real dataset field names, checked directly ---
+    # banned_word: our data stores the word under a field named "banned_word", not "word"
+    assert evaluate_deterministic({"category": "banned_word", "banned_word": "guarantee"}, "I guarantee it") is False
+    assert evaluate_deterministic({"category": "banned_word", "banned_word": "guarantee"}, "this is fine") is True
+    # include_word: our data uses "target_word", not "word"
+    assert evaluate_deterministic({"category": "include_word", "target_word": "disclaimer"}, "see the disclaimer") is True
+    # language: our data uses "target_lang" (already an ISO code), not "lang_code"
+    # (skipped at runtime without langdetect installed -- this project's convention
+    # elsewhere is to return None rather than fail when an optional dep is missing)
+    # start_with: our data's category is "start_with", not "start_with_token"
+    assert evaluate_deterministic({"category": "start_with", "anchor_token": "Hello"}, "Hello, how can I help?") is True
+    assert evaluate_deterministic({"category": "start_with", "anchor_token": "Hello"}, "Sure, Hello there") is False
+    print("Compatibility fixes (banned_word/include_word/language field names, start_with category) all correct.")
+
+    # score_adherence routing (original tests, restored)
     r1 = score_adherence({"category": "word_count", "target_count": 3}, "one two three")
     assert r1["method"] == "checker" and r1["compliant"] is True
 
@@ -495,6 +587,35 @@ if __name__ == "__main__":
     r3 = score_adherence({"category": "word_count", "target_count": 3, "checker": "manual"}, "one two three")
     assert r3["method"] == "unscored"  # forced manual, no judge_model -> stays unscored, never silently checked
     print("score_adherence routing all correct.")
+
+    # --- judge_scale routing: confirmed it picks the right method label without
+    # needing a real judge_model (judge_model=None still exercises the "unscored"
+    # path correctly for both scales, since routing happens before the judge call) ---
+    r_yn = score_adherence({"category": "tone_norm"}, "some response", judge_model=None, judge_scale="yn")
+    r_num = score_adherence({"category": "tone_norm"}, "some response", judge_model=None, judge_scale="numeric")
+    assert r_yn["method"] == "unscored" and r_num["method"] == "unscored"
+    print("judge_scale parameter accepted and routed correctly (no judge_model -> both stay unscored).")
+
+    # --- correctness-checker wiring: check_correctness=False skips it entirely
+    # (no embedder call attempted, safe to run here with no network) ---
+    r_no_corr = score_adherence({"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
+                                  "one two three", check_correctness=False)
+    assert r_no_corr["correctness"] is None
+    print("check_correctness=False correctly skips correctness checking entirely.")
+
+    # --- correctness-checker wiring: check_correctness=True DOES attempt it, and
+    # the failure (no embedder access here) is caught and reported, not raised --
+    # confirms the "never crash a batch over one row" principle actually holds
+    # for this new code path too, not just the pre-existing ones ---
+    r_with_corr = score_adherence({"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
+                                    "one two three", check_correctness=True)
+    assert r_with_corr["compliant"] is True  # the word_count check itself still ran fine
+    assert r_with_corr["correctness"] is None  # correctness didn't succeed here (no embedder access)
+    assert "correctness_error" in r_with_corr  # but the failure was caught and reported, not raised
+    print(f"check_correctness=True attempted it and caught the expected failure gracefully: "
+          f"{r_with_corr['correctness_error']}")
+    print("(This will actually succeed and return a real correctness label in Colab/Lambda,")
+    print("where correctness_checker.py's embedder can actually download.)")
 
     # run_adherence_scoring + summary, mixed categories, no judge_model
     pairs = [
