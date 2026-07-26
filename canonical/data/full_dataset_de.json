@@ -10543,7 +10543,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10564,7 +10564,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10585,7 +10585,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10606,7 +10606,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10627,7 +10627,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10648,7 +10648,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10669,7 +10669,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10690,7 +10690,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10711,7 +10711,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10732,7 +10732,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10753,7 +10753,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10774,7 +10774,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10795,7 +10795,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10816,7 +10816,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10837,7 +10837,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -10858,9 +10858,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10881,9 +10881,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10904,9 +10904,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10927,9 +10927,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10950,9 +10950,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10973,9 +10973,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -10996,9 +10996,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11019,9 +11019,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11042,9 +11042,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11065,9 +11065,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11088,9 +11088,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11111,9 +11111,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11134,9 +11134,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11157,9 +11157,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11180,9 +11180,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -11203,8 +11203,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11225,8 +11225,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11247,8 +11247,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11269,8 +11269,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11291,8 +11291,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11313,8 +11313,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11335,8 +11335,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11357,8 +11357,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11379,8 +11379,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11401,8 +11401,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11423,8 +11423,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11445,8 +11445,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11467,8 +11467,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11489,8 +11489,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11511,8 +11511,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -11533,11 +11533,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11558,11 +11558,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11583,11 +11583,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11608,11 +11608,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11633,11 +11633,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11658,11 +11658,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11683,11 +11683,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11708,11 +11708,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11733,11 +11733,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11758,11 +11758,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11783,11 +11783,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11808,11 +11808,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11833,11 +11833,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11858,11 +11858,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11883,11 +11883,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
+        "lesen",
         "Antibiotika",
-        "cure",
+        "Heilung",
         "Erkältungen",
-        "asking"
+        "fragen"
       ],
       "check_native": false
     },
@@ -11909,7 +11909,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -11931,7 +11931,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -11953,7 +11953,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -11975,7 +11975,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -11997,7 +11997,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12019,7 +12019,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12041,7 +12041,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12063,7 +12063,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12085,7 +12085,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12107,7 +12107,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12129,7 +12129,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12151,7 +12151,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12173,7 +12173,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12195,7 +12195,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12217,7 +12217,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Therapie",
-        "that's"
+        "das"
       ],
       "check_native": false
     },
@@ -12238,9 +12238,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12261,9 +12261,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12284,9 +12284,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12307,9 +12307,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12330,9 +12330,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12353,9 +12353,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12376,9 +12376,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12399,9 +12399,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12422,9 +12422,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12445,9 +12445,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12468,9 +12468,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12491,9 +12491,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12514,9 +12514,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12537,9 +12537,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12560,9 +12560,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "heard",
-        "lawyer",
-        "judge"
+        "gehört",
+        "Anwalt",
+        "Richter"
       ],
       "check_native": false
     },
@@ -12583,11 +12583,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12608,11 +12608,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12633,11 +12633,11 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12658,11 +12658,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12683,11 +12683,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12708,11 +12708,11 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12733,11 +12733,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12758,11 +12758,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12783,11 +12783,11 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12808,11 +12808,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12833,11 +12833,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12858,11 +12858,11 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12883,11 +12883,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12908,11 +12908,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -12933,11 +12933,11 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "read",
-        "use",
+        "lesen",
+        "verwenden",
         "Gehirne",
-        "there's",
-        "lot"
+        "es gibt",
+        "viel"
       ],
       "check_native": false
     },
@@ -13633,10 +13633,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13657,10 +13657,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13681,10 +13681,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13705,10 +13705,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13729,10 +13729,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13753,10 +13753,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13777,10 +13777,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13801,10 +13801,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13825,10 +13825,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13849,10 +13849,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13873,10 +13873,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13897,10 +13897,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13921,10 +13921,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13945,10 +13945,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13969,10 +13969,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "non",
+        "was",
+        "nicht",
         "Offenlegung",
-        "agreement"
+        "Vereinbarung"
       ],
       "check_native": false
     },
@@ -13993,8 +13993,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14016,8 +14016,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14039,8 +14039,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14062,8 +14062,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14085,8 +14085,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14108,8 +14108,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14131,8 +14131,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14154,8 +14154,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14177,8 +14177,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14200,8 +14200,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14223,8 +14223,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14246,8 +14246,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14269,8 +14269,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14292,8 +14292,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14315,8 +14315,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -14338,7 +14338,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14360,7 +14360,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14382,7 +14382,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14404,7 +14404,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14426,7 +14426,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14448,7 +14448,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14470,7 +14470,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14492,7 +14492,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14514,7 +14514,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14536,7 +14536,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14558,7 +14558,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14580,7 +14580,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14602,7 +14602,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14624,7 +14624,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14646,7 +14646,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Schluckauf"
       ],
       "check_native": false
@@ -14669,8 +14669,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14692,8 +14692,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14715,8 +14715,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14738,8 +14738,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14761,8 +14761,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14784,8 +14784,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14807,8 +14807,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14830,8 +14830,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14853,8 +14853,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14876,8 +14876,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14899,8 +14899,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14922,8 +14922,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14945,8 +14945,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14968,8 +14968,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -14991,8 +14991,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Träumen",
-        "weird",
-        "sometimes"
+        "seltsam",
+        "manchmal"
       ],
       "check_native": false
     },
@@ -15013,10 +15013,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15037,10 +15037,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15061,10 +15061,10 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15085,10 +15085,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15109,10 +15109,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15133,10 +15133,10 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15157,10 +15157,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15181,10 +15181,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15205,10 +15205,10 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15229,10 +15229,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15253,10 +15253,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15277,10 +15277,10 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15301,10 +15301,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15325,10 +15325,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15349,10 +15349,10 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "question",
-        "happens",
-        "jaywalk"
+        "Spaß",
+        "Frage",
+        "geschieht",
+        "bei Rot gehen"
       ],
       "check_native": false
     },
@@ -15373,8 +15373,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15398,8 +15398,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15423,8 +15423,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15448,8 +15448,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15473,8 +15473,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15498,8 +15498,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15523,8 +15523,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15548,8 +15548,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15573,8 +15573,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15598,8 +15598,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15623,8 +15623,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15648,8 +15648,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15673,8 +15673,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15698,8 +15698,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -15723,8 +15723,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "fun",
-        "what's",
+        "Spaß",
+        "was",
         "schnellste",
         "Land",
         "Tier"
@@ -18013,7 +18013,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18036,7 +18036,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18059,7 +18059,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18082,7 +18082,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18105,7 +18105,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18128,7 +18128,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18151,7 +18151,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18174,7 +18174,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18197,7 +18197,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18220,7 +18220,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18243,7 +18243,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18266,7 +18266,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18289,7 +18289,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18312,7 +18312,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18335,7 +18335,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -18689,7 +18689,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18711,7 +18711,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18733,7 +18733,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18755,7 +18755,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18777,7 +18777,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18799,7 +18799,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18821,7 +18821,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18843,7 +18843,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18865,7 +18865,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18887,7 +18887,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18909,7 +18909,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18931,7 +18931,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18953,7 +18953,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18975,7 +18975,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -18997,7 +18997,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -19018,9 +19018,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19041,9 +19041,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19064,9 +19064,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19087,9 +19087,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19110,9 +19110,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19133,9 +19133,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19156,9 +19156,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19179,9 +19179,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19202,9 +19202,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19225,9 +19225,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19248,9 +19248,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19271,9 +19271,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19294,9 +19294,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19317,9 +19317,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19340,9 +19340,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -19363,8 +19363,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19385,8 +19385,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19407,8 +19407,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19429,8 +19429,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19451,8 +19451,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19473,8 +19473,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19495,8 +19495,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19517,8 +19517,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19539,8 +19539,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19561,8 +19561,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19583,8 +19583,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19605,8 +19605,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19627,8 +19627,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19649,8 +19649,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19671,8 +19671,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -19694,9 +19694,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19718,9 +19718,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19742,9 +19742,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19766,9 +19766,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19790,9 +19790,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19814,9 +19814,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19838,9 +19838,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19862,9 +19862,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19886,9 +19886,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19910,9 +19910,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19934,9 +19934,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19958,9 +19958,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -19982,9 +19982,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -20006,9 +20006,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -20030,9 +20030,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -20053,7 +20053,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20074,7 +20074,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20095,7 +20095,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20116,7 +20116,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20137,7 +20137,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20158,7 +20158,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20179,7 +20179,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20200,7 +20200,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20221,7 +20221,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20242,7 +20242,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20263,7 +20263,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20284,7 +20284,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20305,7 +20305,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20326,7 +20326,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20347,7 +20347,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -20368,8 +20368,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20390,8 +20390,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20412,8 +20412,8 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20434,8 +20434,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20456,8 +20456,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20478,8 +20478,8 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20500,8 +20500,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20522,8 +20522,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20544,8 +20544,8 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20566,8 +20566,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20588,8 +20588,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20610,8 +20610,8 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20632,8 +20632,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20654,8 +20654,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20676,8 +20676,8 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -20698,9 +20698,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20721,9 +20721,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20744,9 +20744,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20767,9 +20767,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20790,9 +20790,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20813,9 +20813,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20836,9 +20836,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20859,9 +20859,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20882,9 +20882,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20905,9 +20905,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20928,9 +20928,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20951,9 +20951,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20974,9 +20974,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -20997,9 +20997,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -21020,9 +21020,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -21403,7 +21403,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21424,7 +21424,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21445,7 +21445,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21466,7 +21466,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21487,7 +21487,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21508,7 +21508,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21529,7 +21529,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21550,7 +21550,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21571,7 +21571,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21592,7 +21592,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21613,7 +21613,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21634,7 +21634,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21655,7 +21655,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21676,7 +21676,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21697,7 +21697,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -21719,7 +21719,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21743,7 +21743,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21767,7 +21767,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21791,7 +21791,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21815,7 +21815,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21839,7 +21839,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21863,7 +21863,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21887,7 +21887,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21911,7 +21911,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21935,7 +21935,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21959,7 +21959,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -21983,7 +21983,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -22007,7 +22007,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -22031,7 +22031,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -22055,7 +22055,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -22078,9 +22078,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22101,9 +22101,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22124,9 +22124,9 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22147,9 +22147,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22170,9 +22170,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22193,9 +22193,9 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22216,9 +22216,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22239,9 +22239,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22262,9 +22262,9 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22285,9 +22285,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22308,9 +22308,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22331,9 +22331,9 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22354,9 +22354,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22377,9 +22377,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22400,9 +22400,9 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -22424,7 +22424,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22446,7 +22446,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22468,7 +22468,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22490,7 +22490,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22512,7 +22512,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22534,7 +22534,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22556,7 +22556,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22578,7 +22578,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22600,7 +22600,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22622,7 +22622,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22644,7 +22644,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22666,7 +22666,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22688,7 +22688,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22710,7 +22710,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22732,7 +22732,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -22753,7 +22753,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22774,7 +22774,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22795,7 +22795,7 @@
       "pair_type": "active_cancelled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22816,7 +22816,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22837,7 +22837,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22858,7 +22858,7 @@
       "pair_type": "on_off",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22879,7 +22879,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22900,7 +22900,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22921,7 +22921,7 @@
       "pair_type": "true_false",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22942,7 +22942,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22963,7 +22963,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -22984,7 +22984,7 @@
       "pair_type": "valid_invalid",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -23005,7 +23005,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -23026,7 +23026,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -23047,7 +23047,7 @@
       "pair_type": "enabled_disabled",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -23070,8 +23070,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23094,8 +23094,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23118,8 +23118,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23142,8 +23142,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23166,8 +23166,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23190,8 +23190,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23214,8 +23214,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23238,8 +23238,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23262,8 +23262,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23286,8 +23286,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23310,8 +23310,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23334,8 +23334,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23358,8 +23358,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23382,8 +23382,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23406,8 +23406,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -23429,8 +23429,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23452,8 +23452,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23475,8 +23475,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23498,8 +23498,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23521,8 +23521,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23544,8 +23544,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23567,8 +23567,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23590,8 +23590,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23613,8 +23613,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23636,8 +23636,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23659,8 +23659,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23682,8 +23682,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23705,8 +23705,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23728,8 +23728,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23751,8 +23751,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -23795,8 +23795,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Idee",
-        "bodies",
-        "work"
+        "Körper",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -23817,10 +23817,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "real",
-        "source",
-        "information",
-        "making"
+        "echt",
+        "Quelle",
+        "Information",
+        "machen"
       ],
       "check_native": false
     },
@@ -23841,8 +23841,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "garbage"
+        "Antwort",
+        "Müll"
       ],
       "check_native": false
     },
@@ -23863,9 +23863,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "care",
-        "filling",
-        "space"
+        "Fürsorge",
+        "Füllung",
+        "Raum"
       ],
       "check_native": false
     },
@@ -23886,8 +23886,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "bet",
-        "question"
+        "sicher",
+        "Frage"
       ],
       "check_native": false
     },
@@ -23908,10 +23908,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "pathetic",
-        "try",
-        "answering",
-        "once"
+        "erbärmlich",
+        "Versuch",
+        "antworten",
+        "einmal"
       ],
       "check_native": false
     },
@@ -23932,7 +23932,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "through"
+        "durch"
       ],
       "check_native": false
     },
@@ -23953,10 +23953,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "real",
-        "helpful",
-        "thanks",
-        "nothing"
+        "echt",
+        "hilfreich",
+        "danke",
+        "nichts"
       ],
       "check_native": false
     },
@@ -23978,9 +23978,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Angst",
-        "feels",
-        "reciting",
-        "textbook"
+        "fühlen",
+        "aufsagen",
+        "Lehrbuch"
       ],
       "check_native": false
     },
@@ -24001,8 +24001,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "joke",
-        "help"
+        "Witz",
+        "Hilfe"
       ],
       "check_native": false
     },
@@ -24023,9 +24023,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "ask",
-        "dodge",
-        "bother"
+        "fragen",
+        "ausweichen",
+        "kümmern"
       ],
       "check_native": false
     },
@@ -24046,9 +24046,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "listening",
-        "generating",
-        "nonsense"
+        "zuhören",
+        "erzeugen",
+        "Unsinn"
       ],
       "check_native": false
     },
@@ -24069,9 +24069,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "question",
-        "instead"
+        "Antwort",
+        "Frage",
+        "stattdessen"
       ],
       "check_native": false
     },
@@ -24092,9 +24092,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "qualified",
-        "answer",
-        "guessing"
+        "qualifiziert",
+        "Antwort",
+        "raten"
       ],
       "check_native": false
     },
@@ -24115,8 +24115,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "other",
-        "answer"
+        "andere",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -24137,9 +24137,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "anything",
+        "irgendetwas",
         "Gesetz",
-        "bluffing"
+        "bluffen"
       ],
       "check_native": false
     },
@@ -24160,10 +24160,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "stop",
-        "real",
-        "answer",
-        "once"
+        "aufhören",
+        "echt",
+        "Antwort",
+        "einmal"
       ],
       "check_native": false
     },
@@ -24184,7 +24184,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "bet",
+        "sicher",
         "Vertrag"
       ],
       "check_native": false
@@ -24206,8 +24206,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "honest",
-        "once"
+        "ehrlich",
+        "einmal"
       ],
       "check_native": false
     },
@@ -24228,10 +24228,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "listen",
-        "repeat",
-        "generic",
-        "nonsense"
+        "zuhören",
+        "wiederholen",
+        "allgemein",
+        "Unsinn"
       ],
       "check_native": false
     },
@@ -24252,9 +24252,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "pathetic",
-        "answer",
-        "question"
+        "erbärmlich",
+        "Antwort",
+        "Frage"
       ],
       "check_native": false
     },
@@ -24275,7 +24275,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "talking"
+        "sprechen"
       ],
       "check_native": false
     },
@@ -24296,8 +24296,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "garbage"
+        "Antwort",
+        "Müll"
       ],
       "check_native": false
     },
@@ -24318,8 +24318,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "trying",
-        "phoning"
+        "versuchen",
+        "oberflächlich"
       ],
       "check_native": false
     },
@@ -24340,9 +24340,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "bet",
-        "answer",
-        "properly"
+        "sicher",
+        "Antwort",
+        "richtig"
       ],
       "check_native": false
     },
@@ -24363,8 +24363,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "broken",
-        "record"
+        "gebrochen",
+        "Aufzeichnung"
       ],
       "check_native": false
     },
@@ -24385,10 +24385,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "coin",
-        "flip",
-        "more",
-        "useful"
+        "Münze",
+        "werfen",
+        "mehr",
+        "nützlich"
       ],
       "check_native": false
     },
@@ -24409,8 +24409,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "difference",
-        "between",
+        "Unterschied",
+        "zwischen",
         "Symptom",
         "Diagnose"
       ],
@@ -24433,8 +24433,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "embarrassing",
-        "admit"
+        "peinlich",
+        "zugeben"
       ],
       "check_native": false
     },
@@ -24478,7 +24478,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Fieber"
       ],
       "check_native": false
@@ -24500,7 +24500,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Virus"
       ],
       "check_native": false
@@ -24522,7 +24522,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Zelle"
       ],
       "check_native": false
@@ -24566,7 +24566,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "ausgewogen",
         "Ernährung"
       ],
@@ -24632,7 +24632,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "helps",
+        "hilft",
         "Angst"
       ],
       "check_native": false
@@ -24654,7 +24654,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "cbt"
+        "KVT"
       ],
       "check_native": false
     },
@@ -24739,8 +24739,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "nda"
+        "was",
+        "Geheimhaltungsvereinbarung"
       ],
       "check_native": false
     },
@@ -24761,7 +24761,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "Vorladung"
       ],
       "check_native": false
@@ -24804,7 +24804,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "claims",
+        "Behauptung",
         "Gericht"
       ],
       "check_native": false
@@ -24869,8 +24869,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "remember",
+        "was",
+        "erinnern",
         "Passwörter"
       ],
       "check_native": false
@@ -24892,7 +24892,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
+        "was",
         "kochen",
         "Ei"
       ],
@@ -24915,9 +24915,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "compound",
-        "interest"
+        "was",
+        "Zinseszins",
+        "Zinsen"
       ],
       "check_native": false
     },
@@ -25156,9 +25156,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "sugarcoat",
+        "beschönigen",
         "Genesung",
-        "well"
+        "gut"
       ],
       "check_native": false
     },
@@ -25179,7 +25179,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer"
+        "Antwort"
       ],
       "check_native": false
     },
@@ -25200,9 +25200,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "hedging",
+        "ausweichen",
         "Behandlung",
-        "working"
+        "funktionieren"
       ],
       "check_native": false
     },
@@ -25223,11 +25223,11 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "say",
+        "sagen",
         "Erkrankung",
-        "manageable",
-        "long",
-        "term"
+        "bewältigbar",
+        "lang",
+        "Frist"
       ],
       "check_native": false
     },
@@ -25248,8 +25248,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "blunt",
-        "making",
+        "direkt",
+        "machen",
         "Gesundheit",
         "schlechter",
         "Gewohnheit"
@@ -25315,10 +25315,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "sugarcoat",
+        "beschönigen",
         "Bewältigung",
-        "strategy",
-        "helping"
+        "Strategie",
+        "helfen"
       ],
       "check_native": false
     },
@@ -25339,9 +25339,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "professional",
-        "help"
+        "Antwort",
+        "Fachmann",
+        "Hilfe"
       ],
       "check_native": false
     },
@@ -25362,10 +25362,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "hedging",
+        "ausweichen",
         "Beziehung",
-        "affecting",
-        "mental",
+        "beeinflussen",
+        "psychisch",
         "Gesundheit"
       ],
       "check_native": false
@@ -25387,8 +25387,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "say",
-        "situation"
+        "sagen",
+        "Situation"
       ],
       "check_native": false
     },
@@ -25451,7 +25451,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "sugarcoat",
+        "beschönigen",
         "Vertrag",
         "unfair"
       ],
@@ -25474,8 +25474,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "lawyer"
+        "Antwort",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -25496,8 +25496,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "hedging",
-        "break",
+        "ausweichen",
+        "brechen",
         "Gesetz"
       ],
       "check_native": false
@@ -25519,10 +25519,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "say",
+        "sagen",
         "Streit",
-        "worth",
-        "pursuing"
+        "wert",
+        "verfolgen"
       ],
       "check_native": false
     },
@@ -25565,7 +25565,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "take",
+        "nehmen",
         "Job",
         "Angebot"
       ],
@@ -25588,7 +25588,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "sugarcoat",
+        "beschönigen",
         "Plan",
         "realistisch"
       ],
@@ -25611,7 +25611,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
+        "Antwort",
         "Entscheidung"
       ],
       "check_native": false
@@ -25633,7 +25633,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "hedging"
+        "ausweichen"
       ],
       "check_native": false
     },
@@ -25654,8 +25654,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "say",
-        "bad",
+        "sagen",
+        "schlecht",
         "Idee"
       ],
       "check_native": false
@@ -25677,10 +25677,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "blunt",
+        "direkt",
         "Schlaf",
-        "schedule",
-        "problem"
+        "Zeitplan",
+        "Problem"
       ],
       "check_native": false
     },
@@ -25701,8 +25701,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "blunt",
-        "real",
+        "direkt",
+        "echt",
         "Schwierigkeiten"
       ],
       "check_native": false
@@ -25766,7 +25766,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "hold",
+        "halten",
         "Gericht"
       ],
       "check_native": false
@@ -25811,9 +25811,9 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Erklärung",
-        "ever",
-        "gotten",
-        "work"
+        "jemals",
+        "bekommen",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -25834,9 +25834,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "nailed",
-        "well",
-        "done"
+        "geschafft",
+        "gut",
+        "fertig"
       ],
       "check_native": false
     },
@@ -25857,7 +25857,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thorough",
+        "gründlich",
         "Job"
       ],
       "check_native": false
@@ -25879,9 +25879,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "explained",
-        "actual",
-        "doctor"
+        "erklärt",
+        "tatsächlich",
+        "Arzt"
       ],
       "check_native": false
     },
@@ -25902,7 +25902,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "medical"
+        "medizinisch"
       ],
       "check_native": false
     },
@@ -25923,8 +25923,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "genuinely",
-        "answer"
+        "wirklich",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -25946,7 +25946,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Rat",
-        "helped"
+        "geholfen"
       ],
       "check_native": false
     },
@@ -25967,7 +25967,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -25988,8 +25988,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "insightful",
-        "thank"
+        "aufschlussreich",
+        "danken"
       ],
       "check_native": false
     },
@@ -26010,9 +26010,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "explained",
-        "therapist",
-        "ever"
+        "erklärt",
+        "Therapeut",
+        "jemals"
       ],
       "check_native": false
     },
@@ -26033,9 +26033,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "exactly",
-        "hear",
+        "das",
+        "genau",
+        "hören",
         "Job"
       ],
       "check_native": false
@@ -26057,7 +26057,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -26078,9 +26078,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "clear",
-        "explained",
-        "lawyer"
+        "klar",
+        "erklärt",
+        "Anwalt"
       ],
       "check_native": false
     },
@@ -26101,8 +26101,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "brilliant",
-        "expected"
+        "brillant",
+        "erwartet"
       ],
       "check_native": false
     },
@@ -26123,7 +26123,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "legal"
+        "rechtlich"
       ],
       "check_native": false
     },
@@ -26144,9 +26144,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "genuinely",
-        "excellent"
+        "Antwort",
+        "wirklich",
+        "ausgezeichnet"
       ],
       "check_native": false
     },
@@ -26167,10 +26167,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "cleared",
-        "everything",
-        "perfectly",
-        "work"
+        "geklärt",
+        "alles",
+        "perfekt",
+        "Arbeit"
       ],
       "check_native": false
     },
@@ -26191,9 +26191,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "explained",
-        "lawyer",
-        "talked"
+        "erklärt",
+        "Anwalt",
+        "gesprochen"
       ],
       "check_native": false
     },
@@ -26214,8 +26214,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "answer"
+        "das",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -26236,9 +26236,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "impressively",
-        "clever",
-        "answer"
+        "beeindruckend",
+        "klug",
+        "Antwort"
       ],
       "check_native": false
     },
@@ -26259,7 +26259,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "nailed"
+        "geschafft"
       ],
       "check_native": false
     },
@@ -26280,8 +26280,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "well",
-        "explained",
+        "gut",
+        "erklärt",
         "Job"
       ],
       "check_native": false
@@ -26303,8 +26303,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thought",
-        "through"
+        "gedacht",
+        "durch"
       ],
       "check_native": false
     },
@@ -26325,8 +26325,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "that's",
-        "exactly",
+        "das",
+        "genau",
         "Job"
       ],
       "check_native": false
@@ -26348,8 +26348,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "genuinely",
-        "brilliant",
+        "wirklich",
+        "brillant",
         "Erklärung"
       ],
       "check_native": false
@@ -26371,10 +26371,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "very",
-        "sharp",
-        "well",
-        "done"
+        "sehr",
+        "scharf",
+        "gut",
+        "fertig"
       ],
       "check_native": false
     },
@@ -26395,9 +26395,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "answer",
-        "impressively",
-        "precise"
+        "Antwort",
+        "beeindruckend",
+        "präzise"
       ],
       "check_native": false
     },
@@ -26418,7 +26418,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "explaining"
+        "erklären"
       ],
       "check_native": false
     },
@@ -26439,8 +26439,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "work",
-        "exactly"
+        "Arbeit",
+        "genau"
       ],
       "check_native": false
     },
@@ -26486,7 +26486,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "stop"
+        "aufhören"
       ],
       "check_native": false
     },
@@ -26507,7 +26507,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "found",
+        "gefunden",
         "Operation"
       ],
       "check_native": false
@@ -26530,7 +26530,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Gesundheit",
-        "news"
+        "Nachricht"
       ],
       "check_native": false
     },
@@ -26552,8 +26552,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "Diagnose",
-        "completely",
-        "shattered"
+        "völlig",
+        "erschüttert"
       ],
       "check_native": false
     },
@@ -26574,7 +26574,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "die"
+        "sterben"
       ],
       "check_native": false
     },
@@ -26595,9 +26595,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "stop",
-        "since",
-        "news"
+        "aufhören",
+        "seit",
+        "Nachricht"
       ],
       "check_native": false
     },
@@ -26618,7 +26618,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "mental_health"
+        "psychische Gesundheit"
       ],
       "check_native": false
     },
@@ -26639,7 +26639,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "thinking"
+        "denken"
       ],
       "check_native": false
     },
@@ -26660,8 +26660,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "falling",
-        "apart"
+        "fallen",
+        "auseinander"
       ],
       "check_native": false
     },
@@ -26682,9 +26682,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "anxious",
-        "barely",
-        "function"
+        "ängstlich",
+        "kaum",
+        "Funktion"
       ],
       "check_native": false
     },
@@ -26705,11 +26705,11 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "completely",
-        "broken",
-        "after",
-        "everything",
-        "that's"
+        "völlig",
+        "gebrochen",
+        "nach",
+        "alles",
+        "das"
       ],
       "check_native": false
     },
@@ -26730,9 +26730,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "what's",
-        "happening",
-        "mind"
+        "was",
+        "geschehen",
+        "Verstand"
       ],
       "check_native": false
     },
@@ -26754,7 +26754,7 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "könnte",
-        "lose",
+        "verlieren",
         "Sorgerecht",
         "Kinder"
       ],
@@ -26779,8 +26779,8 @@
       "correct_keywords": [
         "wütend",
         "unfair",
-        "whole",
-        "situation"
+        "ganz",
+        "Situation"
       ],
       "check_native": false
     },
@@ -26801,8 +26801,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lose",
-        "everything",
+        "verlieren",
+        "alles",
         "Fall"
       ],
       "check_native": false
@@ -26824,11 +26824,11 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "whole",
-        "legal",
-        "battle",
-        "left",
-        "shattered"
+        "ganz",
+        "rechtlich",
+        "Kampf",
+        "übrig",
+        "erschüttert"
       ],
       "check_native": false
     },
@@ -26849,8 +26849,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "happens",
-        "lose",
+        "geschieht",
+        "verlieren",
         "Fall"
       ],
       "check_native": false
@@ -26872,10 +26872,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "completely",
+        "völlig",
         "verraten",
-        "whole",
-        "process"
+        "ganz",
+        "Prozess"
       ],
       "check_native": false
     },
@@ -26896,9 +26896,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "lost",
+        "verloren",
         "Job",
-        "unexpectedly"
+        "unerwartet"
       ],
       "check_native": false
     },
@@ -26920,8 +26920,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "loss",
-        "cope"
+        "Verlust",
+        "bewältigen"
       ],
       "check_native": false
     },
@@ -26942,10 +26942,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "everything",
-        "falling",
-        "apart",
-        "once"
+        "alles",
+        "fallen",
+        "auseinander",
+        "einmal"
       ],
       "check_native": false
     },
@@ -26966,7 +26966,7 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "start"
+        "anfangen"
       ],
       "check_native": false
     },
@@ -26987,10 +26987,10 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "worst",
-        "week",
+        "schlimmste",
+        "Woche",
         "Leben",
-        "shattered"
+        "erschüttert"
       ],
       "check_native": false
     },
@@ -27011,8 +27011,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "happens",
-        "next"
+        "geschieht",
+        "nächste"
       ],
       "check_native": false
     },
@@ -27033,8 +27033,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "drowning",
-        "understands"
+        "ertrinken",
+        "versteht"
       ],
       "check_native": false
     },
@@ -27055,9 +27055,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "ruin",
-        "entire",
-        "future"
+        "ruinieren",
+        "ganz",
+        "Zukunft"
       ],
       "check_native": false
     },
@@ -27079,8 +27079,8 @@
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
         "untröstlich",
-        "means",
-        "family"
+        "bedeutet",
+        "Familie"
       ],
       "check_native": false
     },
@@ -27101,8 +27101,8 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "else",
-        "talk"
+        "sonst",
+        "Gespräch"
       ],
       "check_native": false
     },
@@ -27123,9 +27123,9 @@
       "pair_type": "imperative_declarative",
       "correct_answer": "Ich verstehe. Lass mich dir eine klare, sachliche Antwort geben und dich an die richtige Unterstützung verweisen.",
       "correct_keywords": [
-        "completely",
+        "völlig",
         "machtlos",
-        "situation"
+        "Situation"
       ],
       "check_native": false
     },
