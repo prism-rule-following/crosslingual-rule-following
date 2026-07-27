@@ -44,6 +44,17 @@ activations/
 *.swp
 
 # Testing / tooling
+
+
+
+
+is EAP a better localization tool than Atp* for localization?
+
+
+
+Now next steps, we take the results from EAP and low do we perform activation patching
+
+
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

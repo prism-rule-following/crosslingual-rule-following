@@ -1,0 +1,20 @@
+[project]
+name = "crosslingual-rule-following"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "datasets>=5.0.0",
+    "eap[viz]",
+    "pandas>=3.0.5",
+    "pydantic>=2.13.4",
+    "pygraphviz>=2.0.1",
+    "pytest>=9.1.1",
+    "python-dotenv>=1.2.2",
+    "torch>=2.13.0",
+    "transformer-lens>=3.5.1",
+]
+
+[tool.uv.sources]
+eap = { git = "https://github.com/hannamw/EAP-IG.git" }
