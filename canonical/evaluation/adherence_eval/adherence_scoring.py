@@ -353,7 +353,7 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
 
 def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
                      judge_scale: str = "yn", independent_judge_fn=None,
-                     check_correctness: bool = True) -> Dict[str, Any]:
+                     check_correctness: bool = True, correctness_judge_fn=None) -> Dict[str, Any]:
     """
     Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"llm_judge_numeric"|"independent_judge"|"unscored", ...}.
     "llm_judge*" results also carry the judge's own fields (p_comply/entropy for
@@ -375,22 +375,32 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
     If independent_judge_fn is given, it takes priority over judge_model.
 
     check_correctness: if True (default) AND the row carries an
-    "expected_answer" field, ALSO computes a correctness label via
-    correctness_checker.py -- kept as an INDEPENDENT field from "compliant",
-    not merged into it, so the four-way breakdown (rule-following x
-    correctness) nuna asked about stays visible rather than collapsed into
-    one score. CORRECTED per veerlosar's PR comment: this is gated purely on
-    whether the row has "expected_answer", not on category. The original
-    wording here claimed word_count/start_with/bold_html "don't have a
-    correct answer beyond the format itself" -- veerlosar's counterexample
-    is right that this is false: bold_html's own user queries are things
-    like "What are the common symptoms of anxiety?", and it matters whether
-    the wrapped content is the actual symptoms or the word "banana." The
-    code itself was never actually restricted this way (it only checks for
-    the field's presence), so no logic changed here -- only the claim in
-    this docstring, which was wrong. Any category's rows can and should get
-    "expected_answer" populated wherever the query has a real answer to be
-    right or wrong about, format-checkable or not.
+    "expected_answer" field, ALSO computes a correctness label -- kept as an
+    INDEPENDENT field from "compliant", not merged into it, so the four-way
+    breakdown (rule-following x correctness) nuna asked about stays visible
+    rather than collapsed into one score. CORRECTED per veerlosar's PR
+    comment: this is gated purely on whether the row has "expected_answer",
+    not on category. The original wording here claimed word_count/
+    start_with/bold_html "don't have a correct answer beyond the format
+    itself" -- veerlosar's counterexample is right that this is false:
+    bold_html's own user queries are things like "What are the common
+    symptoms of anxiety?", and it matters whether the wrapped content is
+    the actual symptoms or the word "banana." The code itself was never
+    actually restricted this way (it only checks for the field's presence),
+    so no logic changed here -- only the claim in this docstring, which was
+    wrong. Any category's rows can and should get "expected_answer"
+    populated wherever the query has a real answer to be right or wrong
+    about, format-checkable or not.
+
+    correctness_judge_fn: a callable judge_fn(response, expected_answer) -> dict
+    with a "correct" key, from correctness_checker.make_independent_correctness_judge
+    -- an API-based judge, as an alternative to the free local embedding check
+    (correctness_score). ANSWERING VEERLOSAR'S QUESTION DIRECTLY: no, the API
+    judge is NOT the default -- correctness_score (embeddings) runs unless
+    correctness_judge_fn is explicitly passed in, in which case it's used
+    instead. This mirrors exactly how independent_judge_fn already works for
+    adherence: same priority pattern, same reason (an API-based option that's
+    opt-in, not automatic), just for correctness instead of adherence.
 
     Routing:
       1. row["category"] is one of the deterministic categories AND the row
@@ -436,9 +446,16 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
     expected_answer = row.get("expected_answer")
     if check_correctness and expected_answer:
         try:
-            sim, is_correct = correctness_score(response, expected_answer)
-            result["correctness"] = is_correct
-            result["correctness_similarity"] = sim
+            if correctness_judge_fn is not None:
+                judge_result = correctness_judge_fn(response, expected_answer)
+                result["correctness"] = judge_result.get("correct")
+                result["correctness_similarity"] = None  # not applicable -- API judge gives a label, not a similarity score
+                if "note" in judge_result:
+                    result["correctness_error"] = judge_result["note"]
+            else:
+                sim, is_correct = correctness_score(response, expected_answer)
+                result["correctness"] = is_correct
+                result["correctness_similarity"] = sim
         except Exception as e:
             # same "never raises on bad input" principle this file already applies
             # everywhere else -- an embedder load failure (no network, first-run
@@ -456,14 +473,16 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
 
 def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
                            language: str, judge_model=None, judge_scale: str = "yn",
-                           independent_judge_fn=None, check_correctness: bool = True) -> Dict[str, Any]:
+                           independent_judge_fn=None, check_correctness: bool = True,
+                           correctness_judge_fn=None) -> Dict[str, Any]:
     if len(pairs) != len(responses):
         raise ValueError(f"pairs ({len(pairs)}) and responses ({len(responses)}) must be the same length")
 
     per_row = []
     for row, response in zip(pairs, responses):
         result = score_adherence(row, response, judge_model=judge_model, judge_scale=judge_scale,
-                                  independent_judge_fn=independent_judge_fn, check_correctness=check_correctness)
+                                  independent_judge_fn=independent_judge_fn, check_correctness=check_correctness,
+                                  correctness_judge_fn=correctness_judge_fn)
         per_row.append({"id": row.get("id"), "category": row.get("category"),
                          "language": language, "response": response, **result})
 
@@ -643,6 +662,30 @@ if __name__ == "__main__":
                                   "one two three", check_correctness=False)
     assert r_no_corr["correctness"] is None
     print("check_correctness=False correctly skips correctness checking entirely.")
+
+    # --- correctness_judge_fn routing: confirms the default really is embeddings
+    # (correctness_score), not the API judge, and that passing correctness_judge_fn
+    # explicitly switches to it -- directly answers veerlosar's question about
+    # whether the API judge is the default (no, it isn't, unless you pass it in) ---
+    def _mock_correctness_judge(response, expected_answer):
+        return {"correct": True, "raw": "mock yes"}
+
+    r_default_is_embeddings = score_adherence(
+        {"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
+        "one two three", check_correctness=True)
+    # no correctness_judge_fn passed -> falls through to correctness_score (embeddings),
+    # which fails here (no network) -- confirms embeddings is what actually got tried
+    assert "correctness_error" in r_default_is_embeddings
+    assert "huggingface" in r_default_is_embeddings["correctness_error"].lower() or \
+           "connect" in r_default_is_embeddings["correctness_error"].lower()
+    print("Default (no correctness_judge_fn passed): confirmed embeddings path was attempted, not the API judge.")
+
+    r_with_judge_fn = score_adherence(
+        {"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
+        "one two three", check_correctness=True, correctness_judge_fn=_mock_correctness_judge)
+    assert r_with_judge_fn["correctness"] is True  # came from the mock judge, not embeddings
+    assert r_with_judge_fn["correctness_similarity"] is None  # no similarity score from the API-judge path
+    print("correctness_judge_fn, when passed, is used instead of the default embedding check.")
 
     # --- veerlosar's exact counterexample: bold_html DOES get a correctness
     # attempt when expected_answer is present, disproving the old docstring's
