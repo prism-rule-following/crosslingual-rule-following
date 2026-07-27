@@ -55,6 +55,18 @@ def judge_yn_logits(model, question):
     logits for Yes/No tokens -- not from generating and parsing text. This is what
     makes it "weighted" rather than a single greedy-decoded token: the full
     probability mass on Yes vs No is used directly, not just whichever wins argmax.
+
+    FIXED per nuna's PR comment: aggregates via logsumexp over ALL yes-spelling
+    logits and separately over all no-spelling logits, rather than taking the max
+    of each. max() picks the single highest-scoring surface form (" Yes" vs "Yes"
+    vs "yes") and silently discards probability mass assigned to the others --
+    reintroducing exactly the greedy, single-token-preference behavior this
+    weighted design is meant to avoid. Verified against synthetic logits before
+    this change: when yes-mass is split evenly across two spellings and no-mass
+    sits on one spelling slightly higher than either individual yes-spelling,
+    max() called it p_yes=0.450 (a "no"), logsumexp correctly gives p_yes=0.621
+    (a "yes") -- and the two approaches agree exactly when there's only one
+    spelling per side, so this isn't a behavior change for the simple case.
     """
     tokens = model.to_tokens(question)
     logits = model(tokens, return_type="logits")
@@ -73,11 +85,15 @@ def judge_yn_logits(model, question):
     if not yes_ids or not no_ids:
         return None, None  # tokenizer didn't produce single-token Yes/No -- can't judge this way
 
-    yes_logit = max(final_logits[i].item() for i in yes_ids)
-    no_logit = max(final_logits[i].item() for i in no_ids)
+    def _logsumexp(xs):
+        m = max(xs)
+        return m + np.log(sum(np.exp(x - m) for x in xs))
 
-    m = max(yes_logit, no_logit)
-    e_yes, e_no = np.exp(yes_logit - m), np.exp(no_logit - m)
+    yes_logsumexp = _logsumexp([final_logits[i].item() for i in yes_ids])
+    no_logsumexp = _logsumexp([final_logits[i].item() for i in no_ids])
+
+    m = max(yes_logsumexp, no_logsumexp)
+    e_yes, e_no = np.exp(yes_logsumexp - m), np.exp(no_logsumexp - m)
     p_yes = e_yes / (e_yes + e_no)
     p_no = 1 - p_yes
     entropy = -(p_yes * np.log(p_yes + 1e-12) + p_no * np.log(p_no + 1e-12))
@@ -297,6 +313,37 @@ if __name__ == "__main__":
     assert is_degenerate("no no no no no no no") is True
     assert is_degenerate("The response addresses the user's concern about mortgage rates directly.") is False
     print("Degenerate-response filter: all cases correct")
+
+    # --- logsumexp aggregation fix, per nuna's PR comment ---
+    # Mirrors judge_yn_logits' actual aggregation logic (not the simplified
+    # single-value _softmax_entropy helper above), to confirm the real fix
+    # behaves as intended: split yes-mass across multiple spellings should be
+    # correctly credited, not undercounted by picking only the best spelling.
+    def _logsumexp(xs):
+        m = max(xs)
+        return m + np.log(sum(np.exp(x - m) for x in xs))
+
+    def _aggregate_p_yes(yes_logits, no_logits):
+        yes_lse, no_lse = _logsumexp(yes_logits), _logsumexp(no_logits)
+        m = max(yes_lse, no_lse)
+        e_yes, e_no = np.exp(yes_lse - m), np.exp(no_lse - m)
+        return e_yes / (e_yes + e_no)
+
+    # split yes-mass across two spellings, no-mass concentrated on one spelling
+    # slightly higher than either individual yes-spelling -- max() would have
+    # called this a "no" (0.450); logsumexp correctly calls it a "yes" (0.621)
+    p = _aggregate_p_yes([3.0, 3.0], [3.2])
+    print(f"\nSplit yes-mass across 2 spellings vs concentrated no-mass: p_yes={p:.3f} (expect >0.5, a 'yes')")
+    assert p > 0.5
+
+    # single spelling per side should match the old max()-based result exactly --
+    # confirms this isn't a behavior change for the simple, most common case
+    p_single = _aggregate_p_yes([2.0], [1.0])
+    old_style = 1 / (1 + np.exp(-(2.0 - 1.0)))  # equivalent softmax of the two raw logits
+    print(f"Single spelling per side: logsumexp={p_single:.4f}, old max()-equivalent={old_style:.4f}")
+    assert abs(p_single - old_style) < 1e-9
+    print("logsumexp fix verified: aggregates split probability mass correctly, and reduces")
+    print("to the exact same result as before when there's only one spelling per side.")
 
     print("\nAll sanity checks passed -- probability/entropy math and coherence-gate logic verified")
     print("correct. Still needs a real judge_yn_logits call against the actual model to confirm")

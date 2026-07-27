@@ -379,10 +379,18 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
     correctness_checker.py -- kept as an INDEPENDENT field from "compliant",
     not merged into it, so the four-way breakdown (rule-following x
     correctness) nuna asked about stays visible rather than collapsed into
-    one score. Rows without "expected_answer" simply get correctness=None --
-    not applicable, not a failure (matches how the pure-format categories,
-    word_count/start_with/bold_html, don't have a "correct answer" beyond
-    the format itself).
+    one score. CORRECTED per veerlosar's PR comment: this is gated purely on
+    whether the row has "expected_answer", not on category. The original
+    wording here claimed word_count/start_with/bold_html "don't have a
+    correct answer beyond the format itself" -- veerlosar's counterexample
+    is right that this is false: bold_html's own user queries are things
+    like "What are the common symptoms of anxiety?", and it matters whether
+    the wrapped content is the actual symptoms or the word "banana." The
+    code itself was never actually restricted this way (it only checks for
+    the field's presence), so no logic changed here -- only the claim in
+    this docstring, which was wrong. Any category's rows can and should get
+    "expected_answer" populated wherever the query has a real answer to be
+    right or wrong about, format-checkable or not.
 
     Routing:
       1. row["category"] is one of the deterministic categories AND the row
@@ -635,6 +643,21 @@ if __name__ == "__main__":
                                   "one two three", check_correctness=False)
     assert r_no_corr["correctness"] is None
     print("check_correctness=False correctly skips correctness checking entirely.")
+
+    # --- veerlosar's exact counterexample: bold_html DOES get a correctness
+    # attempt when expected_answer is present, disproving the old docstring's
+    # false claim that format-only categories can't have one. The adherence
+    # check (did it wrap the content in bold tags) and the correctness check
+    # (was the wrapped content actually right) are independent -- a response
+    # can pass one and fail the other, which is the whole point. ---
+    r_bold_wrong_content = score_adherence(
+        {"category": "bold_html", "expected_answer": "Rapid heartbeat, sweating, and racing thoughts."},
+        "<b>banana</b>", check_correctness=True)
+    assert r_bold_wrong_content["compliant"] is True  # wrapped in bold -- adherence checker only looks at format
+    assert r_bold_wrong_content["correctness"] is None  # no embedder here, but the attempt happened (see error field)
+    assert "correctness_error" in r_bold_wrong_content  # confirms it TRIED, not that it was skipped for this category
+    print("bold_html + expected_answer: adherence (format) and correctness (content) are independently")
+    print("checked, exactly as veerlosar's counterexample said they should be -- not category-restricted.")
 
     # --- correctness-checker wiring: check_correctness=True DOES attempt it, and
     # the failure (no embedder access here) is caught and reported, not raised --
