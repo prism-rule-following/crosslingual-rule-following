@@ -1,0 +1,34 @@
+# Floor-pinned dependencies for the crosslingual-rule-following RunPod environment.
+# torch/torchvision are handled separately in setup.sh via `uv pip install
+# --index-url https://download.pytorch.org/whl/cu128`, in an isolated venv
+# (not --system-site-packages) to avoid conflicting with the base image's
+# preinstalled torch, per RunPod's own guidance.
+#
+# After the FIRST successful setup.sh run on a pod, a requirements.lock.txt is
+# generated via `pip freeze`. Everyone after that installs from the lock file
+# instead of this one, so the whole team runs bit-for-bit identical versions.
+# If you need to bump anything here, delete requirements.lock.txt, re-run
+# setup.sh on one pod, verify, and commit the regenerated lock file.
+
+transformers>=4.51.0          # 4.51+ required for Qwen3 support
+transformer_lens>=2.11.0      # needs a version with Qwen3 + Llama-3.1 support
+huggingface_hub>=0.25.0
+accelerate>=1.0.0
+sentencepiece>=0.2.0
+tokenizers>=0.20.0
+
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
+scikit-learn==1.5.1
+
+matplotlib==3.9.1
+seaborn==0.13.2
+plotly==5.24.0
+
+langdetect==1.0.9
+POT==0.9.4                    # imported as `ot`, used for Gromov-Wasserstein OT transport
+
+tqdm>=4.66.0
+jupyter>=1.0.0
+ipykernel>=6.29.0
