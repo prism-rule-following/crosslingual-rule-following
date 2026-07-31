@@ -89,6 +89,24 @@ export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 That's it. `setup.sh` is safe to re-run too (e.g. if `requirements.lock.txt`
 changed) — it detects the existing venv and only installs what's missing.
 
+## Long-running jobs (tmux)
+
+`setup.sh` installs `tmux` as part of its system-package step, so it's there
+without a separate manual install. Use it for anything that should survive
+a disconnect:
+
+```bash
+tmux new -s mysession        # start a session
+source /workspace/.runpod_env
+export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+python your_script.py
+# Ctrl-B D to detach, walk away — job keeps running
+tmux attach -t mysession     # reattach later to check progress
+```
+
+Useful shortcuts while attached: `Ctrl-B D` detach, `Ctrl-B [` scroll (`q` to
+exit), `Ctrl-C` interrupt (safe — current batch finishes writing first).
+
 ## Updating dependencies
 
 Don't hand-edit `requirements.lock.txt`. Instead:

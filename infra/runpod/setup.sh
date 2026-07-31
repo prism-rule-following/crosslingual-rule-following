@@ -46,11 +46,18 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
 echo
 
 # ---- 2. System packages (best-effort, only if apt + sudo/root available) --
+# tmux is included here so every pod attach gets it via this one script
+# instead of a separate manual `apt-get install tmux` each time.
 if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" = "0" ]; then
-    if ! command -v git >/dev/null 2>&1; then
-        echo "-- Installing system packages (git, build-essential) --"
+    MISSING_PKGS=""
+    command -v git >/dev/null 2>&1 || MISSING_PKGS="$MISSING_PKGS git"
+    command -v tmux >/dev/null 2>&1 || MISSING_PKGS="$MISSING_PKGS tmux"
+    command -v gcc >/dev/null 2>&1 || MISSING_PKGS="$MISSING_PKGS build-essential"
+    if [ -n "$MISSING_PKGS" ]; then
+        echo "-- Installing system packages:$MISSING_PKGS --"
         apt-get update -qq
-        apt-get install -y -qq git build-essential >/dev/null
+        # shellcheck disable=SC2086
+        apt-get install -y -qq $MISSING_PKGS >/dev/null
     fi
 fi
 
