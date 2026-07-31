@@ -13,6 +13,7 @@ under the account whose HF_TOKEN is exported in this shell.
 import argparse
 import sys
 import time
+import traceback
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -35,8 +36,9 @@ def run_one(model_id: str) -> bool:
             torch_dtype=torch.bfloat16,
             device_map="auto",
         )
-    except Exception as e:
-        print(f"FAIL (load): {e}")
+    except Exception:
+        print("FAIL (load):")
+        traceback.print_exc()
         return False
 
     load_s = time.time() - t0
@@ -55,8 +57,9 @@ def run_one(model_id: str) -> bool:
 
         text = tokenizer.decode(out[0][inputs.shape[-1]:], skip_special_tokens=True)
         print(f"Generated in {gen_s:.1f}s: {text!r}")
-    except Exception as e:
-        print(f"FAIL (generate): {e}")
+    except Exception:
+        print("FAIL (generate):")
+        traceback.print_exc()
         return False
     finally:
         if torch.cuda.is_available():
