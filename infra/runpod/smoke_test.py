@@ -47,15 +47,16 @@ def run_one(model_id: str) -> bool:
     try:
         messages = [{"role": "user", "content": PROMPT}]
         inputs = tokenizer.apply_chat_template(
-            messages, add_generation_prompt=True, return_tensors="pt"
+            messages, add_generation_prompt=True, return_tensors="pt", return_dict=True
         ).to(model.device)
 
         t1 = time.time()
         with torch.no_grad():
-            out = model.generate(inputs, max_new_tokens=32, do_sample=False)
+            out = model.generate(**inputs, max_new_tokens=32, do_sample=False)
         gen_s = time.time() - t1
 
-        text = tokenizer.decode(out[0][inputs.shape[-1]:], skip_special_tokens=True)
+        prompt_len = inputs["input_ids"].shape[-1]
+        text = tokenizer.decode(out[0][prompt_len:], skip_special_tokens=True)
         print(f"Generated in {gen_s:.1f}s: {text!r}")
     except Exception:
         print("FAIL (generate):")
