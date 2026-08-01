@@ -19,6 +19,7 @@ env/
 .env
 .env.*
 *.key
+.runpod_env
 
 # Model weights, checkpoints, caches
 *.pt
