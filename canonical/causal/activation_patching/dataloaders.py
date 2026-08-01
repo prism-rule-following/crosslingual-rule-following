@@ -52,7 +52,10 @@ def build_clean_corrupted_dataloader(csv_path: str, batch_size: int = 32) -> Dat
 # about as content-neutral as naturally-occurring English sentences get.
 NEUTRAL_DATASET_NAME = "community-datasets/generics_kb"
 NEUTRAL_DATASET_CONFIG = "generics_kb_simplewiki"
-NEUTRAL_TEXT_COLUMN = "generic_sentence"
+# Confirmed against the real schema (this config's text column is 'sentence';
+# other GenericsKB configs like generics_kb/generics_kb_best use
+# 'generic_sentence' instead -- the two aren't interchangeable).
+NEUTRAL_TEXT_COLUMN = "sentence"
 
 
 class NeutralSentenceDataset(Dataset):
