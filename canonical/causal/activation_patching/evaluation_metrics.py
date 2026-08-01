@@ -1,11 +1,15 @@
 """Metrics to pass to the EAP `evaluate_graph` function."""
 
-from typing import Dict, Union
+from typing import Callable, Dict, Optional, Union
 
 import torch
 
+# The metric protocol evaluate_graph calls: metric(logits, clean_logits, input_lengths, label).
+# clean_logits is None whenever evaluate_graph/evaluate_baseline run with skip_clean=True.
+MetricFn = Callable[[torch.Tensor, Optional[torch.Tensor], torch.Tensor, torch.Tensor], torch.Tensor]
 
-def get_logit_positions(logits: torch.Tensor, input_length: torch.Tensor):
+
+def get_logit_positions(logits: torch.Tensor, input_length: torch.Tensor) -> torch.Tensor:
     """Helper function to get logit positions."""
     batch_size = logits.size(0)
     index = torch.arange(batch_size, device=logits.device)
@@ -16,12 +20,12 @@ def get_logit_positions(logits: torch.Tensor, input_length: torch.Tensor):
 
 def logit_difference(
     logits: torch.Tensor,
-    clean_logits: torch.Tensor,
+    clean_logits: Optional[torch.Tensor],
     input_length: torch.Tensor,
     labels: torch.Tensor,
-    mean=True,
-    loss=True,
-):
+    mean: bool = True,
+    loss: bool = True,
+) -> torch.Tensor:
     """Computes the logit difference between the clean and corrupted logits."""
     logits = get_logit_positions(logits=logits, input_length=input_length)
     last_token_logits = torch.gather(logits, -1, labels.to(logits.device))
@@ -33,15 +37,25 @@ def logit_difference(
     return results
 
 
+logit_diff = logit_difference
+
+
 # Wrapper to adjust to the EAP `evaluate_graph` function signature
-def make_adherence_metric(checker, tokenizer, mean=True):
+def make_adherence_metric(
+    checker: Callable[[str], float], tokenizer, mean: bool = True
+) -> MetricFn:
     """Computes the adherence metric.
     check: function that checks if the output adheres to the rule (returns 1.0 or 0.0)
     tokenizer: tokenizer to decode the output
     mean: whether to return the mean or the individual scores
     """
 
-    def adherence(logits, clean_logits, input_lengths, label):
+    def adherence(
+        logits: torch.Tensor,
+        clean_logits: Optional[torch.Tensor],
+        input_lengths: torch.Tensor,
+        label: torch.Tensor,
+    ) -> torch.Tensor:
         # TODO: adjust for the token span as well
         preds = logits.argmax(-1)
         # slicing the *generated* span (after the prompt)
@@ -59,9 +73,14 @@ def make_adherence_metric(checker, tokenizer, mean=True):
 def make_internal_state_metric(
     internal_cache: Union[Dict[str, torch.Tensor], torch.Tensor],
     target_internal_cache: Union[Dict[str, torch.Tensor], torch.Tensor],
-    mean=True,
-):
-    def cosine_similarity(logits, clean_logits, input_lengths, label):
+    mean: bool = True,
+) -> MetricFn:
+    def cosine_similarity(
+        logits: torch.Tensor,
+        clean_logits: Optional[torch.Tensor],
+        input_lengths: torch.Tensor,
+        label: torch.Tensor,
+    ) -> torch.Tensor:
         # TODO: compare internal states of the model and the target internal states
         pass
 

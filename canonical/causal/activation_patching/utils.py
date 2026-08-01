@@ -1,11 +1,97 @@
 """Utility function for activation patching on the EAP circuit."""
 
-from typing import Any, Dict
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Tuple,
+    Union,
+    cast,
+)
 import torch
 
-def build_chat_tokenizer(model, system_field: str = "system_rule",
-                         user_field: str = "user_query",
-                         add_generation_prompt: bool = True):
+from canonical.causal.activation_patching.evaluation_metrics import (
+    MetricFn,
+    logit_diff,
+    make_adherence_metric,
+    make_internal_state_metric,
+)
+
+if TYPE_CHECKING:
+    from transformer_lens import HookedTransformer
+
+InterventionType = Literal["mean", "patching", "zero"]
+VALID_INTERVENTIONS: Tuple[InterventionType, ...] = ("mean", "patching", "zero")
+
+# name -> ready-to-use metric ("logit_diff") or factory that builds one
+# ("adherence" needs checker/tokenizer, "cosine" needs the internal-state caches)
+METRIC_REGISTRY: Dict[str, Union[MetricFn, Callable[..., MetricFn]]] = {
+    "logit_diff": logit_diff,
+    "adherence": make_adherence_metric,
+    "cosine": make_internal_state_metric,
+}
+
+
+def resolve_metrics(metric_names: List[str], **metric_kwargs: Any) -> List[MetricFn]:
+    """Translate metric name strings into the List[Callable] evaluate_graph expects.
+
+    'logit_diff' is used as-is. 'adherence' is built via
+    make_adherence_metric(checker, tokenizer) using the `checker`/`tokenizer` kwargs.
+    'cosine' is built via make_internal_state_metric(internal_cache, target_internal_cache)
+    using the `internal_cache`/`target_internal_cache` kwargs.
+    """
+    resolved: List[MetricFn] = []
+    for name in metric_names:
+        if name not in METRIC_REGISTRY:
+            raise ValueError(
+                f"Unknown metric {name!r}, must be one of {list(METRIC_REGISTRY)}"
+            )
+        factory_or_fn = METRIC_REGISTRY[name]
+        if name == "adherence":
+            resolved.append(
+                factory_or_fn(metric_kwargs["checker"], metric_kwargs["tokenizer"])
+            )
+        elif name == "cosine":
+            resolved.append(
+                factory_or_fn(
+                    metric_kwargs["internal_cache"],
+                    metric_kwargs["target_internal_cache"],
+                )
+            )
+        else:
+            resolved.append(factory_or_fn)
+    return resolved
+
+
+def validate_intervention(intervention: str) -> InterventionType:
+    """Validate that `intervention` is one of the types evaluate_graph supports."""
+    if intervention not in VALID_INTERVENTIONS:
+        raise ValueError(
+            f"intervention must be one of {VALID_INTERVENTIONS}, got {intervention!r}"
+        )
+    return cast(InterventionType, intervention)
+
+
+def to_serialisable(obj: Any) -> Any:
+    """Recursively convert tensors and tuple keys into JSON-safe structures."""
+    if isinstance(obj, torch.Tensor):
+        return obj.tolist()
+    if isinstance(obj, dict):
+        return {str(key): to_serialisable(value) for key, value in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [to_serialisable(value) for value in obj]
+    return obj
+
+
+def build_chat_tokenizer(
+    model: "HookedTransformer",
+    system_field: str = "system_rule",
+    user_field: str = "user_query",
+    add_generation_prompt: bool = True,
+) -> Callable[[Dict[str, Any]], torch.Tensor]:
     """Builds a chat tokeniser with system_prompt and user_prompt."""
     tok = model.tokenizer
 
@@ -27,11 +113,13 @@ def build_chat_tokenizer(model, system_field: str = "system_rule",
     return tokenize_fn
 
 
-def build_generator(max_new_tokens: int = 64,
-                    temperature: float = 0.0,
-                    stop_at_eos: bool = True):
+def build_generator(
+    max_new_tokens: int = 64,
+    temperature: float = 0.0,
+    stop_at_eos: bool = True,
+) -> Callable[["HookedTransformer", torch.Tensor], str]:
     """Build a `generate_fn(model, tokens) -> str` for the verification runs."""
-    def generate_fn(model, tokens: torch.Tensor) -> str:
+    def generate_fn(model: "HookedTransformer", tokens: torch.Tensor) -> str:
         n_prompt = tokens.shape[-1]
 
         out = model.generate(
