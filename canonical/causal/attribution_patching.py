@@ -1,131 +1,17 @@
 from functools import partial
+from typing import List, Optional, Tuple
 
 import pandas as pd
 import torch
-from pydantic import BaseModel, Field
-from typing import List, Optional
-from enum import StrEnum
-from transformer_lens import HookedTransformer
-from eap.graph import Graph
-from eap.evaluate import evaluate_graph, evaluate_baseline
 from eap.attribute import attribute
-from config.dataset_config import (
-    CrossLingualRuleFollowingDataset,
-    DatasetConfig,
-    DataCategories,
-    DatasetLanguage,
-)
+from eap.evaluate import evaluate_baseline, evaluate_graph
+from eap.graph import Graph
+from kneed import KneeLocator, find_shape
+from tqdm import tqdm
+from transformer_lens import HookedTransformer
 
-
-class EAPContinuationMode(StrEnum):
-    normal = "normal"  # start_with, ack_invert, bold_html, language, single_word
-    teacher_forced = "teacher_forced"  # banned_word, include_word, word_count
-
-
-class EAPMetrics(StrEnum):
-    logit_diff = "logit_diff"
-
-
-class EAPMethods(StrEnum):
-    EAP = "EAP"
-    EAP_IG_inputs = "EAP-IG-inputs"
-    EAP_IG_activations = "EAP-IG-activations"
-    clean_corrupted = "clean-corrupted"
-
-
-class EAPDatasetConfig(DatasetConfig):
-    category: List[DataCategories] = Field(
-        ...,
-        min_length=1,
-        max_length=1,
-        description="exactly one category to attribute over",
-    )
-
-    language: List[DatasetLanguage] = Field(
-        ...,
-        min_length=1,
-        max_length=1,
-        description="language of the rows this config attributes over",
-    )
-
-
-class EAPConfig(BaseModel):
-    mode: EAPContinuationMode = Field(
-        default=EAPContinuationMode.normal,
-        description=(
-            "how the metric reads model output: 'normal' scores the first "
-            "response token (start_with, ack_invert, bold_html, language, "
-            "single_word); 'teacher_forced' scores a forced multi-token "
-            "response (banned_word, include_word, word_count)"
-        ),
-    )
-    model_id: str = Field(
-        ..., description="HuggingFace model id of the model to attribute"
-    )
-    dataset_config: EAPDatasetConfig = Field(
-        ..., description="dataset config, restricted to a single category per run"
-    )
-    batch_size: int = Field(
-        default=10, description="number of examples per dataloader batch"
-    )
-    metrics: EAPMetrics = Field(
-        default=EAPMetrics.logit_diff,
-        description="which metric to attribute/evaluate with respect to",
-    )
-    method: EAPMethods = Field(
-        default=EAPMethods.EAP_IG_activations,
-        description="attribution method to run: EAP, EAP-IG-inputs, EAP-IG-activations, or clean-corrupted",
-    )
-    steps: int = Field(
-        default=10, description="number of integrated-gradients interpolation steps"
-    )
-    n_edges: int = Field(
-        default=20, description="number of top edges to keep via apply_greedy"
-    )
-
-    @property
-    def image_file_name(self):
-        model_id = self.model_id.split("/")[1]
-        return f"{model_id}_{self.dataset_config.language[0].value}_{self.method}_{self.dataset_config.category[0].value}.png"
-
-
-class EAPNodes(BaseModel):
-    name: str = Field(..., description="node name, e.g. 'input', 'm11', 'a0.h11'")
-    score: Optional[float] = Field(
-        default=None,
-        description="node's attribution score, if node-level scoring was used",
-    )
-
-
-class EAPEdges(BaseModel):
-    name: str = Field(..., description="edge name, formatted as '[parent]->[child]'")
-    score: Optional[float] = Field(
-        default=None, description="edge's attribution score from the attribution method"
-    )
-
-
-class EAPResults(BaseModel):
-    nodes: List[EAPNodes] = Field(
-        default_factory=list, description="nodes included in the pruned circuit"
-    )
-    edges: List[EAPEdges] = Field(
-        default_factory=list, description="edges included in the pruned circuit"
-    )
-    metadata: Optional[dict] = Field(
-        default_factory=dict,
-        description="run metadata: model cfg plus faithfulness numbers (baseline, circuit_performance)",
-    )
-    baseline: float = Field(
-        default=0, description="metric on the full, unablated model"
-    )
-    corrupted_baseline: float = Field(
-        default=0,
-        description="metric on the model with everything corrupted (the floor reference)",
-    )
-    circuit_faithfulness: float = Field(
-        default=0,
-        description="metric on the pruned circuit alone, everything outside it ablated",
-    )
+from causal.model import EAPConfig, EAPEdges, EAPNodes, EAPResult, EAPResults
+from config.dataset_config import CrossLingualRuleFollowingDataset
 
 
 def collate_EAP(batch: List[dict]):
@@ -154,9 +40,7 @@ def collate_EAP(batch: List[dict]):
 def get_logit_positions(logits: torch.Tensor, input_length: torch.Tensor):
     batch_size = logits.size(0)
     index = torch.arange(batch_size, device=logits.device)
-
-    logits = logits[index, input_length - 1]
-    return logits
+    return logits[index, input_length - 1]
 
 
 def logit_difference(
@@ -177,45 +61,168 @@ def logit_difference(
     return results
 
 
-def graph_to_response(
-    g: Graph,
-    baseline: float,
-    corrupted_baseline: float,
-    circuit_faithfulness: float,
-    metadata: Optional[dict] = None,
-) -> EAPResults:
+def graph_to_eap_result(
+    graph: Graph, circuit_performance: float, circuit_faithfulness: float
+) -> EAPResult:
     nodes = [
         EAPNodes(
             name=name,
-            **({"score": float(node.score)} if g.nodes_scores is not None else {}),
+            **({"score": float(node.score)} if graph.nodes_scores is not None else {}),
         )
-        for name, node in g.nodes.items()
+        for name, node in graph.nodes.items()
         if node.in_graph
     ]
     edges = [
         EAPEdges(name=name, score=edge.score.item())
-        for name, edge in g.edges.items()
+        for name, edge in graph.edges.items()
         if edge.in_graph
     ]
-    return EAPResults(
+    return EAPResult(
+        n_nodes=len(nodes),
+        n_edges=len(edges),
         nodes=nodes,
         edges=edges,
-        baseline=baseline,
-        corrupted_baseline=corrupted_baseline,
+        circuit_performance=circuit_performance,
         circuit_faithfulness=circuit_faithfulness,
     )
 
 
-def run(hyperparameter: str) -> EAPResults:
+def find_knee(n_edges: List[int], circuit_faithfulness: List[float]) -> KneeLocator:
+    direction, curve = find_shape(n_edges, circuit_faithfulness)
+    return KneeLocator(n_edges, circuit_faithfulness, curve=curve, direction=direction)
+
+
+def _load_model(config: EAPConfig, device: torch.device) -> HookedTransformer:
+    model = HookedTransformer.from_pretrained(
+        config.model_id,
+        center_writing_weights=False,
+        center_unembed=False,
+        fold_ln=False,
+        device=device,
+        dtype=torch.float16,
+    )
+    model.cfg.use_split_qkv_input = True
+    model.cfg.use_attn_result = True
+    model.cfg.use_hook_mlp_in = True
+    model.cfg.ungroup_grouped_query_attention = True
+    return model
+
+
+def _compute_baselines(model: HookedTransformer, dataset_loader) -> Tuple[float, float]:
+    baseline = (
+        evaluate_baseline(
+            model, dataset_loader, partial(logit_difference, loss=False, mean=False)
+        )
+        .mean()
+        .item()
+    )
+    corrupted_baseline = (
+        evaluate_baseline(
+            model,
+            dataset_loader,
+            partial(logit_difference, mean=False, loss=False),
+            run_corrupted=True,
+        )
+        .mean()
+        .item()
+    )
+    return baseline, corrupted_baseline
+
+
+def _sweep_n_edges(
+    config: EAPConfig,
+    model: HookedTransformer,
+    graph: Graph,
+    dataset_loader,
+    baseline: float,
+    corrupted_baseline: float,
+) -> List[EAPResult]:
+    """Sweep a range of n_edges, evaluating faithfulness at each point
+    (Pareto-curve pattern, see hannamw/EAP-IG's own pareto.py)."""
+    start = config.n_edge_start
+    end = int(len(graph.edges) * config.n_edge_end_proportion)
+    step = max(1, (end - start) // config.n_edge_steps)
+    n_edges_candidates = list(range(start, end + 1, step))
+
+    results_sweep = []
+    for n_edges in tqdm(n_edges_candidates):
+        graph.apply_greedy(n_edges=n_edges, absolute=True)
+        circuit_performance = (
+            evaluate_graph(
+                model,
+                graph,
+                dataset_loader,
+                partial(logit_difference, loss=False, mean=False),
+            )
+            .mean()
+            .item()
+        )
+        circuit_faithfulness = (circuit_performance - corrupted_baseline) / (
+            baseline - corrupted_baseline
+        )
+        results_sweep.append(
+            graph_to_eap_result(
+                graph,
+                circuit_performance=circuit_performance,
+                circuit_faithfulness=circuit_faithfulness,
+            )
+        )
+    return results_sweep
+
+
+def _select_best_circuit(
+    results_sweep: List[EAPResult],
+) -> Tuple[EAPResult, KneeLocator]:
+    """Pick the elbow of the n_edges-vs-faithfulness curve; fall back to the
+    highest-faithfulness sweep point if no exact elbow match is found."""
+    n_edges = [r.n_edges for r in results_sweep]
+    circuit_faithfulness = [r.circuit_faithfulness for r in results_sweep]
+    elbow = find_knee(n_edges=n_edges, circuit_faithfulness=circuit_faithfulness)
+
+    elbow_matches = [r for r in results_sweep if r.n_edges == elbow.elbow]
+    best_circuit = (
+        elbow_matches[0]
+        if elbow_matches
+        else max(results_sweep, key=lambda r: r.circuit_faithfulness)
+    )
+    return best_circuit, elbow
+
+
+def _save_circuit_image(graph: Graph, config: EAPConfig) -> Optional[str]:
+    try:
+        import pygraphviz  # noqa: F401
+    except ImportError:
+        print("No pygraphviz installed; skipping circuit image.")
+        return None
+
+    circuit_image_path = config.image_file_name("circuit")
+    graph.to_image(circuit_image_path)
+    return circuit_image_path
+
+
+def _save_knee_plot(elbow: KneeLocator, config: EAPConfig) -> Optional[str]:
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("No matplotlib installed; skipping knee plot.")
+        return None
+
+    knee_image_path = config.image_file_name("knee")
+    elbow.plot_knee(xlabel="n_edges", ylabel="circuit_faithfulness")
+    plt.savefig(knee_image_path, bbox_inches="tight")
+    plt.close()
+    return knee_image_path
+
+
+def run(config: EAPConfig) -> EAPResults:
     global_device = (
         torch.get_default_device() if hasattr(torch, "get_default_device") else None
     )
     model = None
-    g = None
+    graph = None
     device = None
 
     try:
-        config = EAPConfig(**hyperparameter)
         dataset = CrossLingualRuleFollowingDataset(config.dataset_config)
         dataset_loader = dataset.to_dataloader(
             batch_size=config.batch_size, collate_fn=collate_EAP
@@ -224,85 +231,46 @@ def run(hyperparameter: str) -> EAPResults:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         torch.set_default_device(device)
 
-        model = HookedTransformer.from_pretrained(
-            config.model_id,
-            center_writing_weights=False,
-            center_unembed=False,
-            fold_ln=False,
-            device=device,
-            dtype=torch.float16,
-        )
+        model = _load_model(config, device)
 
-        model.cfg.use_split_qkv_input = True
-        model.cfg.use_attn_result = True
-        model.cfg.use_hook_mlp_in = True
-        model.cfg.ungroup_grouped_query_attention = True
-
-        g = Graph.from_model(model)
+        graph = Graph.from_model(model)
         attribute(
             model,
-            g,
+            graph,
             dataset_loader,
             partial(logit_difference, loss=True, mean=True),
             method=config.method.value,
-            ig_steps=config.steps,
+            ig_steps=config.ig_steps,
         )
 
-        g.apply_greedy(n_edges=config.n_edges, absolute=True)
-        baseline = (
-            evaluate_baseline(
-                model, dataset_loader, partial(logit_difference, loss=False, mean=False)
-            )
-            .mean()
-            .item()
+        baseline, corrupted_baseline = _compute_baselines(model, dataset_loader)
+        results_sweep = _sweep_n_edges(
+            config, model, graph, dataset_loader, baseline, corrupted_baseline
         )
+        best_circuit, elbow = _select_best_circuit(results_sweep)
 
-        corrupted_baseline = (
-            evaluate_baseline(
-                model,
-                dataset_loader,
-                partial(logit_difference, mean=False, loss=False),
-                run_corrupted=True,
-            )
-            .mean()
-            .item()
-        )
+        # Restore graph to the winning (elbow-selected) circuit before rendering -
+        # after the sweep, graph still reflects whichever n_edges was tested last.
+        graph.apply_greedy(n_edges=best_circuit.n_edges, absolute=True)
+        circuit_image_path = _save_circuit_image(graph, config)
+        knee_image_path = _save_knee_plot(elbow, config)
 
-        circuit_performance = (
-            evaluate_graph(
-                model,
-                g,
-                dataset_loader,
-                partial(logit_difference, loss=False, mean=False),
-            )
-            .mean()
-            .item()
-        )
-
-        try:
-            import pygraphviz
-
-            gx = g.to_image(config.image_file_name)
-            # TODO: Upload file to huggingface
-        except ImportError:
-            print("No pygraphviz installed; skipping this part")
-
-        print(g.count_included_nodes(), g.count_included_edges())
-
-        return graph_to_response(
-            g,
+        return EAPResults(
             baseline=baseline,
             corrupted_baseline=corrupted_baseline,
-            circuit_faithfulness=circuit_performance,
             metadata={
                 "config": config.model_dump_json(exclude_none=True),
             },
+            results=results_sweep,
+            best=best_circuit,
+            circuit_image_path=circuit_image_path,
+            knee_image_path=knee_image_path,
         )
     finally:
         # Always runs, whether `run` returned normally or raised partway through.
         del model
-        del g
+        del graph
         if device is not None and device.type == "cuda":
             torch.cuda.empty_cache()
-        if device is not None:
+        if global_device is not None:
             torch.set_default_device(global_device)
