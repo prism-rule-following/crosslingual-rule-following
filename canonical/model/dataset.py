@@ -7,11 +7,15 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 import pandas as pd
 import torch
 from datasets import load_dataset
+from huggingface_hub import HfApi, hf_hub_download
 from pydantic import BaseModel, Field, ValidationError, field_validator
 from torch.utils.data import DataLoader, Dataset
 
 import json
+import tempfile
 import urllib.request
+
+import os
 
 
 # --------------------------------------------------------------------------- #
@@ -194,12 +198,55 @@ class DatasetConfig(BaseModel):
 # --------------------------------------------------------------------------- #
 # Loading
 # --------------------------------------------------------------------------- #
-def load_from_hf(url: str) -> Any:
-    try:
-        return load_dataset(url)
-    except Exception:
-        print(f"An error occurred. Unable to load {url!r} from HuggingFace.")
-        raise
+
+STATUS_LABELS = {
+    "active_cancelled": ("active", "cancelled"),
+    "on_off": ("on", "off"),
+    "true_false": ("true", "false"),
+    "valid_invalid": ("valid", "invalid"),
+}
+
+
+def split_constrast_pairs(df: pd.DataFrame) -> pd.DataFrame:
+    """Split each row with a recognized status-word pair_type into a "clean"
+    (rule-active) row and a "revoked" (rule-cancelled) row sharing a unified
+    system/rule_status schema. Rows without one of the STATUS_LABELS pair
+    types (e.g. banned_word, which has no single-token contrast) are dropped:
+    this function's job is specifically to materialize contrastive pairs.
+    """
+    rows = []
+    for _, row in df.iterrows():
+        base = row.to_dict()
+        pair_type = row["pair_type"]
+        if pair_type not in STATUS_LABELS:
+            continue
+        clean_label, corrupt_label = STATUS_LABELS[pair_type]
+
+        constant_fields = {
+            k: v
+            for k, v in base.items()
+            if k not in ("system_rule", "system_non_rule", "rule_text", "non_rule_text")
+        }
+
+        rows.append(
+            {
+                **constant_fields,
+                "id": f"{base['id']}_clean",
+                "system": base["system_rule"],
+                "rule_status": clean_label,
+            }
+        )
+
+        rows.append(
+            {
+                **constant_fields,
+                "id": f"{base['id']}_revoked",
+                "system": base["system_non_rule"],
+                "rule_status": corrupt_label,
+            }
+        )
+
+    return pd.DataFrame(rows).reset_index(drop=True)
 
 
 def load_from_github(url: str) -> Any:
@@ -256,8 +303,6 @@ def _validate_rows(df: pd.DataFrame, strict: bool) -> pd.DataFrame:
     kept: List[Dict[str, Any]] = []
     errors: List[Tuple[str, ValidationError]] = []
     for i, row in enumerate(df.to_dict(orient="records")):
-        # pandas fills missing keys with NaN (a float); convert to None so
-        # Optional[...] fields validate instead of failing int/str coercion.
         row = {
             k: (None if (isinstance(v, float) and pd.isna(v)) else v)
             for k, v in row.items()
@@ -278,7 +323,7 @@ def _apply_filters(df: pd.DataFrame, config: DatasetConfig) -> pd.DataFrame:
     def keep(col: str, allowed_values: List[str]) -> None:
         nonlocal df
         if col in df.columns:
-            df = df[df[col].isin(allowed_values)]
+            df = df[df[col].isin(allowed_values) | df[col].isna()]
 
     keep("category", [c.value for c in config.category])
     keep("language", [code.value for code in config.languages])
@@ -292,7 +337,7 @@ def _apply_filters(df: pd.DataFrame, config: DatasetConfig) -> pd.DataFrame:
 def dataset_generator(config: DatasetConfig) -> pd.DataFrame:
     """Load -> normalize -> (validate) -> filter. Returns a DataFrame."""
     raw = (
-        load_from_hf(config.url)
+        HFDataHelper.load_source_dataset(config.url)
         if config.source == DatasetSource.hf
         else load_from_github(config.url)
     )
@@ -300,7 +345,16 @@ def dataset_generator(config: DatasetConfig) -> pd.DataFrame:
     if config.validate_rows:
         df = _validate_rows(df, config.strict)
     df = _apply_filters(df, config)
-    return df
+    return split_constrast_pairs(df)
+
+
+def collate_behavioral(
+    batch: List[Dict[str, Any]],
+) -> Tuple[List[str], List[[str]], List[str]]:
+    system_rule = [r["system_rule"] for r in batch]
+    user_query = [r["user_query"] for r in batch]
+    ids = [r["id"] for r in batch]
+    return system_rule, user_query, ids
 
 
 # --------------------------------------------------------------------------- #
@@ -310,6 +364,18 @@ class CrossLingualRuleFollowingDataset(Dataset):
     def __init__(self, config: DatasetConfig) -> None:
         self.config = config
         self.df = dataset_generator(config)
+
+    @classmethod
+    def from_dataframe(cls, df: pd.DataFrame) -> "CrossLingualRuleFollowingDataset":
+        """Wrap an already-loaded DataFrame directly, skipping fetch/validate/filter.
+
+        For data that's already in the right shape - e.g. model outputs pulled
+        back from HFDataHelper.fetch() - rather than the raw source dataset.
+        """
+        obj = cls.__new__(cls)
+        obj.config = None
+        obj.df = df.reset_index(drop=True)
+        return obj
 
     def __len__(self) -> int:
         return len(self.df)
@@ -373,3 +439,70 @@ class CrossLingualRuleFollowingDataset(Dataset):
         return DataLoader(
             self, batch_size=batch_size, collate_fn=collate_fn, shuffle=shuffle
         )
+
+
+class HFDataHelper:
+    def __init__(self, repo_id: str) -> None:
+        self.repo_id = repo_id
+        self.token = os.environ.get("HF_TOKEN")
+        self._api = HfApi()
+
+    @staticmethod
+    def load_source_dataset(repo_id: str) -> Any:
+        try:
+            return load_dataset(repo_id)
+        except Exception:
+            print(f"An error occurred. Unable to load {repo_id!r} from HuggingFace.")
+            raise
+
+    def _ensure_repo(self) -> None:
+        self._api.create_repo(
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            token=self.token,
+            exist_ok=True,
+        )
+
+    def _model_slug(self, model_id: str) -> str:
+        return model_id.replace("/", "__")
+
+    def _hf_path(self, model_id: str, lang_code: DatasetLanguageCode) -> str:
+        return f"{self._model_slug(model_id)}/{lang_code.value}.parquet"
+
+    def upload(
+        self, df: pd.DataFrame, model_id: str, lang_code: DatasetLanguageCode
+    ) -> None:
+        self._ensure_repo()
+        hf_path = self._hf_path(model_id, lang_code)
+        with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as tmp:
+            df.to_parquet(tmp.name, index=False)
+            self._api.upload_file(
+                path_or_fileobj=tmp.name,
+                path_in_repo=hf_path,
+                repo_id=self.repo_id,
+                repo_type="dataset",
+                token=self.token,
+            )
+        os.unlink(tmp.name)
+
+    def exists(self, model_id: str, lang_code: DatasetLanguageCode) -> bool:
+        try:
+            info = self._api.get_paths_info(
+                repo_id=self.repo_id,
+                repo_type="dataset",
+                paths=[self._hf_path(model_id, lang_code)],
+                token=self.token,
+            )
+            return len(info) > 0
+        except Exception:
+            return False
+
+    def fetch(self, model_id: str, lang_code: DatasetLanguageCode) -> pd.DataFrame:
+        """Download a previously-uploaded output file back into a DataFrame."""
+        local_path = hf_hub_download(
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            filename=self._hf_path(model_id, lang_code),
+            token=self.token,
+        )
+        return pd.read_parquet(local_path)

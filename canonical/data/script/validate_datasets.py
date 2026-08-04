@@ -8,16 +8,6 @@ Runs against a LOCAL clone where all 13 language files are
 intact -- NOT against GitHub URLs (several of which are broken, and the files
 are too large to fetch whole anyway).
 
-Why this exists
----------------
-The English base (`full_dataset.json`) was confirmed CLEAN by direct inspection:
-every row carries a `pair_type`, and `system_rule` / `system_non_rule` differ by
-a `Rule status:` suffix (active/cancelled, on/off, true/false, valid/invalid,
-enabled/disabled). So any `system_rule == system_non_rule` collapse in a
-translated file is TRANSLATION-INTRODUCED, not a source defect. This script is
-built to isolate exactly that: it diffs every non-English file against the English
-base row-by-row (joined on `id`) so a defect can be attributed to generation vs.
-translation rather than just counted.
 
 What it checks (the seven issues, each emitted as its own issue-group)
 ---------------------------------------------------------------------

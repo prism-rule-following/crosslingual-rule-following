@@ -1,0 +1,479 @@
+"""Unit tests for canonical/evaluation/inference.py.
+
+Uses a real tiny model (roneneldan/TinyStories-1M) for ModelRunner-level
+behavior - tokenization, chat templating, generation, and activation
+extraction all depend on real tokenizer/model mechanics that a mock would
+just reassert rather than verify. run() orchestration is tested with fully
+mocked ModelRunner/HFDataHelper/dataset collaborators, since that logic is
+pure control flow and doesn't need real model weights.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+_SCRIPT_DIR = Path(__file__).resolve().parent
+_CANONICAL_DIR = _SCRIPT_DIR.parent
+for _p in (str(_CANONICAL_DIR), str(_SCRIPT_DIR)):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+import pandas as pd
+import pytest
+import torch
+
+import inference as inf
+from model.dataset import DatasetConfig, DatasetLanguageCode, DatasetSource
+
+TINY_MODEL = "roneneldan/TinyStories-1M"
+
+
+def make_row(**overrides) -> dict:
+    """Shaped like dataset_generator's real output: the "system" column
+    (not "system_rule") is what split_constrast_pairs actually produces.
+    """
+    row = {
+        "id": "r1",
+        "category": "active_cancelled",
+        "topic": "legal",
+        "grammar_type": "imperative",
+        "language": "en",
+        "system": "Follow the rule.",
+        "user_query": "What do I do?",
+        "checker": None,
+        "pair_type": "active_cancelled",
+    }
+    row.update(overrides)
+    return row
+
+
+@pytest.fixture
+def tiny_dataset() -> pd.DataFrame:
+    return pd.DataFrame([make_row(id="r1"), make_row(id="r2"), make_row(id="r3")])
+
+
+@pytest.fixture
+def base_config(tmp_path) -> inf.ModelGenerationConfig:
+    return inf.ModelGenerationConfig(
+        model_ids=[TINY_MODEL],
+        dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
+        language_code=DatasetLanguageCode.en,
+        max_new_tokens=4,
+        generation_batch_size=4,
+        activation_batch_size=4,
+        checkpoint_dir=str(tmp_path),
+    )
+
+
+_MINIMAL_CHAT_TEMPLATE = (
+    "{% for message in messages %}{{ message['role'] }}: {{ message['content'] }}\n"
+    "{% endfor %}{% if add_generation_prompt %}assistant:\n{% endif %}"
+)
+
+
+@pytest.fixture(scope="module")
+def loaded_runner(tmp_path_factory) -> "inf.ModelRunner":
+    config = inf.ModelGenerationConfig(
+        model_ids=[TINY_MODEL],
+        dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
+        language_code=DatasetLanguageCode.en,
+        max_new_tokens=4,
+        generation_batch_size=4,
+        activation_batch_size=4,
+        checkpoint_dir=str(tmp_path_factory.mktemp("checkpoints")),
+    )
+    runner = inf.ModelRunner(config)
+    runner.load(model_id=TINY_MODEL)
+    runner.tokenizer.chat_template = _MINIMAL_CHAT_TEMPLATE
+    runner.supports_system_role = runner._check_system_role_support()
+    return runner
+
+
+@pytest.fixture(autouse=True)
+def _isolate_checkpoint_dir(request, tmp_path):
+    # loaded_runner is module-scoped (real model load is expensive) but
+    # checkpointing writes files keyed by model_id/language - give every test
+    # a fresh checkpoint_dir so one test's checkpoint can't leak into another's.
+    if "loaded_runner" in request.fixturenames:
+        request.getfixturevalue("loaded_runner").config.checkpoint_dir = str(tmp_path)
+
+
+# --------------------------------------------------------------------------- #
+# ModelResponse / ModelGenerationConfig schema
+# --------------------------------------------------------------------------- #
+def test_model_response_valid_construction():
+    resp = inf.ModelResponse(
+        id="a",
+        category="active_cancelled",
+        topic="legal",
+        grammar_type="imperative",
+        language="en",
+        system="sys prompt",
+        user_query="q",
+        response="r",
+    )
+    assert resp.sample_idx == 0
+    assert resp.checker is None
+    assert resp.pair_type is None
+
+
+def test_model_response_missing_required_field_raises():
+    with pytest.raises(Exception):
+        inf.ModelResponse(id="a", topic="legal")
+
+
+def test_model_response_system_is_required():
+    with pytest.raises(Exception):
+        inf.ModelResponse(
+            id="a",
+            category="active_cancelled",
+            topic="legal",
+            grammar_type="imperative",
+            language="en",
+            user_query="q",
+            response="r",
+        )
+
+
+def test_model_generation_config_defaults():
+    config = inf.ModelGenerationConfig(
+        model_ids=["m"],
+        dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
+        language_code=DatasetLanguageCode.en,
+    )
+    assert config.n_samples == 1
+    assert config.run_inference_response is True
+    assert config.run_inference_activations is False
+    assert config.hf_result_repo is None
+    assert config.hf_activations_repo is None
+
+
+def test_model_generation_config_device_property(monkeypatch, base_config):
+    monkeypatch.setattr(inf.utils, "get_device", lambda: "mps")
+    assert base_config.device == "mps"
+
+
+# --------------------------------------------------------------------------- #
+# ModelRunner.load (real tiny model)
+# --------------------------------------------------------------------------- #
+def test_load_sets_padding_side_and_pad_token(loaded_runner):
+    assert loaded_runner.tokenizer.padding_side == "left"
+    assert loaded_runner.tokenizer.pad_token is not None
+
+
+def test_load_enables_patching_cfg_flags(loaded_runner):
+    assert loaded_runner.model.cfg.use_attn_result is True
+    assert loaded_runner.model.cfg.use_split_qkv_input is True
+    assert loaded_runner.model.cfg.use_hook_mlp_in is True
+
+
+# --------------------------------------------------------------------------- #
+# get_hook_filter - documents CURRENT hook names (not fixed in this pass)
+# --------------------------------------------------------------------------- #
+def test_get_hook_filter_current_hook_names(loaded_runner):
+    n_layers = loaded_runner.model.cfg.n_layers
+    expected = [
+        f"blocks.{i}.{hook}"
+        for i in range(n_layers)
+        for hook in ["attn.qkv.hook_in", "hook_out"]
+    ] + ["hook_embed"]
+    assert loaded_runner.get_hook_filter() == expected
+
+
+def test_extract_hidden_states_silently_drops_unmatched_hook_names(
+    loaded_runner, tiny_dataset
+):
+    results = loaded_runner.extract_hidden_states(tiny_dataset)
+    assert len(results) == len(tiny_dataset)
+    keys = set(results[0].keys()) - {"id"}
+    assert not any("qkv" in k for k in keys)
+    assert any(k.endswith("hook_out") for k in keys)
+
+
+# --------------------------------------------------------------------------- #
+# format_chat_prompt / _check_system_role_support
+# --------------------------------------------------------------------------- #
+def test_format_chat_prompt_includes_user_text(loaded_runner):
+    prompt = loaded_runner.format_chat_prompt("SYSTEM TEXT", "USER TEXT")
+    assert isinstance(prompt, str)
+    assert "USER TEXT" in prompt
+
+
+def test_format_chat_prompt_folds_system_into_user_when_unsupported(loaded_runner):
+    loaded_runner.supports_system_role = False
+    try:
+        prompt = loaded_runner.format_chat_prompt("SYS TEXT", "USER TEXT")
+        assert "SYS TEXT" in prompt
+        assert "USER TEXT" in prompt
+    finally:
+        loaded_runner.supports_system_role = True
+
+
+def test_check_system_role_support_false_when_template_rejects_system(
+    loaded_runner, monkeypatch
+):
+    def fake_apply(chat, **kwargs):
+        if any(m["role"] == "system" for m in chat):
+            raise ValueError("System role not supported")
+        return "ok"
+
+    monkeypatch.setattr(loaded_runner.tokenizer, "apply_chat_template", fake_apply)
+    assert loaded_runner._check_system_role_support() is False
+
+
+# --------------------------------------------------------------------------- #
+# generate_response
+# --------------------------------------------------------------------------- #
+def test_generate_response_returns_one_row_per_example(loaded_runner, tiny_dataset):
+    results = loaded_runner.generate_response(tiny_dataset)
+    assert len(results) == len(tiny_dataset)
+    for row in results:
+        assert row["sample_idx"] == 0
+        assert isinstance(row["response"], str)
+
+
+def test_generate_response_n_samples_multiplies_output_rows(loaded_runner):
+    dataset = pd.DataFrame([make_row(id="r1")])
+    loaded_runner.config.n_samples = 2
+    try:
+        results = loaded_runner.generate_response(dataset)
+        assert len(results) == 2
+        assert sorted(r["sample_idx"] for r in results) == [0, 1]
+    finally:
+        loaded_runner.config.n_samples = 1
+
+
+# --------------------------------------------------------------------------- #
+# checkpointing (generate_response / extract_hidden_states)
+# --------------------------------------------------------------------------- #
+def test_generate_response_writes_checkpoint_file(loaded_runner, tiny_dataset):
+    loaded_runner.generate_response(tiny_dataset)
+    path = loaded_runner._checkpoint_path("responses")
+    assert path.exists()
+    with open(path) as f:
+        lines = [json.loads(line) for line in f]
+    assert {row["id"] for row in lines} == {"r1", "r2", "r3"}
+
+
+def test_generate_response_resumes_by_skipping_checkpointed_ids(loaded_runner):
+    dataset = pd.DataFrame([make_row(id="r1"), make_row(id="r2")])
+
+    already_done = inf.ModelResponse(
+        **make_row(id="r1"), response="PRE-EXISTING RESPONSE"
+    ).model_dump()
+    loaded_runner._append_checkpoint("responses", [already_done])
+
+    results = loaded_runner.generate_response(dataset)
+
+    assert len(results) == 2
+    by_id = {row["id"]: row for row in results}
+    assert by_id["r1"]["response"] == "PRE-EXISTING RESPONSE"
+    assert by_id["r2"]["response"] != "PRE-EXISTING RESPONSE"
+
+
+def test_extract_hidden_states_writes_checkpoint_file(loaded_runner, tiny_dataset):
+    loaded_runner.extract_hidden_states(tiny_dataset)
+    path = loaded_runner._checkpoint_path("activations")
+    assert path.exists()
+    with open(path) as f:
+        lines = [json.loads(line) for line in f]
+    assert {row["id"] for row in lines} == {"r1", "r2", "r3"}
+
+
+def test_extract_hidden_states_resumes_by_skipping_checkpointed_ids(loaded_runner):
+    dataset = pd.DataFrame([make_row(id="r1"), make_row(id="r2")])
+    loaded_runner._append_checkpoint(
+        "activations", [{"id": "r1", "hook_embed": [0.0, 0.0]}]
+    )
+
+    results = loaded_runner.extract_hidden_states(dataset)
+
+    assert len(results) == 2
+    by_id = {row["id"]: row for row in results}
+    assert by_id["r1"]["hook_embed"] == [0.0, 0.0]
+    assert by_id["r2"]["hook_embed"] != [0.0, 0.0]
+
+
+# --------------------------------------------------------------------------- #
+# run() orchestration - fully mocked, no real model
+# --------------------------------------------------------------------------- #
+class FakeLoadedDataset:
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+
+
+class FakeRunner:
+    """Stands in for ModelRunner: records what it's asked to do."""
+
+    instances = []
+
+    def __init__(self, config):
+        self.config = config
+        self.loaded_with = None
+        self.generate_response_called = False
+        self.extract_hidden_states_called = False
+        FakeRunner.instances.append(self)
+
+    def load(self, model_id):
+        self.loaded_with = model_id
+
+    def generate_response(self, dataset):
+        self.generate_response_called = True
+        return [{"id": "r1", "response": "hi"}]
+
+    def extract_hidden_states(self, dataset):
+        self.extract_hidden_states_called = True
+        return [{"id": "r1", "hook_embed": [0.0]}]
+
+
+class FakeHFDataHelper:
+    """Stands in for HFDataHelper: records upload calls."""
+
+    calls = []
+    exists_return = False
+
+    def __init__(self, repo_id):
+        self.repo_id = repo_id
+
+    def exists(self, model_id, lang_code):
+        return FakeHFDataHelper.exists_return
+
+    def upload(self, df, model_id, lang_code):
+        FakeHFDataHelper.calls.append(
+            {
+                "repo_id": self.repo_id,
+                "model_id": model_id,
+                "lang_code": lang_code,
+                "n_rows": len(df),
+            }
+        )
+
+
+@pytest.fixture(autouse=True)
+def _reset_fakes():
+    FakeRunner.instances.clear()
+    FakeHFDataHelper.calls.clear()
+    FakeHFDataHelper.exists_return = False
+    yield
+    FakeRunner.instances.clear()
+    FakeHFDataHelper.calls.clear()
+    FakeHFDataHelper.exists_return = False
+
+
+def run_config(**overrides) -> inf.ModelGenerationConfig:
+    defaults = dict(
+        model_ids=["fake-model"],
+        dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
+        language_code=DatasetLanguageCode.en,
+        push_to_hf=True,
+        run_inference_response=True,
+        run_inference_activations=False,
+    )
+    defaults.update(overrides)
+    return inf.ModelGenerationConfig(**defaults)
+
+
+def test_run_generates_and_uploads_responses_when_configured(monkeypatch):
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+
+    config = run_config(hf_result_repo="org/results")
+    inf.run(config)
+
+    assert len(FakeRunner.instances) == 1
+    assert FakeRunner.instances[0].loaded_with == "fake-model"
+    assert FakeHFDataHelper.calls == [
+        {
+            "repo_id": "org/results",
+            "model_id": "fake-model",
+            "lang_code": DatasetLanguageCode.en,
+            "n_rows": 1,
+        }
+    ]
+
+
+def test_run_skips_model_already_uploaded(monkeypatch, capsys):
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+    FakeHFDataHelper.exists_return = True
+
+    config = run_config(hf_result_repo="org/results")
+    inf.run(config)
+
+    assert FakeRunner.instances[0].generate_response_called is False
+    assert FakeHFDataHelper.calls == []
+    assert "already uploaded" in capsys.readouterr().out
+
+
+def test_run_skips_response_upload_when_repo_unset(monkeypatch, capsys):
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+
+    config = run_config(hf_result_repo=None)
+    inf.run(config)
+
+    assert FakeHFDataHelper.calls == []
+    assert "Skipping response upload" in capsys.readouterr().out
+
+
+def test_run_runs_activation_pass_when_enabled(monkeypatch):
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+
+    config = run_config(
+        run_inference_response=False,
+        run_inference_activations=True,
+        hf_activations_repo="org/activations",
+    )
+    inf.run(config)
+
+    assert FakeHFDataHelper.calls == [
+        {
+            "repo_id": "org/activations",
+            "model_id": "fake-model",
+            "lang_code": DatasetLanguageCode.en,
+            "n_rows": 1,
+        }
+    ]
+
+
+def test_run_iterates_all_model_ids(monkeypatch):
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+
+    config = run_config(model_ids=["model-a", "model-b"], hf_result_repo="org/results")
+    inf.run(config)
+
+    assert [r.loaded_with for r in FakeRunner.instances] == ["model-a", "model-b"]
+    assert len(FakeHFDataHelper.calls) == 2
+
+
+def test_run_reraises_on_failure(monkeypatch):
+    def boom(cfg):
+        raise RuntimeError("dataset load failed")
+
+    monkeypatch.setattr(inf, "CrossLingualRuleFollowingDataset", boom)
+
+    config = run_config()
+    with pytest.raises(RuntimeError, match="dataset load failed"):
+        inf.run(config)
