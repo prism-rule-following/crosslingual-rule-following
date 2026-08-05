@@ -3,6 +3,7 @@ cross-lingual rule-following dataset for one or more models, optionally
 uploading results (responses, activations) to the Hugging Face Hub.
 """
 
+import argparse
 import json
 import torch
 import pandas as pd
@@ -13,14 +14,17 @@ from transformer_lens.model_bridge import TransformerBridge
 import transformer_lens.utilities as utils
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
-import argparse
-from model.dataset import (
+
+from canonical.model.dataset import (
     CrossLingualRuleFollowingDataset,
     DataCategories,
     DatasetConfig,
     DatasetLanguageCode,
     HFDataHelper,
 )
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class ModelResponse(BaseModel):

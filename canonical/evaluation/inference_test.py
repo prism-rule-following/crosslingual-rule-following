@@ -13,8 +13,8 @@ import sys
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_CANONICAL_DIR = _SCRIPT_DIR.parent
-for _p in (str(_CANONICAL_DIR), str(_SCRIPT_DIR)):
+_REPO_ROOT = _SCRIPT_DIR.parent.parent
+for _p in (str(_REPO_ROOT), str(_SCRIPT_DIR)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -23,7 +23,7 @@ import pytest
 import torch
 
 import inference as inf
-from model.dataset import DatasetConfig, DatasetLanguageCode, DatasetSource
+from canonical.model.dataset import DatasetConfig, DatasetLanguageCode, DatasetSource
 
 TINY_MODEL = "roneneldan/TinyStories-1M"
 
