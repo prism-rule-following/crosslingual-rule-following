@@ -139,13 +139,11 @@ class ModelRunner:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        # bf16 halves weight memory (critical for 8B+ models on a 24GB GPU) but
-        # isn't reliably supported for matmul on CPU, so only force it on CUDA.
         dtype = torch.bfloat16 if self.config.device == "cuda" else torch.float32
         self.model = TransformerBridge.boot_transformers(
             model_id, device=self.config.device, dtype=dtype
         )
-        self.model.enable_compatibility_mode(disable_warnings=True)
+        self.model.enable_compatibility_mode(disable_warnings=True, no_processing=True)
         self.model.original_model.eval()
         # Required for patching hooks (qkv_input) to actually be populated during run_with_cache.
         self.model.cfg.use_attn_result = True
@@ -237,11 +235,6 @@ class ModelRunner:
         completed_ids = {row["id"] for row in results}
         dataset = dataset[~dataset["id"].isin(completed_ids)].reset_index(drop=True)
 
-        # Each row is repeated n_samples times within a batch: do_sample=True
-        # gives every batch slot its own independent draw even for identical
-        # inputs, so this yields n_samples stochastic completions per row in
-        # a single generate() call. Shrink rows-per-batch accordingly so the
-        # actual GPU batch size stays close to generation_batch_size.
         rows_per_batch = max(
             1, self.config.generation_batch_size // self.config.n_samples
         )
