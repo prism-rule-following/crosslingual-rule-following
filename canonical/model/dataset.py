@@ -304,15 +304,24 @@ def _to_dataframe(raw: Any, split: Optional[str]) -> pd.DataFrame:
     raise TypeError(f"Unsupported dataset object of type {type(raw)!r}")
 
 
+def nan_to_none(row: Dict[str, Any]) -> Dict[str, Any]:
+    """Pandas fills missing values with NaN (a float), which fails validation
+    for Optional[...] fields expecting None. Normalize row dicts pulled from
+    a DataFrame (e.g. via to_dict(orient="records")) before passing them to
+    any pydantic model - RuleRow here, but also e.g. ModelResponse elsewhere.
+    """
+    return {
+        k: (None if (isinstance(v, float) and pd.isna(v)) else v)
+        for k, v in row.items()
+    }
+
+
 def _validate_rows(df: pd.DataFrame, strict: bool) -> pd.DataFrame:
     """Validate each row against RuleRow. Drop or raise on failure."""
     kept: List[Dict[str, Any]] = []
     errors: List[Tuple[str, ValidationError]] = []
     for i, row in enumerate(df.to_dict(orient="records")):
-        row = {
-            k: (None if (isinstance(v, float) and pd.isna(v)) else v)
-            for k, v in row.items()
-        }
+        row = nan_to_none(row)
         try:
             RuleRow(**row)
             kept.append(row)

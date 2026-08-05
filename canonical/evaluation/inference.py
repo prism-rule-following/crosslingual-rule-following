@@ -21,6 +21,7 @@ from canonical.model.dataset import (
     DatasetConfig,
     DatasetLanguageCode,
     HFDataHelper,
+    nan_to_none,
 )
 from dotenv import load_dotenv
 
@@ -252,9 +253,12 @@ class ModelRunner:
             range(0, len(dataset), rows_per_batch),
             desc="Generating responses...",
         ):
-            batch_rows = dataset.iloc[start : start + rows_per_batch].to_dict(
-                orient="records"
-            )
+            batch_rows = [
+                nan_to_none(row)
+                for row in dataset.iloc[start : start + rows_per_batch].to_dict(
+                    orient="records"
+                )
+            ]
             expanded_rows = [
                 row for row in batch_rows for _ in range(self.config.n_samples)
             ]
