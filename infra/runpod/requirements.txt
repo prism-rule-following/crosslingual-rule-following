@@ -18,15 +18,6 @@ sentencepiece>=0.2.0
 tokenizers>=0.20.0
 
 numpy>=2.0.0
-<<<<<<< HEAD
-scipy>=1.13.1
-pandas>=3.0.5
-scikit-learn>=1.5.1
-
-matplotlib>=3.10.1
-seaborn==0.13.2
-plotly==5.24.0
-=======
 scipy>=1.13.1                 # exact pin capped numpy<2.3, conflicting with pandas>=3.0.5's numpy>=2.3.3
 pandas>=3.0.5
 scikit-learn>=1.5.1           # same era/numpy-ceiling risk as scipy above
@@ -34,7 +25,6 @@ scikit-learn>=1.5.1           # same era/numpy-ceiling risk as scipy above
 matplotlib>=3.10.1            # eap[viz]'s own dependency requires >=3.10.1
 seaborn>=0.13.2
 plotly>=5.24.0
->>>>>>> 6fc4e449fa29cbd083093f306557ad26ca55ff57
 
 langdetect==1.0.9
 POT==0.9.4                    # imported as `ot`, used for Gromov-Wasserstein OT transport
@@ -50,8 +40,4 @@ openpyxl>=3.1.5
 pydantic>=2.13.4
 pygraphviz>=2.0.1
 pytest>=9.1.1
-<<<<<<< HEAD
 python-dotenv>=1.2.2
-=======
-python-dotenv>=1.2.2
->>>>>>> 6fc4e449fa29cbd083093f306557ad26ca55ff57
