@@ -110,6 +110,7 @@ class DatasetGrammar(StrEnum):
 
 class DatasetContrastivePair(StrEnum):
     active_cancelled = "active_cancelled"
+    enabled_disabled = "enabled_disabled"
     imperative_declarative = "imperative_declarative"  # present in data as pair_type
     on_off = "on_off"
     true_false = "true_false"
@@ -201,26 +202,31 @@ class DatasetConfig(BaseModel):
 
 STATUS_LABELS = {
     "active_cancelled": ("active", "cancelled"),
+    "enabled_disabled": ("enabled", "disabled"),
+    "imperative_declarative": ("imperative", "declarative"),
     "on_off": ("on", "off"),
     "true_false": ("true", "false"),
     "valid_invalid": ("valid", "invalid"),
 }
 
+# Rows with no pair_type at all (e.g. banned_word, which has no status-word
+# contrast) still get split below; they just fall back to these generic
+# clean/revoked labels instead of a status-word-specific pair.
+_DEFAULT_STATUS_LABELS = ("active", "revoked")
+
 
 def split_constrast_pairs(df: pd.DataFrame) -> pd.DataFrame:
-    """Split each row with a recognized status-word pair_type into a "clean"
-    (rule-active) row and a "revoked" (rule-cancelled) row sharing a unified
-    system/rule_status schema. Rows without one of the STATUS_LABELS pair
-    types (e.g. banned_word, which has no single-token contrast) are dropped:
-    this function's job is specifically to materialize contrastive pairs.
+    """Split every row into a "clean" (rule-active) row and a "revoked" row
+    sharing a unified system/rule_status schema. Rows with a recognized
+    status-word pair_type (STATUS_LABELS) get that pair's own labels; rows
+    without one still get split, using generic clean/revoked labels, so no
+    row is dropped from the pipeline.
     """
     rows = []
     for _, row in df.iterrows():
         base = row.to_dict()
         pair_type = row["pair_type"]
-        if pair_type not in STATUS_LABELS:
-            continue
-        clean_label, corrupt_label = STATUS_LABELS[pair_type]
+        clean_label, corrupt_label = STATUS_LABELS.get(pair_type, _DEFAULT_STATUS_LABELS)
 
         constant_fields = {
             k: v

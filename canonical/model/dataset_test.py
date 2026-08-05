@@ -57,7 +57,13 @@ def make_row(**overrides) -> dict:
 @pytest.fixture
 def sample_pairs() -> list:
     return [
-        make_row(id="en-1", language="en", topic="legal", category="active_cancelled", pair_type="active_cancelled"),
+        make_row(
+            id="en-1",
+            language="en",
+            topic="legal",
+            category="active_cancelled",
+            pair_type="active_cancelled",
+        ),
         make_row(
             id="en-2",
             language="en",
@@ -66,8 +72,21 @@ def sample_pairs() -> list:
             grammar_type="n/a",
             pair_type=None,
         ),
-        make_row(id="de-1", language="de", topic="finance", category="active_cancelled", grammar_type="modal_obligation"),
-        make_row(id="en-3", language="en", topic="medical", category="start_with", grammar_type="polite_asking", pair_type="on_off"),
+        make_row(
+            id="de-1",
+            language="de",
+            topic="finance",
+            category="active_cancelled",
+            grammar_type="modal_obligation",
+        ),
+        make_row(
+            id="en-3",
+            language="en",
+            topic="medical",
+            category="start_with",
+            grammar_type="polite_asking",
+            pair_type="on_off",
+        ),
     ]
 
 
@@ -115,7 +134,9 @@ class FakeHfApi:
 # --------------------------------------------------------------------------- #
 # load_from_github
 # --------------------------------------------------------------------------- #
-def test_load_from_github_local_file_with_pairs_wrapper(sample_dataset_file, sample_pairs):
+def test_load_from_github_local_file_with_pairs_wrapper(
+    sample_dataset_file, sample_pairs
+):
     df = load_from_github(str(sample_dataset_file))
     assert isinstance(df, pd.DataFrame)
     assert len(df) == len(sample_pairs)
@@ -147,11 +168,15 @@ def test_load_from_github_remote_url_mocked(monkeypatch, sample_pairs):
             return json.dumps({"pairs": sample_pairs}).encode("utf-8")
 
     monkeypatch.setattr(ds.urllib.request, "urlopen", lambda url: FakeResponse())
-    df = load_from_github("https://raw.githubusercontent.com/example/repo/main/data.json")
+    df = load_from_github(
+        "https://raw.githubusercontent.com/example/repo/main/data.json"
+    )
     assert len(df) == len(sample_pairs)
 
 
-def test_load_from_github_invalid_json_falls_back_to_load_dataset(monkeypatch, tmp_path):
+def test_load_from_github_invalid_json_falls_back_to_load_dataset(
+    monkeypatch, tmp_path
+):
     path = tmp_path / "not_json.json"
     path.write_text("this is not valid json")
 
@@ -196,7 +221,10 @@ def test_load_source_dataset_reraises_on_failure(monkeypatch):
 
 
 def sample_pairs_static() -> list:
-    return [make_row(id="hf-1"), make_row(id="hf-2", pair_type=None, category="banned_word")]
+    return [
+        make_row(id="hf-1"),
+        make_row(id="hf-2", pair_type=None, category="banned_word"),
+    ]
 
 
 # --------------------------------------------------------------------------- #
@@ -271,7 +299,12 @@ def test_validate_rows_handles_nan_optional_fields(sample_pairs):
     # pandas fills missing columns with NaN across rows of differing shape;
     # Optional[...] fields must accept that as None rather than failing.
     row_without_checker = make_row(id="no-checker")
-    df = pd.DataFrame([row_without_checker, {**row_without_checker, "id": "with-extra", "checker": "manual/llm-judge"}])
+    df = pd.DataFrame(
+        [
+            row_without_checker,
+            {**row_without_checker, "id": "with-extra", "checker": "manual/llm-judge"},
+        ]
+    )
     result = _validate_rows(df, strict=False)
     assert len(result) == 2
 
@@ -281,7 +314,9 @@ def test_validate_rows_handles_nan_optional_fields(sample_pairs):
 # --------------------------------------------------------------------------- #
 def test_apply_filters_by_category(sample_pairs):
     df = pd.DataFrame(sample_pairs)
-    config = DatasetConfig(url="x", source="gh", category=[DataCategories.active_cancelled])
+    config = DatasetConfig(
+        url="x", source="gh", category=[DataCategories.active_cancelled]
+    )
     result = _apply_filters(df, config)
     assert set(result["category"]) == {"active_cancelled"}
 
@@ -335,17 +370,32 @@ def test_split_constrast_pairs_covers_all_status_labels():
     assert len(result) == 2 * len(STATUS_LABELS)
 
 
-def test_split_constrast_pairs_drops_rows_without_recognized_pair_type():
+def test_split_constrast_pairs_uses_generic_labels_when_pair_type_missing():
     df = pd.DataFrame([make_row(id="no-pair", pair_type=None)])
     result = split_constrast_pairs(df)
-    assert len(result) == 0
+    assert len(result) == 2
+    assert set(result["id"]) == {"no-pair_clean", "no-pair_revoked"}
+    clean = result[result["id"] == "no-pair_clean"].iloc[0]
+    revoked = result[result["id"] == "no-pair_revoked"].iloc[0]
+    assert clean["rule_status"] == "active"
+    assert revoked["rule_status"] == "revoked"
 
 
-def test_split_constrast_pairs_all_dropped_returns_empty_dataframe_not_none():
-    df = pd.DataFrame([make_row(id="a", pair_type=None), make_row(id="b", pair_type="imperative_declarative")])
+def test_split_constrast_pairs_no_rows_dropped_for_mixed_pair_types():
+    df = pd.DataFrame(
+        [
+            make_row(id="a", pair_type=None),
+            make_row(id="b", pair_type="imperative_declarative"),
+            make_row(id="c", pair_type="enabled_disabled"),
+        ]
+    )
     result = split_constrast_pairs(df)
-    assert isinstance(result, pd.DataFrame)
-    assert len(result) == 0
+    assert len(result) == 6  # every source row splits into 2, none dropped
+
+    imp = result[result["id"] == "b_clean"].iloc[0]
+    assert imp["rule_status"] == "imperative"
+    enabled = result[result["id"] == "c_clean"].iloc[0]
+    assert enabled["rule_status"] == "enabled"
 
 
 # --------------------------------------------------------------------------- #
@@ -385,16 +435,14 @@ def test_rule_row_requires_mandatory_fields():
 def test_dataset_generator_gh_source_end_to_end(sample_dataset_file):
     config = DatasetConfig(url=str(sample_dataset_file), source=DatasetSource.gh)
     df = dataset_generator(config)
-    # 3 rows have a recognized pair_type (en-1, de-1: active_cancelled; en-3: on_off),
-    # each split into a clean+revoked row; en-2 (pair_type=None) is dropped.
-    assert len(df) == 6
-    assert set(df["rule_status"]) == {"active", "cancelled", "on", "off"}
+    assert len(df) == 8
+    assert set(df["rule_status"]) == {"active", "cancelled", "on", "off", "revoked"}
 
 
 def test_cross_lingual_dataset_gh_source(sample_dataset_file):
     config = DatasetConfig(url=str(sample_dataset_file), source=DatasetSource.gh)
     dataset = CrossLingualRuleFollowingDataset(config)
-    assert len(dataset) == 6
+    assert len(dataset) == 8
 
 
 def test_cross_lingual_dataset_gh_source_invalid_path_raises(tmp_path):
@@ -413,13 +461,15 @@ def test_dataset_generator_hf_source_mocked(monkeypatch, sample_pairs):
         calls.append(repo_id)
         return {"train": FakeHFDataset(pd.DataFrame(sample_pairs))}
 
-    monkeypatch.setattr(ds.HFDataHelper, "load_source_dataset", fake_load_source_dataset)
+    monkeypatch.setattr(
+        ds.HFDataHelper, "load_source_dataset", fake_load_source_dataset
+    )
 
     config = DatasetConfig(url="some-org/rule-following-pairs", source=DatasetSource.hf)
     df = dataset_generator(config)
 
     assert calls == ["some-org/rule-following-pairs"]
-    assert len(df) == 6  # same 3 recognized-pair-type rows x2 as the GH fixture
+    assert len(df) == 8  # same 4 source rows x2 as the GH fixture, none dropped
 
 
 def test_cross_lingual_dataset_hf_source_mocked(monkeypatch, sample_pairs):
@@ -430,14 +480,16 @@ def test_cross_lingual_dataset_hf_source_mocked(monkeypatch, sample_pairs):
     )
     config = DatasetConfig(url="some-org/rule-following-pairs", source=DatasetSource.hf)
     dataset = CrossLingualRuleFollowingDataset(config)
-    assert len(dataset) == 6
+    assert len(dataset) == 8
 
 
 def test_dataset_generator_hf_source_propagates_failure(monkeypatch):
     def fake_load_source_dataset(repo_id):
         raise RuntimeError("network down")
 
-    monkeypatch.setattr(ds.HFDataHelper, "load_source_dataset", fake_load_source_dataset)
+    monkeypatch.setattr(
+        ds.HFDataHelper, "load_source_dataset", fake_load_source_dataset
+    )
     config = DatasetConfig(url="some-org/rule-following-pairs", source=DatasetSource.hf)
     with pytest.raises(RuntimeError, match="network down"):
         dataset_generator(config)
@@ -462,51 +514,67 @@ def test_shuffle_is_deterministic_given_seed(sample_pairs):
 
 
 def test_head_truncates(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     dataset.head(2)
     assert len(dataset) == 2
 
 
 def test_head_beyond_length_returns_all_rows(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     dataset.head(1000)
     assert len(dataset) == len(sample_pairs)
 
 
 def test_head_zero_returns_empty(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     dataset.head(0)
     assert len(dataset) == 0
 
 
 def test_subset_single_value(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     subset = dataset.subset(language="de")
     assert len(subset) == 1
     assert subset.df.iloc[0]["language"] == "de"
 
 
 def test_subset_list_value(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     subset = dataset.subset(topic=["legal", "finance"])
     assert set(subset.df["topic"]) == {"legal", "finance"}
 
 
 def test_subset_does_not_mutate_original(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     original_len = len(dataset)
     dataset.subset(language="de")
     assert len(dataset) == original_len
 
 
 def test_subset_missing_column_is_noop(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     subset = dataset.subset(nonexistent_column="anything")
     assert len(subset) == len(sample_pairs)
 
 
 def test_build_indices_populates_and_nulls_correctly(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
 
     def fn(row):
         if row["category"] == "banned_word":
@@ -522,7 +590,9 @@ def test_build_indices_populates_and_nulls_correctly(sample_pairs):
 
 
 def test_to_dataloader_batches_with_collate_behavioral(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(pd.DataFrame(sample_pairs))
+    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
+        pd.DataFrame(sample_pairs)
+    )
     loader = dataset.to_dataloader(batch_size=2, collate_fn=collate_behavioral)
     batch = next(iter(loader))
     system_rule, user_query, ids = batch
@@ -557,7 +627,9 @@ def test_hf_data_helper_hf_path_format():
     assert path == "meta-llama__Llama-3/en.parquet"
 
 
-def test_hf_data_helper_upload_calls_create_repo_and_upload_file(monkeypatch, sample_pairs):
+def test_hf_data_helper_upload_calls_create_repo_and_upload_file(
+    monkeypatch, sample_pairs
+):
     monkeypatch.setattr(ds, "HfApi", FakeHfApi)
     helper = HFDataHelper(repo_id="org/outputs")
     df = pd.DataFrame(sample_pairs)
