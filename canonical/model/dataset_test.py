@@ -252,7 +252,7 @@ def test_validate_rows_keeps_valid_rows(sample_pairs):
 
 def test_validate_rows_drops_invalid_row_when_not_strict(sample_pairs):
     bad_row = make_row(id="bad-1")
-    del bad_row["rule_clause"]  # required field missing
+    del bad_row["system_rule"]  # required field missing
     df = pd.DataFrame(sample_pairs + [bad_row])
     result = _validate_rows(df, strict=False)
     assert len(result) == len(sample_pairs)
@@ -261,7 +261,7 @@ def test_validate_rows_drops_invalid_row_when_not_strict(sample_pairs):
 
 def test_validate_rows_raises_when_strict(sample_pairs):
     bad_row = make_row(id="bad-1")
-    del bad_row["rule_clause"]
+    del bad_row["system_rule"]
     df = pd.DataFrame(sample_pairs + [bad_row])
     with pytest.raises(ValidationError):
         _validate_rows(df, strict=True)

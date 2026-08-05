@@ -139,8 +139,11 @@ class ModelRunner:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
+        # bf16 halves weight memory (critical for 8B+ models on a 24GB GPU) but
+        # isn't reliably supported for matmul on CPU, so only force it on CUDA.
+        dtype = torch.bfloat16 if self.config.device == "cuda" else torch.float32
         self.model = TransformerBridge.boot_transformers(
-            model_id, device=self.config.device
+            model_id, device=self.config.device, dtype=dtype
         )
         self.model.enable_compatibility_mode(disable_warnings=True)
         self.model.original_model.eval()
