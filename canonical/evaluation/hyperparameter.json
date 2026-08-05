@@ -2,7 +2,7 @@
     "model_ids": ["meta-llama/Llama-3.1-8B-Instruct", "Qwen/Qwen3-8B"],
     "n_samples": 10,
     "push_to_hf": true,
-    "language_code": "en",
+    "language_codes": ["en"],
     "max_new_tokens": 50,
     "temperature": 1.0,
     "generation_batch_size": 30,

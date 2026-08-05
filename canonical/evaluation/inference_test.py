@@ -57,7 +57,7 @@ def base_config(tmp_path) -> inf.ModelGenerationConfig:
     return inf.ModelGenerationConfig(
         model_ids=[TINY_MODEL],
         dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
-        language_code=DatasetLanguageCode.en,
+        language_codes=[DatasetLanguageCode.en],
         max_new_tokens=4,
         generation_batch_size=4,
         activation_batch_size=4,
@@ -76,7 +76,7 @@ def loaded_runner(tmp_path_factory) -> "inf.ModelRunner":
     config = inf.ModelGenerationConfig(
         model_ids=[TINY_MODEL],
         dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
-        language_code=DatasetLanguageCode.en,
+        language_codes=[DatasetLanguageCode.en],
         max_new_tokens=4,
         generation_batch_size=4,
         activation_batch_size=4,
@@ -139,7 +139,7 @@ def test_model_generation_config_defaults():
     config = inf.ModelGenerationConfig(
         model_ids=["m"],
         dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
-        language_code=DatasetLanguageCode.en,
+        language_codes=[DatasetLanguageCode.en],
     )
     assert config.n_samples == 1
     assert config.run_inference_response is True
@@ -183,7 +183,9 @@ def test_get_hook_filter_current_hook_names(loaded_runner):
 def test_extract_hidden_states_silently_drops_unmatched_hook_names(
     loaded_runner, tiny_dataset
 ):
-    results = loaded_runner.extract_hidden_states(tiny_dataset)
+    results = loaded_runner.extract_hidden_states(
+        tiny_dataset, lang_code=DatasetLanguageCode.en
+    )
     assert len(results) == len(tiny_dataset)
     keys = set(results[0].keys()) - {"id"}
     assert not any("qkv" in k for k in keys)
@@ -225,7 +227,9 @@ def test_check_system_role_support_false_when_template_rejects_system(
 # generate_response
 # --------------------------------------------------------------------------- #
 def test_generate_response_returns_one_row_per_example(loaded_runner, tiny_dataset):
-    results = loaded_runner.generate_response(tiny_dataset)
+    results = loaded_runner.generate_response(
+        tiny_dataset, lang_code=DatasetLanguageCode.en
+    )
     assert len(results) == len(tiny_dataset)
     for row in results:
         assert row["sample_idx"] == 0
@@ -236,7 +240,9 @@ def test_generate_response_n_samples_multiplies_output_rows(loaded_runner):
     dataset = pd.DataFrame([make_row(id="r1")])
     loaded_runner.config.n_samples = 2
     try:
-        results = loaded_runner.generate_response(dataset)
+        results = loaded_runner.generate_response(
+            dataset, lang_code=DatasetLanguageCode.en
+        )
         assert len(results) == 2
         assert sorted(r["sample_idx"] for r in results) == [0, 1]
     finally:
@@ -247,8 +253,8 @@ def test_generate_response_n_samples_multiplies_output_rows(loaded_runner):
 # checkpointing (generate_response / extract_hidden_states)
 # --------------------------------------------------------------------------- #
 def test_generate_response_writes_checkpoint_file(loaded_runner, tiny_dataset):
-    loaded_runner.generate_response(tiny_dataset)
-    path = loaded_runner._checkpoint_path("responses")
+    loaded_runner.generate_response(tiny_dataset, lang_code=DatasetLanguageCode.en)
+    path = loaded_runner._checkpoint_path(DatasetLanguageCode.en, "responses")
     assert path.exists()
     with open(path) as f:
         lines = [json.loads(line) for line in f]
@@ -261,9 +267,11 @@ def test_generate_response_resumes_by_skipping_checkpointed_ids(loaded_runner):
     already_done = inf.ModelResponse(
         **make_row(id="r1"), response="PRE-EXISTING RESPONSE"
     ).model_dump()
-    loaded_runner._append_checkpoint("responses", [already_done])
+    loaded_runner._append_checkpoint(
+        DatasetLanguageCode.en, "responses", [already_done]
+    )
 
-    results = loaded_runner.generate_response(dataset)
+    results = loaded_runner.generate_response(dataset, lang_code=DatasetLanguageCode.en)
 
     assert len(results) == 2
     by_id = {row["id"]: row for row in results}
@@ -272,8 +280,8 @@ def test_generate_response_resumes_by_skipping_checkpointed_ids(loaded_runner):
 
 
 def test_extract_hidden_states_writes_checkpoint_file(loaded_runner, tiny_dataset):
-    loaded_runner.extract_hidden_states(tiny_dataset)
-    path = loaded_runner._checkpoint_path("activations")
+    loaded_runner.extract_hidden_states(tiny_dataset, lang_code=DatasetLanguageCode.en)
+    path = loaded_runner._checkpoint_path(DatasetLanguageCode.en, "activations")
     assert path.exists()
     with open(path) as f:
         lines = [json.loads(line) for line in f]
@@ -283,10 +291,12 @@ def test_extract_hidden_states_writes_checkpoint_file(loaded_runner, tiny_datase
 def test_extract_hidden_states_resumes_by_skipping_checkpointed_ids(loaded_runner):
     dataset = pd.DataFrame([make_row(id="r1"), make_row(id="r2")])
     loaded_runner._append_checkpoint(
-        "activations", [{"id": "r1", "hook_embed": [0.0, 0.0]}]
+        DatasetLanguageCode.en, "activations", [{"id": "r1", "hook_embed": [0.0, 0.0]}]
     )
 
-    results = loaded_runner.extract_hidden_states(dataset)
+    results = loaded_runner.extract_hidden_states(
+        dataset, lang_code=DatasetLanguageCode.en
+    )
 
     assert len(results) == 2
     by_id = {row["id"]: row for row in results}
@@ -300,6 +310,9 @@ def test_extract_hidden_states_resumes_by_skipping_checkpointed_ids(loaded_runne
 class FakeLoadedDataset:
     def __init__(self, df: pd.DataFrame):
         self.df = df
+
+    def subset(self, **filters):
+        return self  # single fake dataset; filtering is a no-op for these tests
 
 
 class FakeRunner:
@@ -317,11 +330,11 @@ class FakeRunner:
     def load(self, model_id):
         self.loaded_with = model_id
 
-    def generate_response(self, dataset):
+    def generate_response(self, dataset, lang_code):
         self.generate_response_called = True
         return [{"id": "r1", "response": "hi"}]
 
-    def extract_hidden_states(self, dataset):
+    def extract_hidden_states(self, dataset, lang_code):
         self.extract_hidden_states_called = True
         return [{"id": "r1", "hook_embed": [0.0]}]
 
@@ -364,7 +377,7 @@ def run_config(**overrides) -> inf.ModelGenerationConfig:
     defaults = dict(
         model_ids=["fake-model"],
         dataset_config=DatasetConfig(url="x", source=DatasetSource.gh),
-        language_code=DatasetLanguageCode.en,
+        language_codes=[DatasetLanguageCode.en],
         push_to_hf=True,
         run_inference_response=True,
         run_inference_activations=False,
@@ -466,6 +479,29 @@ def test_run_iterates_all_model_ids(monkeypatch):
 
     assert [r.loaded_with for r in FakeRunner.instances] == ["model-a", "model-b"]
     assert len(FakeHFDataHelper.calls) == 2
+
+
+def test_run_iterates_all_language_codes_per_model(monkeypatch):
+    # The model should load once and be reused across every requested
+    # language, uploading a separate file per language.
+    df = pd.DataFrame([make_row(id="r1")])
+    monkeypatch.setattr(
+        inf, "CrossLingualRuleFollowingDataset", lambda cfg: FakeLoadedDataset(df)
+    )
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
+
+    config = run_config(
+        language_codes=[DatasetLanguageCode.en, DatasetLanguageCode.de],
+        hf_result_repo="org/results",
+    )
+    inf.run(config)
+
+    assert len(FakeRunner.instances) == 1  # model loaded once, not once per language
+    assert [c["lang_code"] for c in FakeHFDataHelper.calls] == [
+        DatasetLanguageCode.en,
+        DatasetLanguageCode.de,
+    ]
 
 
 def test_run_reraises_on_failure(monkeypatch):

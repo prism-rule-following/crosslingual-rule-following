@@ -72,9 +72,10 @@ class ModelGenerationConfig(BaseModel):
         default=True,
         description="whether to upload results to the Hugging Face Hub after each model finishes",
     )
-    language_code: DatasetLanguageCode = Field(
+    language_codes: List[DatasetLanguageCode] = Field(
         ...,
-        description="language of the dataset rows being run, used to key the uploaded output path",
+        description="languages to run inference for; each loaded model is reused "
+        "across all of them, uploading a separate output file per language",
     )
     max_new_tokens: int = Field(
         default=100, description="maximum number of tokens to generate per response"
@@ -202,14 +203,18 @@ class ModelRunner:
         names.append("hook_embed")
         return names
 
-    def _checkpoint_path(self, kind: str) -> Path:
+    def _checkpoint_path(self, lang_code: DatasetLanguageCode, kind: str) -> Path:
         model_slug = self.model_id.replace("/", "__")
-        lang = self.config.language_code.value
-        return Path(self.config.checkpoint_dir) / f"{model_slug}_{lang}_{kind}.jsonl"
+        return (
+            Path(self.config.checkpoint_dir)
+            / f"{model_slug}_{lang_code.value}_{kind}.jsonl"
+        )
 
-    def _load_checkpoint(self, kind: str) -> List[Dict[str, Any]]:
+    def _load_checkpoint(
+        self, lang_code: DatasetLanguageCode, kind: str
+    ) -> List[Dict[str, Any]]:
         """Read back rows already checkpointed for this model/language/kind."""
-        path = self._checkpoint_path(kind)
+        path = self._checkpoint_path(lang_code, kind)
         if not path.exists():
             return []
         with open(path) as f:
@@ -218,20 +223,24 @@ class ModelRunner:
             print(f"Resuming {kind}: {len(rows)} rows already checkpointed at {path}")
         return rows
 
-    def _append_checkpoint(self, kind: str, rows: List[Dict[str, Any]]) -> None:
+    def _append_checkpoint(
+        self, lang_code: DatasetLanguageCode, kind: str, rows: List[Dict[str, Any]]
+    ) -> None:
         """Append newly-completed rows so a crash doesn't lose this batch."""
-        path = self._checkpoint_path(kind)
+        path = self._checkpoint_path(lang_code, kind)
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a") as f:
             for row in rows:
                 f.write(json.dumps(row) + "\n")
 
     @torch.no_grad
-    def generate_response(self, dataset: pd.DataFrame) -> List[Dict[str, Any]]:
+    def generate_response(
+        self, dataset: pd.DataFrame, lang_code: DatasetLanguageCode
+    ) -> List[Dict[str, Any]]:
         assert self.model is not None, ValueError(
             "Initialize model by calling load() first"
         )
-        results: List[Dict[str, Any]] = self._load_checkpoint("responses")
+        results: List[Dict[str, Any]] = self._load_checkpoint(lang_code, "responses")
         completed_ids = {row["id"] for row in results}
         dataset = dataset[~dataset["id"].isin(completed_ids)].reset_index(drop=True)
 
@@ -276,7 +285,7 @@ class ModelRunner:
                     ).model_dump()
                 )
             results.extend(batch_results)
-            self._append_checkpoint("responses", batch_results)
+            self._append_checkpoint(lang_code, "responses", batch_results)
 
             del outputs, input_prompt
             torch.cuda.empty_cache()
@@ -284,11 +293,13 @@ class ModelRunner:
         return results
 
     @torch.no_grad
-    def extract_hidden_states(self, dataset: pd.DataFrame) -> List[Dict[str, Any]]:
+    def extract_hidden_states(
+        self, dataset: pd.DataFrame, lang_code: DatasetLanguageCode
+    ) -> List[Dict[str, Any]]:
         assert self.model is not None, ValueError(
             "Initialize model by calling load() first"
         )
-        results: List[Dict[str, Any]] = self._load_checkpoint("activations")
+        results: List[Dict[str, Any]] = self._load_checkpoint(lang_code, "activations")
         completed_ids = {row["id"] for row in results}
         dataset = dataset[~dataset["id"].isin(completed_ids)].reset_index(drop=True)
 
@@ -336,7 +347,7 @@ class ModelRunner:
                     }
                 )
             results.extend(batch_results)
-            self._append_checkpoint("activations", batch_results)
+            self._append_checkpoint(lang_code, "activations", batch_results)
 
             del cache, input_prompt
             torch.cuda.empty_cache()
@@ -349,61 +360,69 @@ def run(config: ModelGenerationConfig) -> None:
     try:
         dataset = CrossLingualRuleFollowingDataset(config.dataset_config)
 
+        result_helper = (
+            HFDataHelper(config.hf_result_repo)
+            if config.push_to_hf and config.hf_result_repo
+            else None
+        )
+        activations_helper = (
+            HFDataHelper(config.hf_activations_repo)
+            if config.push_to_hf and config.hf_activations_repo
+            else None
+        )
+
         for model_name in config.model_ids:
             model_runner = ModelRunner(config)
             model_runner.load(model_id=model_name)
 
-            if config.run_inference_response:
-                result_helper = (
-                    HFDataHelper(config.hf_result_repo)
-                    if config.push_to_hf and config.hf_result_repo
-                    else None
-                )
-                if result_helper and result_helper.exists(
-                    model_id=model_name, lang_code=config.language_code
-                ):
-                    print(
-                        f"Skipping response generation for {model_name}/{config.language_code}: "
-                        f"already uploaded to {config.hf_result_repo}"
-                    )
-                else:
-                    responses = model_runner.generate_response(dataset=dataset.df)
-                    if result_helper:
-                        result_helper.upload(
-                            df=pd.DataFrame(responses),
-                            model_id=model_name,
-                            lang_code=config.language_code,
-                        )
-                    else:
-                        print(
-                            f"Skipping response upload for {model_name}/{config.language_code}"
-                        )
+            for lang_code in config.language_codes:
+                lang_dataset = dataset.subset(language=lang_code.value)
 
-            if config.run_inference_activations:
-                activations_helper = (
-                    HFDataHelper(config.hf_activations_repo)
-                    if config.push_to_hf and config.hf_activations_repo
-                    else None
-                )
-                if activations_helper and activations_helper.exists(
-                    model_id=model_name, lang_code=config.language_code
-                ):
-                    print(
-                        f"Skipping activation extraction for {model_name}/{config.language_code}: "
-                        f"already uploaded to {config.hf_activations_repo}"
-                    )
-                else:
-                    activations = model_runner.extract_hidden_states(dataset=dataset.df)
-                    if activations_helper:
-                        activations_helper.upload(
-                            df=pd.DataFrame(activations),
-                            model_id=model_name,
-                            lang_code=config.language_code,
+                if config.run_inference_response:
+                    if result_helper and result_helper.exists(
+                        model_id=model_name, lang_code=lang_code
+                    ):
+                        print(
+                            f"Skipping response generation for {model_name}/{lang_code}: "
+                            f"already uploaded to {config.hf_result_repo}"
                         )
                     else:
-                        print(
-                            f"Skipping activation upload for {model_name}/{config.language_code}"
+                        responses = model_runner.generate_response(
+                            dataset=lang_dataset.df, lang_code=lang_code
                         )
+                        if result_helper:
+                            result_helper.upload(
+                                df=pd.DataFrame(responses),
+                                model_id=model_name,
+                                lang_code=lang_code,
+                            )
+                        else:
+                            print(
+                                f"Skipping response upload for {model_name}/{lang_code}"
+                            )
+
+                if config.run_inference_activations:
+                    if activations_helper and activations_helper.exists(
+                        model_id=model_name, lang_code=lang_code
+                    ):
+                        print(
+                            f"Skipping activation extraction for {model_name}/{lang_code}: "
+                            f"already uploaded to {config.hf_activations_repo}"
+                        )
+                    else:
+                        activations = model_runner.extract_hidden_states(
+                            dataset=lang_dataset.df, lang_code=lang_code
+                        )
+                        if activations_helper:
+                            activations_helper.upload(
+                                df=pd.DataFrame(activations),
+                                model_id=model_name,
+                                lang_code=lang_code,
+                            )
+                        else:
+                            print(
+                                f"Skipping activation upload for {model_name}/{lang_code}"
+                            )
 
             del model_runner
             torch.cuda.empty_cache()
