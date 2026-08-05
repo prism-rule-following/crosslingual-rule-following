@@ -1,5 +1,5 @@
 {
-    "model_ids": ["meta-llama/Llama-3.1-8B-Instruct"],
+    "model_ids": ["Qwen/Qwen3-8B"],
     "n_samples": 10,
     "push_to_hf": true,
     "language_code": "en",
