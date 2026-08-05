@@ -14,7 +14,7 @@
     "run_inference_response": true,
     "run_inference_activations": false,
     "dataset_config": {
-        "url": "crosslingual-rule-following/rule-following-pairs",
+        "url": "crosslingual-rule-following/rule-following-eval",
         "source": "hf",
         "validate_rows": true,
         "strict": true

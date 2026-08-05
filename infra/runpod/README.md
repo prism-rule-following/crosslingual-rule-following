@@ -43,6 +43,7 @@ model weights every time a new pod attaches to the workspace.
    ```
 
 3. Run setup:
+   ssh root@213.173.109.223 -p 15432 -i ~/.ssh/id_ed25519
    ```bash
    bash infra/runpod/setup.sh
    ```

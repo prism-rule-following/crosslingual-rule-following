@@ -136,7 +136,7 @@ class RuleRow(BaseModel):
     system_non_rule: str
     user_query: str
     checker: Optional[str] = None
-    rule_clause: str
+    rule_clause: Optional[str] = None
     correct_answer: Optional[str] = None
     pair_type: Optional[str] = None
     correct_keywords: List = []
