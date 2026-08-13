@@ -1,0 +1,93 @@
+<View className="px">
+  <!-- No CDATA wrapper. Label Studio's Style tag passes its raw value through
+       sanitizeHtml without stripping CDATA markers (Markdown.jsx does strip them,
+       Style.jsx does not). An HTML parser reads an opening CDATA marker as a
+       bogus comment running to the FIRST ">", which deleted every rule above the old
+       ".px-cols > .px-col". For the same reason no rule below may use a ">"
+       combinator: sanitizeHtml escapes it to &gt;, and entities are not decoded
+       inside a <style> element. Descendant selectors only. -->
+  <Style>
+    .px { max-width: 1200px; margin: 0 auto; font-size: 15px; }
+    .px-meta { background: #f4f6f8; border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; }
+    .px-meta table { border-collapse: collapse; font-size: 13px; }
+    .px-meta td { padding: 2px 14px 2px 0; vertical-align: top; color: #344054; }
+    .px-meta td.k { color: #667085; text-transform: uppercase; font-size: 11px;
+                    letter-spacing: .04em; white-space: nowrap; }
+    .px-meta code { background: #e9edf2; border-radius: 3px; padding: 1px 5px;
+                    font-size: 12px; word-break: break-all; }
+    .px-cols { display: flex; gap: 18px; margin: 14px 0 2px; position: sticky; top: 0;
+              background: #fff; padding: 6px 0; z-index: 5; border-bottom: 1px solid #e4e7ec; }
+    .px-cols .px-col { flex: 1 1 0; min-width: 0; font-size: 12px; font-weight: 600;
+                         text-transform: uppercase; letter-spacing: .04em; color: #667085; }
+    .px-field { border-bottom: 1px solid #f0f2f5; padding: 10px 0; }
+    .px-name { font-size: 12px; font-weight: 600; color: #101828; margin-bottom: 4px; }
+    .px-pair { display: flex; gap: 18px; align-items: flex-start; }
+    .px-pair .px-col { flex: 1 1 0; min-width: 0; }
+    .px-en .lsf-richtext__container { background: #fbfcfd; border: 1px solid #e4e7ec;
+                                      border-radius: 6px; padding: 9px 11px; line-height: 1.5; }
+    .px-tr textarea { border: 1px solid #cfd6de !important; border-radius: 6px !important;
+                      line-height: 1.5 !important; }
+    .px-tr textarea:focus { border-color: #2563eb !important; }
+    .px-note { margin-top: 18px; }
+
+    /* Hide the trash button beside each field so a validator cannot delete a
+       translation by accident. There is no attribute for this: TextArea's
+       isDeleteable is `!isReadOnly()`, and marking the tag read-only would stop
+       them editing at all.
+
+       A prefilled field renders through HtxTextBox.jsx, whose delete button
+       carries NO class -- only the aria-label and test id below. The
+       .lsf-textarea-tag__action class belongs to TextAreaRegionView.jsx, which
+       is used for per-region TextAreas and never appears on this screen; a rule
+       naming it matches nothing here. Both paths are covered so the guard holds
+       if the layout ever gains a per-region field. */
+    .lsf-textarea__actions [aria-label="Delete Region"],
+    [data-testid="htx-textbox-delete-button"],
+    [data-testid="textarea-region-delete"] { display: none !important; }
+  </Style>
+
+  <View className="px-meta">
+    <Text name="record" value="$position"/>
+    <HyperText name="meta" value="$meta_html" inline="true" clickableLinks="false"/>
+  </View>
+
+  <!-- Layout is given both as inline style and via the classes above. The inline
+       copy dates from when the CDATA wrapper was silently deleting the top of
+       the Style block, which left these two columns stacked; it is kept because
+       inline style wins over the stylesheet, so it pins the layout even if a
+       Style rule breaks again. Keep the two in agreement. -->
+  <View className="px-cols" style="display:flex; gap:18px; margin:14px 0 4px">
+    <View className="px-col" style="flex:1 1 0; min-width:0">
+      <Header value="English (original)" size="6"/>
+    </View>
+    <View className="px-col" style="flex:1 1 0; min-width:0">
+      <Header value="$lang_name — edit if needed" size="6"/>
+    </View>
+  </View>
+
+  <Repeater on="$fields" indexFlag="{{idx}}">
+    <View className="px-field">
+      <View className="px-name">
+        <Header value="$fields[{{idx}}].label" size="6"/>
+      </View>
+      <View className="px-pair" style="display:flex; gap:18px; align-items:flex-start">
+        <View className="px-col px-en" style="flex:1 1 0; min-width:0">
+          <Text name="en_{{idx}}" value="$fields[{{idx}}].en"/>
+        </View>
+        <View className="px-col px-tr" style="flex:1 1 0; min-width:0">
+          <TextArea name="tr_{{idx}}" toName="en_{{idx}}"
+                    value="$fields[{{idx}}].tr"
+                    rows="3" editable="true" maxSubmissions="1"
+                    showSubmitButton="false"/>
+        </View>
+      </View>
+    </View>
+  </Repeater>
+
+  <View className="px-note">
+    <Header value="Note for the team (optional)" size="6"/>
+    <TextArea name="note" toName="record" rows="2" editable="true"
+              maxSubmissions="1" showSubmitButton="false"
+              placeholder="Only if something needs explaining"/>
+  </View>
+</View>

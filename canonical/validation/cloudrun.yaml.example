@@ -1,0 +1,39 @@
+# Settings for the SERVER — the Label Studio running on Cloud Run.
+# --- the gatekeeper -------------------------------------------------------
+# Letters and numbers only; punctuation breaks the pattern match.
+# Generate:  python3 -c "import secrets; print(secrets.token_hex(16))"
+ADMIN_KEY: ""
+
+# --- your Label Studio login ---------------------------------------------
+# You choose these. Label Studio CREATES this account the first time it boots,
+# and it is how you log in. Both must be filled in — if either is empty no
+# account is made, and since signup is closed you would be locked out.
+LABEL_STUDIO_USERNAME: "you@example.com"
+LABEL_STUDIO_PASSWORD: ""
+
+# Without a fixed SECRET_KEY, Label Studio invents a new one on every restart
+# and signs everybody out.
+# Generate:  python3 -c "import secrets; print(secrets.token_urlsafe(48))"
+SECRET_KEY: ""
+
+# Closes public signup, so only people you invite can get in.
+LABEL_STUDIO_DISABLE_SIGNUP_WITHOUT_LINK: "true"
+
+# Fill BOTH of these in after the first deploy, once you know the URL, then
+# deploy again. Same value in each, no trailing slash.
+LABEL_STUDIO_HOST: ""
+
+# Without this, logging in fails with "Forbidden (403) CSRF verification
+# failed".  same as LABEL_STUDIO_HOST
+CSRF_TRUSTED_ORIGINS: ""
+
+# --- database (Neon) ------------------------------------------------------
+# DJANGO_DB "default" selects Postgres. Leave it as it is.
+DJANGO_DB: "default"
+STORAGE_PERSISTENCE: "1"
+
+POSTGRE_NAME: ""
+POSTGRE_USER: ""
+POSTGRE_PASSWORD: ""
+POSTGRE_HOST: ""
+POSTGRE_PORT: "5432"
