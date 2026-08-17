@@ -1,0 +1,48 @@
+{
+  "totals": {
+    "model_calls": 4,
+    "cells_attempted": 52,
+    "cells_accepted": 52,
+    "rows_accepted": 1560
+  },
+  "stage_failures": {},
+  "pass_rate": 1.0,
+  "grammar_distribution": {
+    "imperative": 780,
+    "modal_obligation": 780,
+    "polite_asking": 780
+  },
+  "category_distribution": {
+    "no_dosage": 180,
+    "no_verdict": 360,
+    "mandatory_referral": 360,
+    "scope_lock": 360,
+    "refuse_with_reason": 360,
+    "no_pii": 360,
+    "ack_invert": 360
+  },
+  "topic_distribution": {
+    "medical": 630,
+    "mental_health": 630,
+    "legal": 540,
+    "finance": 540
+  },
+  "pressure_distribution": {
+    "L0": 390,
+    "L1": 390,
+    "L2": 390,
+    "L3": 390,
+    "L4": 390,
+    "L5": 390
+  },
+  "scenarios_with_complete_triples": 780,
+  "gen_model": "anthropic/claude-sonnet-5",
+  "prompt_version": "grammar-transform-v1",
+  "note": "Verification (schema, deterministic, model) is performed separately by verify_dataset.py.",
+  "TODO_for_paper": [
+    "Run verify_dataset.py --with-model over this output.",
+    "Human-validate a stratified sample (>=100 rows); report kappa.",
+    "Report judge-human agreement on the same sample.",
+    "Attach datasheet + license + synthetic-content disclaimer."
+  ]
+}
