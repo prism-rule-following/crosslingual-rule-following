@@ -28,20 +28,42 @@ from canonical.model.dataset import DatasetConfig, DatasetLanguageCode, DatasetS
 TINY_MODEL = "roneneldan/TinyStories-1M"
 
 
+def make_checker(rule_status: str = "active", binds: bool = True) -> dict:
+    return {
+        "rule_status": rule_status,
+        "binds": binds,
+        "violation_event": "violation_occurred",
+        "checker_type": "llm_judge",
+        "instruction": "LLM-judge instruction text.",
+        "rubric": {
+            "held_if": "Held condition.",
+            "violated_if": "Violated condition.",
+            "ignore": "Ignore condition.",
+            "culture_invariant": True,
+            "point_at": "the relevant span",
+        },
+    }
+
+
 def make_row(**overrides) -> dict:
     """Shaped like dataset_generator's real output: the "system" column
-    (not "system_rule") is what split_constrast_pairs actually produces.
+    (not "system_rule") is what split_constrast_pairs actually produces,
+    and "checker" is the single active_checker/revoked_checker matching
+    rule_status (see split_constrast_pairs).
     """
     row = {
         "id": "r1",
-        "category": "active_cancelled",
+        "category": "ack_invert",
         "topic": "legal",
         "grammar_type": "imperative",
         "language": "en",
         "system": "Follow the rule.",
         "user_query": "What do I do?",
-        "checker": None,
         "pair_type": "active_cancelled",
+        "rule_status": "active",
+        "checker": make_checker("active", True),
+        "pressure_level": "L0",
+        "pressure_name": "neutral",
     }
     row.update(overrides)
     return row
@@ -102,19 +124,12 @@ def _isolate_checkpoint_dir(request, tmp_path):
 # ModelResponse / ModelGenerationConfig schema
 # --------------------------------------------------------------------------- #
 def test_model_response_valid_construction():
-    resp = inf.ModelResponse(
-        id="a",
-        category="active_cancelled",
-        topic="legal",
-        grammar_type="imperative",
-        language="en",
-        system="sys prompt",
-        user_query="q",
-        response="r",
-    )
+    resp = inf.ModelResponse(**make_row(id="a"), model_id=TINY_MODEL, response="r")
     assert resp.sample_idx == 0
-    assert resp.checker is None
-    assert resp.pair_type is None
+    assert resp.model_id == TINY_MODEL
+    assert resp.checker.binds is True
+    assert resp.pair_type == "active_cancelled"
+    assert resp.rule_status == "active"
 
 
 def test_model_response_missing_required_field_raises():
@@ -123,16 +138,10 @@ def test_model_response_missing_required_field_raises():
 
 
 def test_model_response_system_is_required():
+    row = make_row(id="a")
+    del row["system"]
     with pytest.raises(Exception):
-        inf.ModelResponse(
-            id="a",
-            category="active_cancelled",
-            topic="legal",
-            grammar_type="imperative",
-            language="en",
-            user_query="q",
-            response="r",
-        )
+        inf.ModelResponse(**row, model_id=TINY_MODEL, response="r")
 
 
 def test_model_generation_config_defaults():
@@ -234,6 +243,7 @@ def test_generate_response_returns_one_row_per_example(loaded_runner, tiny_datas
     for row in results:
         assert row["sample_idx"] == 0
         assert isinstance(row["response"], str)
+        assert row["model_id"] == TINY_MODEL
 
 
 def test_generate_response_n_samples_multiplies_output_rows(loaded_runner):
@@ -265,7 +275,7 @@ def test_generate_response_resumes_by_skipping_checkpointed_ids(loaded_runner):
     dataset = pd.DataFrame([make_row(id="r1"), make_row(id="r2")])
 
     already_done = inf.ModelResponse(
-        **make_row(id="r1"), response="PRE-EXISTING RESPONSE"
+        **make_row(id="r1"), model_id=TINY_MODEL, response="PRE-EXISTING RESPONSE"
     ).model_dump()
     loaded_runner._append_checkpoint(
         DatasetLanguageCode.en, "responses", [already_done]

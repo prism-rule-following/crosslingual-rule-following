@@ -13,14 +13,20 @@ from pydantic import ValidationError
 
 import canonical.model.dataset as ds
 from canonical.model.dataset import (
-    STATUS_LABELS,
+    ACTIVE_STATUSES,
+    PAIR_STATUS,
+    Category,
     CrossLingualRuleFollowingDataset,
-    DataCategories,
     DatasetConfig,
     DatasetLanguageCode,
     DatasetSource,
+    GrammarType,
     HFDataHelper,
-    RuleRow,
+    PairType,
+    PressureLevel,
+    PressureName,
+    RulePair,
+    Topic,
     _apply_filters,
     _to_dataframe,
     _validate_rows,
@@ -34,21 +40,56 @@ from canonical.model.dataset import (
 # --------------------------------------------------------------------------- #
 # Fixtures
 # --------------------------------------------------------------------------- #
+def make_checker(rule_status: str, binds: bool) -> dict:
+    return {
+        "rule_status": rule_status,
+        "binds": binds,
+        "violation_event": "violation_occurred",
+        "checker_type": "llm_judge",
+        "instruction": "LLM-judge instruction text.",
+        "rubric": {
+            "held_if": "Held condition.",
+            "violated_if": "Violated condition.",
+            "ignore": "Ignore condition.",
+            "culture_invariant": True,
+            "point_at": "the relevant span",
+        },
+    }
+
+
 def make_row(**overrides) -> dict:
+    """A fully valid RulePair dict. pair_type drives active_status/
+    revoked_status (and their checkers) via PAIR_STATUS, so overriding just
+    `pair_type` keeps the row internally consistent unless the caller also
+    overrides active_status/revoked_status/active_checker/revoked_checker
+    directly.
+    """
+    pair_type = overrides.get("pair_type", "active_cancelled")
+    active_status, revoked_status = PAIR_STATUS[PairType(pair_type)]
     row = {
         "id": "en-1",
-        "category": "active_cancelled",
+        "category": "ack_invert",
         "topic": "legal",
         "grammar_type": "imperative",
+        "pressure_level": "L0",
+        "pressure_name": "neutral",
+        "checker_tier": "judgment",
         "language": "en",
-        "context": "some context",
-        "rule_text": "You must comply.",
-        "non_rule_text": "You may ignore this.",
+        "context": "You are an assistant.",
+        "rule_clause": "must comply",
+        "pair_type": pair_type,
+        "active_status": active_status.value,
+        "revoked_status": revoked_status.value,
+        "rule_text": "must comply. Rule status: active.",
+        "non_rule_text": "must comply. Rule status: cancelled.",
         "system_rule": "SYSTEM: rule active",
         "system_non_rule": "SYSTEM: rule cancelled",
         "user_query": "What should I do?",
-        "rule_clause": "must comply",
-        "pair_type": "active_cancelled",
+        "user_turns": None,
+        "correct_answer": "A compliant answer.",
+        "correct_keywords": ["comply"],
+        "active_checker": make_checker(active_status.value, True),
+        "revoked_checker": make_checker(revoked_status.value, False),
     }
     row.update(overrides)
     return row
@@ -61,31 +102,32 @@ def sample_pairs() -> list:
             id="en-1",
             language="en",
             topic="legal",
-            category="active_cancelled",
+            category="ack_invert",
             pair_type="active_cancelled",
         ),
         make_row(
             id="en-2",
             language="en",
-            topic="general",
-            category="banned_word",
-            grammar_type="n/a",
-            pair_type=None,
+            topic="mental_health",
+            category="no_pii",
+            grammar_type="polite_asking",
+            pair_type="on_off",
         ),
         make_row(
             id="de-1",
             language="de",
             topic="finance",
-            category="active_cancelled",
+            category="no_dosage",
             grammar_type="modal_obligation",
+            pair_type="active_cancelled",
         ),
         make_row(
             id="en-3",
             language="en",
             topic="medical",
-            category="start_with",
+            category="scope_lock",
             grammar_type="polite_asking",
-            pair_type="on_off",
+            pair_type="enabled_disabled",
         ),
     ]
 
@@ -223,7 +265,7 @@ def test_load_source_dataset_reraises_on_failure(monkeypatch):
 def sample_pairs_static() -> list:
     return [
         make_row(id="hf-1"),
-        make_row(id="hf-2", pair_type=None, category="banned_word"),
+        make_row(id="hf-2", pair_type="on_off"),
     ]
 
 
@@ -298,15 +340,26 @@ def test_validate_rows_raises_when_strict(sample_pairs):
 def test_validate_rows_handles_nan_optional_fields(sample_pairs):
     # pandas fills missing columns with NaN across rows of differing shape;
     # Optional[...] fields must accept that as None rather than failing.
-    row_without_checker = make_row(id="no-checker")
+    row_without_metadata = make_row(id="no-metadata")
     df = pd.DataFrame(
         [
-            row_without_checker,
-            {**row_without_checker, "id": "with-extra", "checker": "manual/llm-judge"},
+            row_without_metadata,
+            {
+                **row_without_metadata,
+                "id": "with-extra",
+                "generation_metadata": None,
+            },
         ]
     )
     result = _validate_rows(df, strict=False)
     assert len(result) == 2
+
+
+def test_validate_rows_rejects_unknown_category(sample_pairs):
+    bad_row = make_row(id="bad-category", category="banned_word")  # v1-only category
+    df = pd.DataFrame(sample_pairs + [bad_row])
+    result = _validate_rows(df, strict=False)
+    assert "bad-category" not in set(result["id"])
 
 
 # --------------------------------------------------------------------------- #
@@ -314,11 +367,9 @@ def test_validate_rows_handles_nan_optional_fields(sample_pairs):
 # --------------------------------------------------------------------------- #
 def test_apply_filters_by_category(sample_pairs):
     df = pd.DataFrame(sample_pairs)
-    config = DatasetConfig(
-        url="x", source="gh", category=[DataCategories.active_cancelled]
-    )
+    config = DatasetConfig(url="x", source="gh", categories=[Category.ack_invert])
     result = _apply_filters(df, config)
-    assert set(result["category"]) == {"active_cancelled"}
+    assert set(result["category"]) == {"ack_invert"}
 
 
 def test_apply_filters_by_language(sample_pairs):
@@ -326,6 +377,14 @@ def test_apply_filters_by_language(sample_pairs):
     config = DatasetConfig(url="x", source="gh", languages=[DatasetLanguageCode.de])
     result = _apply_filters(df, config)
     assert set(result["language"]) == {"de"}
+
+
+def test_apply_filters_by_pressure_level(sample_pairs):
+    df = pd.DataFrame(sample_pairs)
+    config = DatasetConfig(url="x", source="gh", pressure_levels=["L0"])
+    result = _apply_filters(df, config)
+    assert set(result["pressure_level"]) == {"L0"}
+    assert len(result) == len(sample_pairs)  # all sample rows are L0
 
 
 def test_apply_filters_missing_column_is_noop(sample_pairs):
@@ -340,7 +399,7 @@ def test_apply_filters_combined(sample_pairs):
     config = DatasetConfig(
         url="x",
         source="gh",
-        category=[DataCategories.active_cancelled],
+        categories=[Category.ack_invert],
         languages=[DatasetLanguageCode.en],
     )
     result = _apply_filters(df, config)
@@ -364,47 +423,69 @@ def test_split_constrast_pairs_produces_clean_and_revoked_rows():
     assert revoked["system"] == df.iloc[0]["system_non_rule"]
 
 
-def test_split_constrast_pairs_covers_all_status_labels():
-    rows = [make_row(id=f"r-{pt}", pair_type=pt) for pt in STATUS_LABELS]
-    result = split_constrast_pairs(pd.DataFrame(rows))
-    assert len(result) == 2 * len(STATUS_LABELS)
-
-
-def test_split_constrast_pairs_uses_generic_labels_when_pair_type_missing():
-    df = pd.DataFrame([make_row(id="no-pair", pair_type=None)])
+def test_split_constrast_pairs_assigns_the_matching_checker_only():
+    df = pd.DataFrame([make_row(id="r1", pair_type="active_cancelled")])
     result = split_constrast_pairs(df)
-    assert len(result) == 2
-    assert set(result["id"]) == {"no-pair_clean", "no-pair_revoked"}
-    clean = result[result["id"] == "no-pair_clean"].iloc[0]
-    revoked = result[result["id"] == "no-pair_revoked"].iloc[0]
-    assert clean["rule_status"] == "active"
-    assert revoked["rule_status"] == "revoked"
+    clean = result[result["id"] == "r1_clean"].iloc[0]
+    revoked = result[result["id"] == "r1_revoked"].iloc[0]
+
+    assert clean["checker"] == df.iloc[0]["active_checker"]
+    assert revoked["checker"] == df.iloc[0]["revoked_checker"]
+    # neither split row carries the other side's checker
+    assert "active_checker" not in clean.index
+    assert "revoked_checker" not in clean.index
+    assert "active_checker" not in revoked.index
+    assert "revoked_checker" not in revoked.index
+
+
+def test_split_constrast_pairs_covers_all_pair_types():
+    rows = [make_row(id=f"r-{pt.value}", pair_type=pt.value) for pt in PairType]
+    result = split_constrast_pairs(pd.DataFrame(rows))
+    assert len(result) == 2 * len(PairType)
+    for pt in PairType:
+        active, revoked = PAIR_STATUS[pt]
+        clean = result[result["id"] == f"r-{pt.value}_clean"].iloc[0]
+        assert clean["rule_status"] == active.value
 
 
 def test_split_constrast_pairs_no_rows_dropped_for_mixed_pair_types():
     df = pd.DataFrame(
         [
-            make_row(id="a", pair_type=None),
-            make_row(id="b", pair_type="imperative_declarative"),
+            make_row(id="a", pair_type="active_cancelled"),
+            make_row(id="b", pair_type="on_off"),
             make_row(id="c", pair_type="enabled_disabled"),
         ]
     )
     result = split_constrast_pairs(df)
     assert len(result) == 6  # every source row splits into 2, none dropped
 
-    imp = result[result["id"] == "b_clean"].iloc[0]
-    assert imp["rule_status"] == "imperative"
+    on_off = result[result["id"] == "b_clean"].iloc[0]
+    assert on_off["rule_status"] == "on"
     enabled = result[result["id"] == "c_clean"].iloc[0]
     assert enabled["rule_status"] == "enabled"
 
 
+def test_split_constrast_pairs_requires_active_and_revoked_status_columns():
+    # No fallback here (unlike the old pair_type-keyed lookup): rows must
+    # already carry active_status/revoked_status, i.e. have passed RulePair
+    # validation, before reaching this function.
+    df = pd.DataFrame([make_row(id="r1")]).drop(columns=["active_status"])
+    with pytest.raises(KeyError):
+        split_constrast_pairs(df)
+
+
 # --------------------------------------------------------------------------- #
-# DatasetConfig / RuleRow validation
+# DatasetConfig / RulePair validation
 # --------------------------------------------------------------------------- #
 def test_dataset_config_defaults_include_full_enums():
     config = DatasetConfig(url="x", source="gh")
-    assert set(config.category) == set(DataCategories)
+    assert set(config.categories) == set(Category)
     assert set(config.languages) == set(DatasetLanguageCode)
+    assert set(config.grammars) == set(GrammarType)
+    assert set(config.topics) == set(Topic)
+    assert set(config.contrastive_pairs) == set(PairType)
+    assert set(config.pressure_levels) == set(PressureLevel)
+    assert set(config.pressure_names) == set(PressureName)
 
 
 def test_dataset_config_rejects_unsupported_language():
@@ -417,16 +498,22 @@ def test_dataset_config_accepts_supported_language_subset():
     assert config.languages == [DatasetLanguageCode.en, DatasetLanguageCode.de]
 
 
-def test_rule_row_preserves_extra_fields():
-    row = RuleRow(**make_row(extra_field="kept"))
-    assert row.model_dump()["extra_field"] == "kept"
+def test_rule_pair_ignores_extra_fields():
+    row = RulePair(**make_row(extra_field="dropped"))
+    assert "extra_field" not in row.model_dump()
 
 
-def test_rule_row_requires_mandatory_fields():
+def test_rule_pair_requires_mandatory_fields():
     incomplete = make_row()
     del incomplete["system_rule"]
     with pytest.raises(ValidationError):
-        RuleRow(**incomplete)
+        RulePair(**incomplete)
+
+
+def test_rule_pair_rejects_mismatched_status_pair():
+    bad = make_row(active_status="active", revoked_status="off")  # not a real pair
+    with pytest.raises(ValidationError):
+        RulePair(**bad)
 
 
 # --------------------------------------------------------------------------- #
@@ -436,7 +523,7 @@ def test_dataset_generator_gh_source_end_to_end(sample_dataset_file):
     config = DatasetConfig(url=str(sample_dataset_file), source=DatasetSource.gh)
     df = dataset_generator(config)
     assert len(df) == 8
-    assert set(df["rule_status"]) == {"active", "cancelled", "on", "off", "revoked"}
+    assert set(df["rule_status"]) == {"active", "cancelled", "on", "off", "enabled", "disabled"}
 
 
 def test_cross_lingual_dataset_gh_source(sample_dataset_file):
@@ -577,39 +664,85 @@ def test_build_indices_populates_and_nulls_correctly(sample_pairs):
     )
 
     def fn(row):
-        if row["category"] == "banned_word":
+        if row["category"] == "no_pii":
             return None
         return (1, 2)
 
     dataset.build_indices(fn)
-    banned = dataset.df[dataset.df["category"] == "banned_word"].iloc[0]
-    other = dataset.df[dataset.df["category"] != "banned_word"].iloc[0]
-    assert pd.isna(banned["correct_idx"])
+    no_pii = dataset.df[dataset.df["category"] == "no_pii"].iloc[0]
+    other = dataset.df[dataset.df["category"] != "no_pii"].iloc[0]
+    assert pd.isna(no_pii["correct_idx"])
     assert other["correct_idx"] == 1
     assert other["incorrect_idx"] == 2
 
 
-def test_to_dataloader_batches_with_collate_behavioral(sample_pairs):
-    dataset = CrossLingualRuleFollowingDataset.from_dataframe(
-        pd.DataFrame(sample_pairs)
-    )
-    loader = dataset.to_dataloader(batch_size=2, collate_fn=collate_behavioral)
+def test_to_dataloader_batches_with_collate_behavioral(sample_dataset_file):
+    # Post-split rows (system/rule_status columns), matching real usage.
+    config = DatasetConfig(url=str(sample_dataset_file), source=DatasetSource.gh)
+    dataset = CrossLingualRuleFollowingDataset(config)
+    loader = dataset.to_dataloader(batch_size=8, collate_fn=collate_behavioral)
     batch = next(iter(loader))
-    system_rule, user_query, ids = batch
-    assert len(system_rule) == 2
-    assert len(user_query) == 2
-    assert len(ids) == 2
+    system, user_query, ids, checkers = batch
+    assert len(system) == 4  # only the active-side half of each of the 4 pairs
+    assert len(user_query) == 4
+    assert len(ids) == 4
+    assert len(checkers) == 4
+    assert all(i.endswith("_clean") for i in ids)
+    assert all(c["binds"] for c in checkers)  # active_checker always binds=True
 
 
 # --------------------------------------------------------------------------- #
 # collate_behavioral
 # --------------------------------------------------------------------------- #
-def test_collate_behavioral_extracts_expected_fields(sample_pairs):
-    batch = sample_pairs[:2]
-    system_rule, user_query, ids = collate_behavioral(batch)
-    assert system_rule == [row["system_rule"] for row in batch]
+def make_split_row(**overrides) -> dict:
+    """Shaped like dataset_generator's real (post-split) output."""
+    row = {
+        "id": "r1_clean",
+        "system": "Follow the rule.",
+        "user_query": "What do I do?",
+        "rule_status": "active",
+        "checker": make_checker("active", True),
+    }
+    row.update(overrides)
+    return row
+
+
+def test_collate_behavioral_keeps_only_active_side():
+    batch = [
+        make_split_row(id="r1_clean", rule_status="active"),
+        make_split_row(
+            id="r1_revoked", rule_status="cancelled", checker=make_checker("cancelled", False)
+        ),
+        make_split_row(id="r2_clean", rule_status="on", checker=make_checker("on", True)),
+        make_split_row(
+            id="r2_revoked", rule_status="off", checker=make_checker("off", False)
+        ),
+    ]
+    system, user_query, ids, checkers = collate_behavioral(batch)
+    assert ids == ["r1_clean", "r2_clean"]
+    assert len(system) == 2
+    assert len(user_query) == 2
+    assert len(checkers) == 2
+    assert all(c["binds"] for c in checkers)
+
+
+def test_collate_behavioral_extracts_expected_fields():
+    batch = [make_split_row(id="r1_clean"), make_split_row(id="r2_clean")]
+    system, user_query, ids, checkers = collate_behavioral(batch)
+    assert system == [row["system"] for row in batch]
     assert user_query == [row["user_query"] for row in batch]
     assert ids == [row["id"] for row in batch]
+    assert checkers == [row["checker"] for row in batch]
+
+
+def test_collate_behavioral_empty_batch_when_all_revoked():
+    batch = [
+        make_split_row(
+            id="r1_revoked", rule_status="cancelled", checker=make_checker("cancelled", False)
+        )
+    ]
+    system, user_query, ids, checkers = collate_behavioral(batch)
+    assert system == user_query == ids == checkers == []
 
 
 # --------------------------------------------------------------------------- #

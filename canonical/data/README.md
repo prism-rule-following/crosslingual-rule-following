@@ -28,7 +28,7 @@ Requires `openpyxl`. English base (`full_dataset.json`) must be present — it's
 
 ### `script/hf_upload.py` — push a dataset file to the Hugging Face Hub
 
-Uploads a single `full_dataset*.json` file to `<repo_id>/<path-in-repo>/<language_code>/full_dataset.json` on the Hub. Run once per language.
+Validates every pair against `RulePair`, then uploads two files to `<repo_id>/<path-in-repo>/<language_code>/` on the Hub: the pairs as `<split>.jsonl` (JSON Lines, not a pretty-printed array - the Hub's dataset viewer/parquet-conversion job reads JSON files as line-delimited records; the Hub's filename-based split detection keys off train/test/validation/dev in the name, so `--split` picks that name explicitly rather than leaving it to guess) and the source file's `metadata` object as `_metadata.json` (the `_` prefix excludes it from data-file auto-detection, so it doesn't compete with `<split>.jsonl` for split assignment). Run once per language.
 
 Must be invoked as a module from the **repo root** (not as a bare script path), since it imports via the full `canonical.*` path:
 
@@ -37,7 +37,10 @@ uv run python3 -m canonical.data.script.hf_upload \
   --data-file canonical/data/full_dataset.json \
   --repo-id crosslingual-rule-following/rule-following-pairs \
   --language-code en \
-  --path-in-repo data
+  --path-in-repo data \
+  --split train
 ```
+
+`--split` defaults to `train` if omitted.
 
 Requires an `HF_TOKEN` with write access to the target repo (loaded via `.env`/`load_dotenv()`), and the target dataset repo must already exist on the Hub — create it once via the website, or add `api.create_repo(repo_id=..., repo_type="dataset", exist_ok=True)` before the upload call if you want the script to create it automatically.

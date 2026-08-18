@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from typing import Dict, List
 
-from schema import PAIR_STATUS
+from model.dataset import PAIR_STATUS
 
 # --------------------------------------------------------------------------- #
 # Register definitions — what each grammar_type means, with worked contrasts.

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 
-from canonical.model.dataset import DatasetLanguageCode
+from canonical.model.dataset import DatasetLanguageCode, RulePair
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -26,7 +26,12 @@ def main() -> None:
         "--path-in-repo",
         required=True,
         help="Base destination path inside the repo (the language code and "
-        "filename are appended automatically, e.g. 'data' -> 'data/de/full_dataset.json')",
+        "filename are appended automatically, e.g. 'data' -> 'data')",
+    )
+    ap.add_argument(
+        "--split",
+        default="test",
+        help="Dataset split name (e.g. train, test, validation).",
     )
 
     args = ap.parse_args()
@@ -49,24 +54,24 @@ def main() -> None:
         raise ValueError(
             f"{args.data_file} has no top-level 'pairs' key - nothing to upload"
         )
+    if "metadata" not in data:
+        raise ValueError(
+            f"{args.data_file} has no top-level 'metadata' key - nothing to upload"
+        )
 
-    # Upload only the rows themselves, not the surrounding {"metadata": ...,
-    # "pairs": [...]} wrapper - HF dataset loaders expect a bare list of
-    # records, not an arbitrarily-nested structure.
-    pairs_bytes = json.dumps(data["pairs"], ensure_ascii=False, indent=2).encode(
-        "utf-8"
-    )
+    pairs = [RulePair.model_validate(d) for d in data["pairs"]]
+    pairs_bytes = "\n".join(
+        json.dumps(p.model_dump(mode="json"), ensure_ascii=False) for p in pairs
+    ).encode("utf-8")
 
     api = HfApi()
 
     api.create_repo(repo_id=args.repo_id, repo_type="dataset", exist_ok=True)
 
-    # Upload a single file, named uniformly inside its own language folder -
-    # the language is already encoded in the folder, so the filename itself
-    # doesn't need a repeated language suffix.
+    base_path = f"{args.path_in_repo}/{args.language_code}"
     api.upload_file(
         path_or_fileobj=pairs_bytes,
-        path_in_repo=f"{args.path_in_repo}/{args.language_code}/full_dataset.json",
+        path_in_repo=f"{base_path}/{args.split}.jsonl",
         repo_id=args.repo_id,
         repo_type="dataset",
     )

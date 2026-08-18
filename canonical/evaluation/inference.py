@@ -16,11 +16,18 @@ from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
 
 from canonical.model.dataset import (
+    Category,
+    Checker,
     CrossLingualRuleFollowingDataset,
-    DataCategories,
     DatasetConfig,
     DatasetLanguageCode,
+    GrammarType,
     HFDataHelper,
+    PairType,
+    PressureLevel,
+    PressureName,
+    RuleStatus,
+    Topic,
     nan_to_none,
 )
 from dotenv import load_dotenv
@@ -32,11 +39,14 @@ class ModelResponse(BaseModel):
     """One model-generated response, keyed back to its source dataset row."""
 
     id: str = Field(..., description="row id from the source dataset")
-    category: DataCategories = Field(..., description="rule category of the source row")
-    topic: str = Field(..., description="topic of the source row")
-    grammar_type: str = Field(..., description="grammar type of the source row")
+    model_id: str = Field(
+        ..., description="HuggingFace model id that generated this response"
+    )
+    category: Category = Field(..., description="rule category of the source row")
+    topic: Topic = Field(..., description="topic of the source row")
+    grammar_type: GrammarType = Field(..., description="grammar type of the source row")
     language: DatasetLanguageCode = Field(..., description="language of the source row")
-    system: str = Field(default=..., description="System prompt for the row")
+    system: str = Field(..., description="System prompt for the row")
     user_query: str = Field(
         ..., description="user query the model was asked to respond to"
     )
@@ -46,11 +56,26 @@ class ModelResponse(BaseModel):
         description="index of this stochastic sample among the n_samples "
         "generated for this prompt row",
     )
-    checker: Optional[str] = Field(
-        default=None, description="checker spec used to grade the response, if any"
+    pair_type: PairType = Field(
+        ..., description="contrastive pair type of the source row"
     )
-    pair_type: Optional[str] = Field(
-        default=None, description="contrastive pair type of the source row, if any"
+    rule_status: RuleStatus = Field(
+        ...,
+        description="which side of the pair this response was generated under "
+        "(active_status if the rule binds, revoked_status if it's lifted)",
+    )
+    checker: Checker = Field(
+        ...,
+        description="the checker matching rule_status - active_checker if "
+        "rule_status is active-family, revoked_checker if revoked-family",
+    )
+    pressure_level: PressureLevel = Field(
+        ...,
+        description="pressure_level of the source row",
+    )
+    pressure_name: PressureName = Field(
+        ...,
+        description="pressure_name of the source row",
     )
 
 
@@ -285,7 +310,10 @@ class ModelRunner:
                 )
                 batch_results.append(
                     ModelResponse(
-                        **row, response=response, sample_idx=i % self.config.n_samples
+                        **row,
+                        model_id=self.model_id,
+                        response=response,
+                        sample_idx=i % self.config.n_samples,
                     ).model_dump()
                 )
             results.extend(batch_results)
