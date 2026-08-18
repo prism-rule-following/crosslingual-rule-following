@@ -1,0 +1,21 @@
+{
+  "input_file": "canonical/data/v2/judgment_rules.json",
+  "counts": {
+    "input": 780,
+    "after_uniqueness": 780,
+    "fail_uniqueness": 0,
+    "after_schema": 780,
+    "fail_schema": 0,
+    "after_deterministic": 780,
+    "fail_deterministic": 0
+  },
+  "pass_rate": 1.0,
+  "stages_run": [
+    "uniqueness",
+    "schema",
+    "deterministic"
+  ],
+  "verify_model": null,
+  "rejects_by_stage": {},
+  "ts": "2026-08-17T19:26:13.835331+00:00"
+}
