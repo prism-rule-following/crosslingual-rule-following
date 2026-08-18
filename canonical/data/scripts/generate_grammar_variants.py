@@ -39,7 +39,7 @@ from tqdm import tqdm
 
 from prompts import build_batch_transform_prompt, cell_id
 from quality_gate import check_clause
-from schema import (
+from model.dataset import (
     Dataset,
     GenerationRecord,
     RulePair,
