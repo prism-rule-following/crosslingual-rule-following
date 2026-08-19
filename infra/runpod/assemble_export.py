@@ -25,6 +25,7 @@ exactly once in the activation index.
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 sys.path.insert(0, "/workspace/crosslingual-rule-following")
 
@@ -59,6 +60,8 @@ def main():
     )
     runner = inf.ModelRunner(config)
     runner.model_id = MODEL_ID
+    # Stub the model just enough for _group_hook_names (n_layers); no weights needed.
+    runner.model = SimpleNamespace(cfg=SimpleNamespace(n_layers=32))
 
     export_dir = EXPORT / MODEL_ID.replace("/", "__")
     export_dir.mkdir(parents=True, exist_ok=True)
