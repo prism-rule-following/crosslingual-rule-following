@@ -26,48 +26,55 @@ if TYPE_CHECKING:
 InterventionType = Literal["mean", "patching", "zero"]
 VALID_INTERVENTIONS: Tuple[InterventionType, ...] = ("mean", "patching", "zero")
 
-# name -> ready-to-use metric ("logit_diff") or factory that builds one
-# ("adherence" needs checker/tokenizer, "cosine" needs the internal-state caches)
 METRIC_REGISTRY: Dict[str, Union[MetricFn, Callable[..., MetricFn]]] = {
     "logit_diff": logit_diff,
     "adherence": make_adherence_metric,
-    "cosine": make_internal_state_metric,
+    # "cosine": make_internal_state_metric,
+    "fidelity": make_internal_state_metric,
 }
 
 
-def resolve_metrics(metric_names: List[str], **metric_kwargs: Any) -> List[MetricFn]:
-    """Translate metric name strings into the List[Callable] evaluate_graph expects.
+def resolve_metrics(metric_names: List[str], **metric_kwargs: Any) -> Dict[str, MetricFn]:
+    """Translate metric name strings into a {name: Callable} dict, so a metric's
+    function can always be looked up by its own name (e.g. resolved["logit_diff"]).
 
-    'logit_diff' is used as-is. 'adherence' is built via
+    'logit_diff' is used as-is.
+
+    'adherence' is built via
     make_adherence_metric(checker, tokenizer) using the `checker`/`tokenizer` kwargs.
-    'cosine' is built via make_internal_state_metric(internal_cache, target_internal_cache)
-    using the `internal_cache`/`target_internal_cache` kwargs.
+
+    'fidelity' loads the trained probes and evaluates them during activation patching.
+
+    Any name not in METRIC_REGISTRY is looked up directly in metric_kwargs under its
+    own name, e.g. resolve_metrics(["my_metric"], my_metric=some_callable). Raises if
+    it's neither a known metric nor provided that way.
     """
-    resolved: List[MetricFn] = []
+    resolved: Dict[str, MetricFn] = {}
     for name in metric_names:
         if name not in METRIC_REGISTRY:
-            raise ValueError(
-                f"Unknown metric {name!r}, must be one of {list(METRIC_REGISTRY)}"
-            )
+            custom_fn = metric_kwargs.get(name)
+            if not callable(custom_fn):
+                raise ValueError(
+                    f"Metric {name!r} not found in METRIC_REGISTRY and no callable "
+                    f"provided for it in metric_kwargs (pass {name}=<callable>)."
+                )
+            resolved[name] = custom_fn
+            continue
+
         factory_or_fn = METRIC_REGISTRY[name]
         if name == "adherence":
-            resolved.append(
-                factory_or_fn(metric_kwargs["checker"], metric_kwargs["tokenizer"])
+            resolved[name] = factory_or_fn(
+                metric_kwargs["checker"], metric_kwargs["tokenizer"]
             )
-        elif name == "cosine":
-            resolved.append(
-                factory_or_fn(
-                    metric_kwargs["internal_cache"],
-                    metric_kwargs["target_internal_cache"],
-                )
-            )
+        elif name == "fidelity":
+            pass
         else:
-            resolved.append(factory_or_fn)
+            resolved[name] = factory_or_fn
     return resolved
 
 
 def validate_intervention(intervention: str) -> InterventionType:
-    """Validate that `intervention` is one of the types evaluate_graph supports."""
+    """Checks if intervention is valid."""
     if intervention not in VALID_INTERVENTIONS:
         raise ValueError(
             f"intervention must be one of {VALID_INTERVENTIONS}, got {intervention!r}"
@@ -104,7 +111,8 @@ def build_chat_tokenizer(
                 messages.append({"role": "system", "content": system_text})
             messages.append({"role": "user", "content": user_text})
             text = tok.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=add_generation_prompt)
+                messages, tokenize=False, add_generation_prompt=add_generation_prompt
+            )
             return model.to_tokens(text, prepend_bos=False)
         # Plain concatenation if a chat template isn't available like for Gemmas
         text = f"{system_text}\n\n{user_text}".strip()
@@ -119,6 +127,7 @@ def build_generator(
     stop_at_eos: bool = True,
 ) -> Callable[["HookedTransformer", torch.Tensor], str]:
     """Build a `generate_fn(model, tokens) -> str` for the verification runs."""
+
     def generate_fn(model: "HookedTransformer", tokens: torch.Tensor) -> str:
         n_prompt = tokens.shape[-1]
 
@@ -128,7 +137,7 @@ def build_generator(
             temperature=temperature,
             do_sample=(temperature > 0.0),
             stop_at_eos=stop_at_eos,
-            verbose=False,          # suppress the per-call progress bar
+            verbose=False,  # suppress the per-call progress bar
         )
 
         # model.generate returns prompt + completion; keep only the completion.

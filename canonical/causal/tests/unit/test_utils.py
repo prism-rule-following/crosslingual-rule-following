@@ -31,7 +31,7 @@ def test_validate_intervention_rejects_garbage():
 def test_resolve_metrics_returns_logit_diff_unwrapped():
     metrics = resolve_metrics(["logit_diff"])
 
-    assert metrics == [logit_diff]
+    assert metrics == {"logit_diff": logit_diff}
 
 
 def test_resolve_metrics_raises_on_unknown_name():
@@ -46,9 +46,9 @@ def test_resolve_metrics_builds_adherence_from_checker_and_tokenizer():
 
     metrics = resolve_metrics(["adherence"], checker=lambda text: 1.0, tokenizer=FakeTokenizer())
 
-    assert len(metrics) == 1
+    assert list(metrics) == ["adherence"]
     logits = torch.zeros(1, 1, 2)
-    result = metrics[0](logits, None, torch.tensor([1]), torch.tensor([0]))
+    result = metrics["adherence"](logits, None, torch.tensor([1]), torch.tensor([0]))
     assert result.item() == 1.0
 
 
@@ -64,13 +64,13 @@ def test_resolve_metrics_builds_multiple_metrics_in_requested_order():
     )
 
     assert len(metrics) == 2
-    assert metrics[0] is logit_diff
-    # metrics[1] must be the *built* adherence metric, not e.g. the raw
+    assert metrics["logit_diff"] is logit_diff
+    # metrics["adherence"] must be the *built* adherence metric, not e.g. the raw
     # make_adherence_metric factory (which is also "callable" but takes
     # (checker, tokenizer, mean), not (logits, clean_logits, lengths, label)
     # -- so actually invoke it with the real 4-arg metric signature.
-    assert metrics[1] is not logit_diff
-    result = metrics[1](torch.zeros(1, 1, 2), None, torch.tensor([1]), torch.tensor([0]))
+    assert metrics["adherence"] is not logit_diff
+    result = metrics["adherence"](torch.zeros(1, 1, 2), None, torch.tensor([1]), torch.tensor([0]))
     assert result.item() == 1.0
 
 

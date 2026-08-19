@@ -6,10 +6,14 @@ import torch
 
 # The metric protocol evaluate_graph calls: metric(logits, clean_logits, input_lengths, label).
 # clean_logits is None whenever evaluate_graph/evaluate_baseline run with skip_clean=True.
-MetricFn = Callable[[torch.Tensor, Optional[torch.Tensor], torch.Tensor, torch.Tensor], torch.Tensor]
+MetricFn = Callable[
+    [torch.Tensor, Optional[torch.Tensor], torch.Tensor, torch.Tensor], torch.Tensor
+]
 
 
-def get_logit_positions(logits: torch.Tensor, input_length: torch.Tensor) -> torch.Tensor:
+def get_logit_positions(
+    logits: torch.Tensor, input_length: torch.Tensor
+) -> torch.Tensor:
     """Helper function to get logit positions."""
     batch_size = logits.size(0)
     index = torch.arange(batch_size, device=logits.device)
@@ -75,7 +79,7 @@ def make_internal_state_metric(
     target_internal_cache: Union[Dict[str, torch.Tensor], torch.Tensor],
     mean: bool = True,
 ) -> MetricFn:
-    def cosine_similarity(
+    def fidelity(
         logits: torch.Tensor,
         clean_logits: Optional[torch.Tensor],
         input_lengths: torch.Tensor,

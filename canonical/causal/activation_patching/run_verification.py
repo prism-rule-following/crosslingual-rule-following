@@ -19,6 +19,7 @@ from canonical.causal.activation_patching.utils import (
 )
 
 if TYPE_CHECKING:
+    # import only when necessary
     from eap.graph import Graph
     from transformer_lens import HookedTransformer
 
@@ -39,17 +40,21 @@ def run_verification(
     checker: Optional[Callable[[str], float]] = None,
     tokenizer: Any = None,
     internal_cache: Optional[Union[Dict[str, torch.Tensor], torch.Tensor]] = None,
-    target_internal_cache: Optional[Union[Dict[str, torch.Tensor], torch.Tensor]] = None,
+    target_internal_cache: Optional[
+        Union[Dict[str, torch.Tensor], torch.Tensor]
+    ] = None,
 ) -> Dict[str, Any]:
     """Run sufficiency, necessity, completeness and minimality checks in order.
 
-    `metric_names` is a list of metric names, e.g. ["logit_diff", "adherence", "cosine"]
-    (see utils.METRIC_REGISTRY). "adherence" requires `checker`/`tokenizer`; "cosine"
-    requires `internal_cache`/`target_internal_cache`.
-    `model_name` and `dataset` (e.g. an HF dataset id/link) are recorded as run metadata.
+    `metric_names` is a list of metric names, e.g. ["logit_diff", "adherence", "fidelity"]
+
+    `model_name` and `dataset` (e.g. an HF dataset id/link) are recorded as run metadata
+    in the resulting file.
+
     `intervention` must be one of "mean", "patching" or "zero" and is used for every
-    verification step; `intervention_dataloader` is required by eap when intervention
-    is "mean" (see dataloaders.build_neutral_dataloader for a ready-made one).
+    verification step; `intervention_dataloader` is required by EAP when intervention
+    is "mean"
+
     Results are saved to `out_path` as JSON and also returned.
     """
     validate_intervention(intervention)
@@ -61,6 +66,7 @@ def run_verification(
         target_internal_cache=target_internal_cache,
     )
     start_time = datetime.now()
+
     verifier = CircuitVerifier(model, graph, dataloader, metrics)
 
     runs = {}
@@ -106,7 +112,8 @@ def _build_arg_parser() -> argparse.ArgumentParser:
         "necessity, completeness, minimality) from the command line."
     )
     parser.add_argument(
-        "model_name", help="TransformerLens model name, e.g. 'attn-only-1l' or 'gpt2-small'"
+        "model_name",
+        help="TransformerLens model name, e.g. 'attn-only-1l' or 'gpt2-small'",
     )
     parser.add_argument(
         "graph_path", help="Path to a saved circuit, i.e. eap Graph.to_json(...) output"
@@ -128,7 +135,10 @@ def _build_arg_parser() -> argparse.ArgumentParser:
         "--intervention", default="patching", choices=list(VALID_INTERVENTIONS)
     )
     parser.add_argument(
-        "--steps", type=int, default=10, help="Greedy search steps for completeness verification"
+        "--steps",
+        type=int,
+        default=10,
+        help="Greedy search steps for completeness verification",
     )
     parser.add_argument(
         "--neutral-n-sentences",
@@ -158,7 +168,9 @@ def main(argv: Optional[Sequence[str]] = None) -> Dict[str, Any]:
     model.cfg.use_hook_mlp_in = True
 
     graph = Graph.from_json(args.graph_path)
-    dataloader = build_clean_corrupted_dataloader(args.dataset_csv, batch_size=args.batch_size)
+    dataloader = build_clean_corrupted_dataloader(
+        args.dataset_csv, batch_size=args.batch_size
+    )
 
     intervention_dataloader = None
     if args.intervention == "mean":
