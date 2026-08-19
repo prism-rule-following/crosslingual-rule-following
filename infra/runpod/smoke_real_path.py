@@ -121,7 +121,9 @@ def main():
         done_path = runner._activation_done_path(DatasetLanguageCode.en)
         check(done_path.exists(), "done.jsonl exists")
         shards = list(runner._activation_shards_dir(DatasetLanguageCode.en).glob("*.npy"))
-        check(len(shards) >= 6, f"shard files written ({len(shards)})")
+        # Llama has no attn.qkv.hook_in under TransformerBridge -> 5 of 6
+        # groups present (all probing groups + hook_out; attn_qkv_input absent).
+        check(len(shards) >= 5, f"shard files written ({len(shards)})")
 
         # ---- resume: no duplicates ----
         act2 = runner.extract_hidden_states(df, lang_code=DatasetLanguageCode.en)
