@@ -47,11 +47,16 @@ EXPORT = Path("/workspace/inference_export")
 DATA_JSON = "/workspace/smoke_dataset.json"
 EXPECTED_ROWS = 4680
 N_SAMPLES = 10
+# n_layers per model (Llama-3.1-8B = 32, Qwen3-8B = 36). Must match the model
+# whose shards are being assembled.
+N_LAYERS = {"meta-llama/Llama-3.1-8B-Instruct": 32, "Qwen/Qwen3-8B": 36}
 
 
 def main():
+    model_id = sys.argv[1] if len(sys.argv) > 1 else MODEL_ID
+    n_layers = N_LAYERS[model_id]
     config = inf.ModelGenerationConfig(
-        model_ids=[MODEL_ID],
+        model_ids=[model_id],
         dataset_config=DatasetConfig(
             url=DATA_JSON, source=DatasetSource.gh, validate_rows=True, strict=True
         ),
@@ -59,11 +64,11 @@ def main():
         checkpoint_dir=str(CKPT),
     )
     runner = inf.ModelRunner(config)
-    runner.model_id = MODEL_ID
+    runner.model_id = model_id
     # Stub the model just enough for _group_hook_names (n_layers); no weights needed.
-    runner.model = SimpleNamespace(cfg=SimpleNamespace(n_layers=32))
+    runner.model = SimpleNamespace(cfg=SimpleNamespace(n_layers=n_layers))
 
-    export_dir = EXPORT / MODEL_ID.replace("/", "__")
+    export_dir = EXPORT / model_id.replace("/", "__")
     export_dir.mkdir(parents=True, exist_ok=True)
 
     # --- activations: assemble shards + index via production methods ---
@@ -78,7 +83,7 @@ def main():
     index = runner._build_activation_index(ds)
     print(f"  index rows: {len(index)} | columns: {list(index.columns)}")
 
-    n_layers = 32
+    n_layers = n_layers
     d_model = 4096
     expected = {
         "hook_embed": (EXPECTED_ROWS, d_model),
@@ -109,7 +114,7 @@ def main():
         print(f"  wrote {path.name} ({path.stat().st_size/1e6:.1f} MB)")
 
     # --- responses: verify + export parquet ---
-    resp_path = CKPT / f"{MODEL_ID.replace('/', '__')}_en_responses.jsonl"
+    resp_path = CKPT / f"{model_id.replace('/', '__')}_en_responses.jsonl"
     rows = [json.loads(line) for line in open(resp_path) if line.strip()]
     print(f"responses: {len(rows)} rows")
     assert len(rows) == EXPECTED_ROWS * N_SAMPLES, (
@@ -122,7 +127,7 @@ def main():
     assert len(by_id) == EXPECTED_ROWS, f"expected {EXPECTED_ROWS} unique ids, got {len(by_id)}"
     assert all(isinstance(r["response"], str) and r["response"] for r in rows)
     df = pd.DataFrame(rows)
-    resp_export = EXPORT / f"{MODEL_ID.replace('/', '__')}_en_responses.parquet"
+    resp_export = EXPORT / f"{model_id.replace('/', '__')}_en_responses.parquet"
     df.to_parquet(resp_export, index=False)
     print(f"  wrote {resp_export} ({resp_export.stat().st_size/1e6:.1f} MB)")
 
@@ -135,7 +140,7 @@ def main():
     print(f"  cross-check OK: {len(idx_ids)} ids identical between index and responses")
 
     manifest = {
-        "model": MODEL_ID,
+        "model": model_id,
         "language": "en",
         "n_dataset_rows": EXPECTED_ROWS,
         "n_samples": N_SAMPLES,
