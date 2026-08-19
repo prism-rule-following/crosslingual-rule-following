@@ -387,6 +387,9 @@ class FakeRunner:
         self.upload_activations_called = True
         self.uploaded_activation_repo = helper.repo_id
 
+    def clear_checkpoint(self, lang_code, kind):
+        self.clear_checkpoint_called = True
+
     def clear_activation_checkpoint(self, lang_code):
         self.clear_activation_checkpoint_called = True
 
