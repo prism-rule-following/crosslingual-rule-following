@@ -1043,12 +1043,29 @@ class HFDataHelper:
             )
         os.unlink(tmp.name)
 
+    def upload_file(self, path_or_fileobj: Any, path_in_repo: str) -> None:
+        """Upload an arbitrary local file to a path inside this repo (used for
+        activation .npy arrays and the index.parquet)."""
+        self._ensure_repo()
+        self._api.upload_file(
+            path_or_fileobj=path_or_fileobj,
+            path_in_repo=path_in_repo,
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            token=self.token,
+        )
+
     def exists(self, model_id: str, lang_code: DatasetLanguageCode) -> bool:
+        return self.exists_path(self._hf_path(model_id, lang_code))
+
+    def exists_path(self, path_in_repo: str) -> bool:
+        """Whether a specific path already exists in the repo (used to skip
+        already-uploaded results)."""
         try:
             info = self._api.get_paths_info(
                 repo_id=self.repo_id,
                 repo_type="dataset",
-                paths=[self._hf_path(model_id, lang_code)],
+                paths=[path_in_repo],
                 token=self.token,
             )
             return len(info) > 0

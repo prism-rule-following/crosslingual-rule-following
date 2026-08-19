@@ -181,24 +181,54 @@ def test_load_enables_patching_cfg_flags(loaded_runner):
 # --------------------------------------------------------------------------- #
 def test_get_hook_filter_current_hook_names(loaded_runner):
     n_layers = loaded_runner.model.cfg.n_layers
-    expected = [
-        f"blocks.{i}.{hook}"
-        for i in range(n_layers)
-        for hook in ["attn.qkv.hook_in", "hook_out"]
-    ] + ["hook_embed"]
+    expected = (
+        ["hook_embed"]
+        + [
+            f"blocks.{i}.{hook}"
+            for i in range(n_layers)
+            for hook in inf.PROBING_HOOK_SUFFIXES
+        ]
+        + [
+            f"blocks.{i}.{hook}"
+            for i in range(n_layers)
+            for hook in inf.PATCHING_HOOK_SUFFIXES
+        ]
+    )
     assert loaded_runner.get_hook_filter() == expected
 
 
-def test_extract_hidden_states_silently_drops_unmatched_hook_names(
-    loaded_runner, tiny_dataset
-):
-    results = loaded_runner.extract_hidden_states(
+def test_get_probing_and_patching_hooks_are_disjoint(loaded_runner):
+    probing = loaded_runner.get_probing_hooks()
+    patching = loaded_runner.get_patching_hooks()
+    assert "hook_embed" in probing
+    assert any(h.endswith("hook_resid_post") for h in probing)
+    assert any(h.endswith("attn.qkv.hook_in") for h in patching)
+    assert not set(probing) & set(patching)
+    assert set(probing) | set(patching) == set(loaded_runner.get_hook_filter())
+
+
+def test_extract_hidden_states_returns_arrays_and_index(loaded_runner, tiny_dataset):
+    out = loaded_runner.extract_hidden_states(
         tiny_dataset, lang_code=DatasetLanguageCode.en
     )
-    assert len(results) == len(tiny_dataset)
-    keys = set(results[0].keys()) - {"id"}
-    assert not any("qkv" in k for k in keys)
-    assert any(k.endswith("hook_out") for k in keys)
+    assert out.n_rows == len(tiny_dataset)
+    assert set(out.index["id"]) == {"r1", "r2", "r3"}
+    assert set(out.index.columns) == {
+        "row_idx",
+        "id",
+        "rule_status",
+        "grammar_type",
+        "category",
+        "topic",
+        "pair_type",
+        "pressure_level",
+        "pressure_name",
+        "language",
+    }
+    assert "hook_embed" in out.arrays
+    assert any(g.endswith("hook_out") for g in out.arrays)
+    assert not any("qkv" in g for g in out.arrays)
+    assert out.arrays["hook_embed"].shape[0] == len(tiny_dataset)
 
 
 # --------------------------------------------------------------------------- #
@@ -291,27 +321,25 @@ def test_generate_response_resumes_by_skipping_checkpointed_ids(loaded_runner):
 
 def test_extract_hidden_states_writes_checkpoint_file(loaded_runner, tiny_dataset):
     loaded_runner.extract_hidden_states(tiny_dataset, lang_code=DatasetLanguageCode.en)
-    path = loaded_runner._checkpoint_path(DatasetLanguageCode.en, "activations")
-    assert path.exists()
-    with open(path) as f:
-        lines = [json.loads(line) for line in f]
-    assert {row["id"] for row in lines} == {"r1", "r2", "r3"}
+    done_path = loaded_runner._activation_done_path(DatasetLanguageCode.en)
+    assert done_path.exists()
+    with open(done_path) as f:
+        ids = [line.strip() for line in f]
+    assert set(ids) == {"r1", "r2", "r3"}
+    shards = list(
+        loaded_runner._activation_shards_dir(DatasetLanguageCode.en).glob("*.npy")
+    )
+    assert shards
 
 
-def test_extract_hidden_states_resumes_by_skipping_checkpointed_ids(loaded_runner):
+def test_extract_hidden_states_resumes_without_duplicating(loaded_runner):
     dataset = pd.DataFrame([make_row(id="r1"), make_row(id="r2")])
-    loaded_runner._append_checkpoint(
-        DatasetLanguageCode.en, "activations", [{"id": "r1", "hook_embed": [0.0, 0.0]}]
-    )
-
-    results = loaded_runner.extract_hidden_states(
-        dataset, lang_code=DatasetLanguageCode.en
-    )
-
-    assert len(results) == 2
-    by_id = {row["id"]: row for row in results}
-    assert by_id["r1"]["hook_embed"] == [0.0, 0.0]
-    assert by_id["r2"]["hook_embed"] != [0.0, 0.0]
+    loaded_runner.extract_hidden_states(dataset, lang_code=DatasetLanguageCode.en)
+    # second run: everything already checkpointed, must not redo or duplicate
+    out = loaded_runner.extract_hidden_states(dataset, lang_code=DatasetLanguageCode.en)
+    assert out.n_rows == 2
+    assert out.arrays["hook_embed"].shape[0] == 2
+    assert loaded_runner._activation_done_count(DatasetLanguageCode.en) == 2
 
 
 # --------------------------------------------------------------------------- #
@@ -335,6 +363,9 @@ class FakeRunner:
         self.loaded_with = None
         self.generate_response_called = False
         self.extract_hidden_states_called = False
+        self.upload_activations_called = False
+        self.uploaded_activation_repo = None
+        self.clear_activation_checkpoint_called = False
         FakeRunner.instances.append(self)
 
     def load(self, model_id):
@@ -346,7 +377,18 @@ class FakeRunner:
 
     def extract_hidden_states(self, dataset, lang_code):
         self.extract_hidden_states_called = True
-        return [{"id": "r1", "hook_embed": [0.0]}]
+        return inf.ActivationOutput(
+            arrays={"hook_embed": [[0.0]]},
+            index=pd.DataFrame([{"id": "r1", "row_idx": 0}]),
+            n_rows=1,
+        )
+
+    def upload_activations(self, helper, act, lang_code):
+        self.upload_activations_called = True
+        self.uploaded_activation_repo = helper.repo_id
+
+    def clear_activation_checkpoint(self, lang_code):
+        self.clear_activation_checkpoint_called = True
 
 
 class FakeHFDataHelper:
@@ -359,6 +401,9 @@ class FakeHFDataHelper:
         self.repo_id = repo_id
 
     def exists(self, model_id, lang_code):
+        return FakeHFDataHelper.exists_return
+
+    def exists_path(self, path_in_repo):
         return FakeHFDataHelper.exists_return
 
     def upload(self, df, model_id, lang_code):
@@ -466,14 +511,11 @@ def test_run_runs_activation_pass_when_enabled(monkeypatch):
     )
     inf.run(config)
 
-    assert FakeHFDataHelper.calls == [
-        {
-            "repo_id": "org/activations",
-            "model_id": "fake-model",
-            "lang_code": DatasetLanguageCode.en,
-            "n_rows": 1,
-        }
-    ]
+    runner = FakeRunner.instances[0]
+    assert runner.extract_hidden_states_called is True
+    assert runner.upload_activations_called is True
+    assert runner.uploaded_activation_repo == "org/activations"
+    assert runner.clear_activation_checkpoint_called is True
 
 
 def test_run_iterates_all_model_ids(monkeypatch):
