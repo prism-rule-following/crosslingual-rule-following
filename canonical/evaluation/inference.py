@@ -214,6 +214,12 @@ class ModelGenerationConfig(BaseModel):
     run_inference_activations: bool = Field(
         default=False, description="whether to run the activation-extraction pass"
     )
+    enable_thinking: Optional[bool] = Field(
+        default=None,
+        description="chat-template toggle for reasoning-capable models (e.g. "
+        "Qwen3); None leaves the tokenizer default. Set false to run without "
+        "the thinking block (injects ' thinking\\n\\n response\\n\\n' for Qwen3).",
+    )
 
     @property
     def device(self) -> str:
@@ -288,8 +294,11 @@ class ModelRunner:
         else:
             # Fold the system instruction into the user turn instead.
             chat = [{"role": "user", "content": f"{system}\n\n{user}"}]
+        kwargs: Dict[str, Any] = {}
+        if self.config.enable_thinking is not None:
+            kwargs["enable_thinking"] = self.config.enable_thinking
         return self.tokenizer.apply_chat_template(
-            chat, tokenize=False, add_generation_prompt=True
+            chat, tokenize=False, add_generation_prompt=True, **kwargs
         )
 
     def get_probing_hooks(self) -> List[str]:

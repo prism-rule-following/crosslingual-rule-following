@@ -263,6 +263,35 @@ def test_check_system_role_support_false_when_template_rejects_system(
     assert loaded_runner._check_system_role_support() is False
 
 
+def test_format_chat_prompt_passes_enable_thinking_when_set(loaded_runner, monkeypatch):
+    captured = {}
+
+    def fake_apply(chat, **kwargs):
+        captured["kwargs"] = kwargs
+        return "prompt"
+
+    monkeypatch.setattr(loaded_runner.tokenizer, "apply_chat_template", fake_apply)
+    loaded_runner.config.enable_thinking = False
+    try:
+        loaded_runner.format_chat_prompt("SYS", "USR")
+        assert captured["kwargs"].get("enable_thinking") is False
+    finally:
+        loaded_runner.config.enable_thinking = None
+
+
+def test_format_chat_prompt_omits_enable_thinking_when_unset(loaded_runner, monkeypatch):
+    captured = {}
+
+    def fake_apply(chat, **kwargs):
+        captured["kwargs"] = kwargs
+        return "prompt"
+
+    monkeypatch.setattr(loaded_runner.tokenizer, "apply_chat_template", fake_apply)
+    loaded_runner.config.enable_thinking = None
+    loaded_runner.format_chat_prompt("SYS", "USR")
+    assert "enable_thinking" not in captured["kwargs"]
+
+
 # --------------------------------------------------------------------------- #
 # generate_response
 # --------------------------------------------------------------------------- #
