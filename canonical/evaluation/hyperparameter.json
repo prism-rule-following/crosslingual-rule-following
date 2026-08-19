@@ -8,11 +8,11 @@
     "generation_batch_size": 30,
     "activation_batch_size": 4,
     "checkpoint_dir": "/workspace/inference",
-    "ramdon_seed": 42,
+    "random_seed": 42,
     "hf_result_repo": "crosslingual-rule-following/model-inference-responses",
     "hf_activations_repo": "crosslingual-rule-following/model-inference-activations",
     "run_inference_response": true,
-    "run_inference_activations": false,
+    "run_inference_activations": true,
     "dataset_config": {
         "url": "crosslingual-rule-following/canonical-dataset",
         "source": "hf",
