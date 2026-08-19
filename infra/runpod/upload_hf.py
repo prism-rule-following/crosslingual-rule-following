@@ -25,6 +25,7 @@ from huggingface_hub import HfApi
 
 EXPORT = "/Users/ayesha/Projects/crosslingual-rule-following/.local/llama_export"
 MODEL_SLUG = "meta-llama__Llama-3.1-8B-Instruct"
+EN_DIR = f"{MODEL_SLUG}/en"
 RESP_REPO = "crosslingual-rule-following/model-inference-responses"
 ACT_REPO = "crosslingual-rule-following/model-inference-activations"
 TOKEN = os.environ["HF_TOKEN"]
@@ -36,8 +37,8 @@ ACT_GROUPS = [
     "hook_embed", "hook_resid_post", "hook_attn_out", "hook_mlp_out",
     "attn_q_input", "attn_k_input", "attn_v_input", "hook_out",
 ]
-ACT_PATHS = [("index.parquet", "index.parquet")] + [
-    (f"{g}.float16.npy", f"{g}.fp16.npy") for g in ACT_GROUPS
+ACT_PATHS = [("index.parquet", f"{EN_DIR}/index.parquet")] + [
+    (f"{g}.float16.npy", f"{EN_DIR}/{g}.fp16.npy") for g in ACT_GROUPS
 ]
 
 
