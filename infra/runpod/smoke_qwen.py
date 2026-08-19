@@ -90,9 +90,11 @@ def main():
 
     # ---- chat template: thinking suppression ----
     prompt = runner.format_chat_prompt(df.iloc[0]["system"], df.iloc[0]["user_query"])
-    print(f"  prompt: {prompt[-120:]!r}")
-    check(" response" in prompt, "prompt contains ' response' start marker")
-    check("think" not in prompt, "prompt has NO thinking markers")
+    # Ground truth (verified via hex): enable_thinking=False makes Qwen3's
+    # template emit a CLOSED empty thinking block '<thinking>\n\n</thinking>'
+    # and NO '<|im_start|>think' opening token, so the model responds directly.
+    check("</thinking>" in prompt, "prompt closes the thinking block")
+    check("<|im_start|>think" not in prompt, "prompt has no thinking-open marker")
 
     # ---- responses ----
     resp = runner.generate_response(df, lang_code=DatasetLanguageCode.en)
