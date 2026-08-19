@@ -47,13 +47,25 @@ load_dotenv()
 # hook; every other group is a per-layer hook (suffix appended to blocks.{i}.)
 # and is stored as a (n_rows, n_layers, *hook_shape) array.
 PROBING_HOOK_SUFFIXES = ["hook_resid_post", "hook_attn_out", "hook_mlp_out"]
-PATCHING_HOOK_SUFFIXES = ["attn.qkv.hook_in", "hook_out"]
+# TransformerLens 3.x/TransformerBridge splits the old concatenated
+# `attn.qkv.hook_in` into per-QKV pre-projection input hooks; use those.
+PATCHING_HOOK_SUFFIXES = [
+    "attn.q.hook_in",
+    "attn.k.hook_in",
+    "attn.v.hook_in",
+    "hook_out",
+]
 
 # (file group name, per-layer hook suffix, or "" for the top-level hook_embed)
 ACTIVATION_GROUPS: List[tuple] = [
     ("hook_embed", ""),
     *[(s, s) for s in PROBING_HOOK_SUFFIXES],
-    *[("attn_qkv_input", "attn.qkv.hook_in"), ("hook_out", "hook_out")],
+    *[
+        ("attn_q_input", "attn.q.hook_in"),
+        ("attn_k_input", "attn.k.hook_in"),
+        ("attn_v_input", "attn.v.hook_in"),
+        ("hook_out", "hook_out"),
+    ],
 ]
 
 # Columns carried in the activations index so a probe can be built without

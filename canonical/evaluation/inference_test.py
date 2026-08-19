@@ -202,7 +202,9 @@ def test_get_probing_and_patching_hooks_are_disjoint(loaded_runner):
     patching = loaded_runner.get_patching_hooks()
     assert "hook_embed" in probing
     assert any(h.endswith("hook_resid_post") for h in probing)
-    assert any(h.endswith("attn.qkv.hook_in") for h in patching)
+    assert any(h.endswith("attn.q.hook_in") for h in patching)
+    assert any(h.endswith("attn.k.hook_in") for h in patching)
+    assert any(h.endswith("attn.v.hook_in") for h in patching)
     assert not set(probing) & set(patching)
     assert set(probing) | set(patching) == set(loaded_runner.get_hook_filter())
 
@@ -229,7 +231,6 @@ def test_extract_hidden_states_returns_arrays_and_index(loaded_runner, tiny_data
     assert any(g.endswith("hook_out") for g in out.arrays)
     assert not any("qkv" in g for g in out.arrays)
     assert out.arrays["hook_embed"].shape[0] == len(tiny_dataset)
-
 
 # --------------------------------------------------------------------------- #
 # format_chat_prompt / _check_system_role_support
