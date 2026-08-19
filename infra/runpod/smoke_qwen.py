@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, "/workspace/crosslingual-rule-following")
 
 import pandas as pd
+import numpy as np
 import torch
 
 from canonical.evaluation import inference as inf
@@ -154,7 +155,7 @@ def main():
         check(tuple(act.arrays[g].shape) == expected,
               f"{g} shape {tuple(act.arrays[g].shape)} == {expected}")
         check(act.arrays[g].dtype == "float16", f"{g} dtype fp16")
-        check(bool(act.arrays[g].reshape(-1)[:1000].isfinite().all()),
+        check(bool(np.isfinite(act.arrays[g].reshape(-1)[:1000]).all()),
               f"{g} finite")
 
     # ---- done manifest + shards ----
