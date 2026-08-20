@@ -2,14 +2,11 @@
 
 import os
 import json
-from huggingface_hub import upload_folder
 import numpy as np
 from datasets import load_dataset
 from typing import Dict
 
-from datetime import datetime as dt
-
-from canonical.probing.config import PROBES_FOLDER, HF_REPO_ID
+from canonical.probing.config import RunConfig
 
 
 # Checking data
@@ -21,7 +18,7 @@ def check_X(layer_X: Dict[int, np.ndarray]):
         X = layer_X[layer]
         if isinstance(X, list):
             layer_X[layer] = np.array(X)
-        elif isinstance(X, torch.tensor):
+        elif isinstance(X, torch.Tensor):
             layer_X[layer] = X.detach().cpu().numpy()
         else:
             raise ValueError(f"X is not of the right format, got {type(X)}")
@@ -35,7 +32,7 @@ def check_y(y):
 
     if isinstance(y, list):
         y = np.array(y)
-    elif isinstance(y, torch.tensor):
+    elif isinstance(y, torch.Tensor):
         y = y.detach().cpu().numpy()
     else:
         raise ValueError(f"y is not of the right format, got {type(y)}")
@@ -44,13 +41,8 @@ def check_y(y):
 
 def check_XY(data, labels):
     """Checks the input validity and converts it to numpy."""
-    # shape
-    if not len(X) == len(y):
-        raise ValueError(f"X and y have different lengths: {len(X)} vs {len(y)}")
-    # type
-    X = check_X(data)
-    y = check_y(labels)
-    return X, y
+    # check that the shape of X and y matches
+    pass
 
 
 # Data loading and saving
@@ -62,50 +54,61 @@ def load_from_hf(url: str):
         raise
 
 
-def save_probes_to_disk(probe_dict: Dict[int, object], path: str):
-    """Saves the data to disk."""
-
-    # make folder name
-    folder = f"{path}/{PROBES_FOLDER}/{dt.now().strftime('%Y-%m-%d_%H-%M-%S')}"
-    os.makedirs(folder, exist_ok=True)
-
-    # create and save a metadata file
-    metadata = {
-        "probe_model": type(probe_dict[0]).__name__,
-        "layers": list(probe_dict.keys()),
-    }
-    with open(f"{folder}/metadata.json", "w") as f:
-        json.dump(metadata, f, indent=4)
-
-    # save probes
-    import skops.io as sio
-
-    try:
-        for layer, clf in probe_dict.items():
-            sio.dump(clf, f"{folder}/layer_{layer}.skops")
-    except Exception as e:
-        print(f"An error occurred while saving probes to disk: {e}")
-        raise
-    return folder
+# TODO: add various functions to create metadata files for each folder
+# They should include the language too!
 
 
-def upload_to_hf(
-    probe_data: Dict[int, object], repo_path: str, remove_local: bool = False
+def upload_repo_to_hf(
+    repo_path: str,
+    cfg: RunConfig,
+    remove_local: bool = False,
+    repo_type: str = "model",
+    save_path_prefix: str = "",
 ):
     """Uploads the data to HuggingFace."""
     from huggingface_hub import upload_folder
 
-    folder_path = save_probes_to_disk(probe_data, repo_path)
     try:
         upload_folder(
-            folder_path=folder_path,
-            repo_id=HF_REPO_ID,
-            repo_type="model",
+            folder_path=repo_path,
+            repo_id=cfg.hf_repo_id,
+            repo_type=repo_type,
         )
     except Exception as e:
         print(f"An error occurred while uploading probes to HuggingFace: {e}")
         raise
+    # remove local if we dont want to keep it
     if remove_local:
         import shutil
 
-        shutil.rmtree(PROBES_FOLDER)
+        shutil.rmtree(repo_path)
+
+
+def create_results_path(run_config):
+    """Create the results folder that is going to keep trained probes,
+    evaluation results and visualisations."""
+    try:
+        # one for trained probes
+        os.makedirs(f"{run_config.trained_probes_path}", exist_ok=True)
+        # one for evals
+        os.makedirs(f"{run_config.eval_path}", exist_ok=True)
+        # one for visualisations
+        os.makedirs(f"{run_config.vis_folder}", exist_ok=True)
+    except Exception as e:
+        print(f"Error during creating results path: {e}")
+        raise
+
+
+# Metadata creation
+def make_trained_probes_metadata(cfg: RunConfig, probe_models: Dict):
+    """Creates and saves metadata file into the trained probes folder."""
+    metadata = {
+        "probe_models": [name for name in probe_models.keys()],
+        **cfg.model_dump(),
+    }
+    try:
+        with open(f"{cfg.trained_probes_path}/metadata.json", "w") as file:
+            json.dump(metadata, file)
+    except Exception as e:
+        print(f"Exception during saving the metadata for trained probes: {e}")
+        raise

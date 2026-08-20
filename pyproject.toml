@@ -20,6 +20,10 @@ dependencies = [
     "torch>=2.13.0",
     "tqdm>=4.69.1",
     "transformer-lens>=3.5.1",
+    "scikit-learn>=1.9.0",
+    "skops>=0.14.0",
+    "matplotlib>=3.11.1",
+    "seaborn>=0.13.2",
 ]
 
 [tool.uv.sources]
