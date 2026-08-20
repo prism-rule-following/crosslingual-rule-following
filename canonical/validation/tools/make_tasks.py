@@ -7,6 +7,9 @@ Every language at once (the default):
 Just one:
     python3 tools/make_tasks.py --lang ig
 
+The judgment-rules datasets in data/review/ instead of the translation ones:
+    python3 tools/make_tasks.py --family judgment
+
 Straight into Label Studio, creating the project and loading the records so
 there is nothing to upload by hand:
 
@@ -44,12 +47,12 @@ def language_name(code: str, override: str | None) -> str:
     return known.get(code, code)
 
 
-def push(ls, lang_name: str, tasks: list, title: str | None,
+def push(ls, family, lang_name: str, tasks: list, title: str | None,
          existing: list[dict], replace: bool) -> int | None:
     """Create the project, apply the review screen, load every record.
     cannot make a second project with the same name. 
     """
-    title = title or f"{lang_name} translation review"
+    title = title or family.title_for(lang_name)
     clashes = [p for p in existing if (p.get("title") or "") == title]
 
     if clashes and not replace:
@@ -65,8 +68,8 @@ def push(ls, lang_name: str, tasks: list, title: str | None,
 
     project = ls.request("POST", "/api/projects/", {
         "title": title,
-        "description": f"Check each record's {lang_name} translation against the "
-                       f"English and fix what is wrong.",
+        "description": f"Check each record's {lang_name} {family.subject} against "
+                       f"the English and fix what is wrong.",
         "label_config": P.LAYOUT.read_text(encoding="utf-8"),
         "maximum_annotations": 1,
         "sampling": "Sequential sampling",
@@ -86,7 +89,8 @@ def push(ls, lang_name: str, tasks: list, title: str | None,
     return pid
 
 
-def update_config(ls, lang_name: str, title: str | None, existing: list[dict]) -> int | None:
+def update_config(ls, family, lang_name: str, title: str | None,
+                  existing: list[dict]) -> int | None:
     """Put the current review screen on a project that already exists.
 
     Only `label_config` is sent, so tasks and annotations are left alone. The
@@ -94,7 +98,7 @@ def update_config(ls, lang_name: str, title: str | None, existing: list[dict]) -
     that also throws away everything reviewers have submitted so far, which is
     far too high a price for a change to the layout or its CSS.
     """
-    title = title or f"{lang_name} translation review"
+    title = title or family.title_for(lang_name)
     matches = [p for p in existing if (p.get("title") or "") == title]
 
     if not matches:
@@ -117,11 +121,12 @@ def update_config(ls, lang_name: str, title: str | None, existing: list[dict]) -
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--en", default="data/full_dataset.json",
-                    help="English source (default: %(default)s)")
+    ap.add_argument("--family", choices=sorted(P.FAMILIES), default=P.DEFAULT_FAMILY,
+                    help="which dataset to build from (default: %(default)s)")
+    ap.add_argument("--en", help="English source (default: the family's)")
     ap.add_argument("--lang", help="one language code; default is every language found")
     ap.add_argument("--lang-name", help="display name, only meaningful with --lang")
-    ap.add_argument("--data-dir", default="data")
+    ap.add_argument("--data-dir", help="default: the family's")
     ap.add_argument("--out-dir", default="out")
     ap.add_argument("--push", action="store_true",
                     help="also create the Label Studio project and load the records")
@@ -135,21 +140,26 @@ def main() -> int:
     ap.add_argument("--token", help="access token (or LABEL_STUDIO_API_KEY)")
     args = ap.parse_args()
 
+    family = P.FAMILIES[args.family]
+    en_path = args.en or family.english
+    data_dir = args.data_dir or family.data_dir
+
     if args.update_config and args.replace:
         raise SystemExit(
             "--update-config and --replace contradict each other: one keeps the project "
             "and its annotations, the other deletes them. Pick one.")
 
     if args.lang:
-        path = Path(args.data_dir) / f"full_dataset_{args.lang}.json"
+        path = Path(data_dir) / family.filename.format(lang=args.lang)
         if not path.exists():
             raise SystemExit(f"{path} not found.")
         languages = [(args.lang, path)]
     else:
-        languages = P.find_languages(args.data_dir, args.en)
+        languages = P.find_languages(family, data_dir, en_path)
         if not languages:
+            pattern = family.filename.format(lang="<lang>")
             raise SystemExit(
-                f"No full_dataset_<lang>.json files in {args.data_dir}/ besides the English one.")
+                f"No {pattern} files in {data_dir}/ besides the English one.")
 
     ls = P.LabelStudio(args.url, args.token) if (args.push or args.update_config) else None
     existing = ls.projects() if ls else []
@@ -161,19 +171,20 @@ def main() -> int:
         for lang, _ in languages:
             name = language_name(lang, args.lang_name if args.lang else None)
             print(f"\n{lang} ({name})")
-            update_config(ls, name, args.title if args.lang else None, existing)
+            update_config(ls, family, name, args.title if args.lang else None, existing)
         return 0
 
-    en_data = P.load_dataset(args.en)
-    en_pairs = en_data["pairs"]
+    en_data = P.load_dataset(en_path, family.records_key)
+    en_records = en_data[family.records_key]
 
-    print(f"english : {args.en}  ({len(en_pairs)} records)")
+    print(f"english : {en_path}  ({len(en_records)} records)")
     for lang, path in languages:
         name = language_name(lang, args.lang_name if args.lang else None)
-        tr_data = P.load_dataset(path)
-        tasks, missing = P.build_tasks(en_pairs, tr_data["pairs"], name)
+        tr_data = P.load_dataset(path, family.records_key)
+        tasks, missing = P.build_tasks(
+            en_records, tr_data[family.records_key], name, family)
 
-        out_path = Path(args.out_dir) / f"tasks_{lang}.json"
+        out_path = Path(args.out_dir) / f"{family.out_stem.format(lang=lang)}.json"
         P.save_json(out_path, [P.with_prefill(t) for t in tasks])
 
         avg = round(sum(len(t["data"]["fields"]) for t in tasks) / len(tasks)) if tasks else 0
@@ -186,7 +197,7 @@ def main() -> int:
                   f"same id and were left out (first: {missing[0]})")
 
         if ls:
-            pid = push(ls, name, tasks, args.title if args.lang else None,
+            pid = push(ls, family, name, tasks, args.title if args.lang else None,
                        existing, args.replace)
             if pid is not None:
                 print(f"      project {pid}: {ls.url}/projects/{pid}/data")
