@@ -2,9 +2,9 @@
 
 Layout matches the production HFDataHelper conventions:
   model-inference-responses:
-    {model__slug}/en.parquet
+    {model__slug}/{lang}.parquet
   model-inference-activations:
-    {model__slug}/en/
+    {model__slug}/{lang}/
       index.parquet
       hook_embed.fp16.npy
       hook_resid_post.fp16.npy
@@ -15,10 +15,11 @@ Layout matches the production HFDataHelper conventions:
       attn_v_input.fp16.npy
       hook_out.fp16.npy
 
-Usage: upload_hf.py <model-slug> [export-dir]
+Usage: upload_hf.py <model-slug> [export-dir] [lang]
   model-slug  e.g. meta-llama__Llama-3.1-8B-Instruct or Qwen__Qwen3-8B
   export-dir  local dir containing the export (defaults by model):
                 .local/llama_export or .local/qwen_export
+  lang        language code, defaults to en
 """
 
 import os
@@ -62,19 +63,20 @@ def upload_all(api, repo, local_dir, paths, tag):
 def main():
     model_slug = sys.argv[1]
     export = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_EXPORTS[model_slug]
-    en_dir = f"{model_slug}/en"
+    lang = sys.argv[3] if len(sys.argv) > 3 else "en"
+    lang_dir = f"{model_slug}/{lang}"
 
     resp_paths = [
-        (f"{export}/{model_slug}_en_responses.parquet", f"{model_slug}/en.parquet"),
+        (f"{export}/{model_slug}_{lang}_responses.parquet", f"{model_slug}/{lang}.parquet"),
     ]
-    act_paths = [("index.parquet", f"{en_dir}/index.parquet")] + [
-        (f"{g}.float16.npy", f"{en_dir}/{g}.fp16.npy") for g in ACT_GROUPS
+    act_paths = [("index.parquet", f"{lang_dir}/index.parquet")] + [
+        (f"{g}.float16.npy", f"{lang_dir}/{g}.fp16.npy") for g in ACT_GROUPS
     ]
 
     api = HfApi(token=TOKEN)
     who = api.whoami()
     print("auth as:", who.get("name"))
-    print(f"model: {model_slug} | export: {export}")
+    print(f"model: {model_slug} | lang: {lang} | export: {export}")
 
     # 1. responses (small)
     print("\n=== RESPONSES ===")
@@ -82,7 +84,7 @@ def main():
 
     # 2. activations (large)
     print("\n=== ACTIVATIONS ===")
-    act_dir = os.path.join(export, model_slug)
+    act_dir = os.path.join(export, model_slug, lang)
     upload_all(api, ACT_REPO, act_dir, act_paths, "act")
 
     print("\n=== UPLOAD COMPLETE ===")

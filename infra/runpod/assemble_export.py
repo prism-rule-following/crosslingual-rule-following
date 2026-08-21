@@ -1,4 +1,4 @@
-"""Assemble the canonical Llama run's final upload artifacts on the pod.
+"""Assemble canonical run upload artifacts on the pod, per (model, language).
 
 Reuses the exact production paths from ModelRunner (`_assemble_activations`,
 `_build_activation_index`, `_activation_filename`) to build, from the
@@ -6,17 +6,20 @@ checkpointed numpy shards + responses jsonl:
 
   /workspace/inference_export/
     meta-llama__Llama-3.1-8B-Instruct/
-      index.parquet
-      hook_embed.fp16.npy
-      hook_resid_post.fp16.npy
-      hook_attn_out.fp16.npy
-      hook_mlp_out.fp16.npy
-      attn_q_input.fp16.npy
-      attn_k_input.fp16.npy
-      attn_v_input.fp16.npy
-      hook_out.fp16.npy
+      en/
+        index.parquet
+        hook_embed.fp16.npy
+        hook_resid_post.fp16.npy
+        hook_attn_out.fp16.npy
+        hook_mlp_out.fp16.npy
+        attn_q_input.fp16.npy
+        attn_k_input.fp16.npy
+        attn_v_input.fp16.npy
+        hook_out.fp16.npy
     meta-llama__Llama-3.1-8B-Instruct_en_responses.parquet
     MANIFEST.json
+
+Usage: assemble_export.py <model-id> [lang]   (lang defaults to en)
 
 Verifies row counts, shapes, dtypes, and that every dataset row id appears
 exactly once in the activation index.
@@ -41,26 +44,39 @@ from canonical.model.dataset import (
 )
 
 MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"
-LANG = DatasetLanguageCode.en
 CKPT = Path("/workspace/inference")
 EXPORT = Path("/workspace/inference_export")
-DATA_JSON = "/workspace/smoke_dataset.json"
-EXPECTED_ROWS = 4680
-N_SAMPLES = 10
+DATA_DIR = Path("/workspace/data")
 # n_layers per model (Llama-3.1-8B = 32, Qwen3-8B = 36). Must match the model
 # whose shards are being assembled.
 N_LAYERS = {"meta-llama/Llama-3.1-8B-Instruct": 32, "Qwen/Qwen3-8B": 36}
+N_SAMPLES = 10
 
 
 def main():
     model_id = sys.argv[1] if len(sys.argv) > 1 else MODEL_ID
+    lang_code = (
+        DatasetLanguageCode(sys.argv[2]) if len(sys.argv) > 2 else DatasetLanguageCode.en
+    )
+    lang = lang_code.value
     n_layers = N_LAYERS[model_id]
+    data_json = DATA_DIR / lang / "test.jsonl"
+    assert data_json.exists(), f"missing dataset file: {data_json}"
+    ds = CrossLingualRuleFollowingDataset(
+        DatasetConfig(
+            url=str(data_json), source=DatasetSource.gh, validate_rows=True, strict=True
+        )
+    ).df
+    expected_rows = len(ds)
+    assert expected_rows % 2 == 0, "expected an even number of split rows"
+    print(f"dataset rows: {expected_rows} (lang={lang})")
+
     config = inf.ModelGenerationConfig(
         model_ids=[model_id],
         dataset_config=DatasetConfig(
-            url=DATA_JSON, source=DatasetSource.gh, validate_rows=True, strict=True
+            url=str(data_json), source=DatasetSource.gh, validate_rows=True, strict=True
         ),
-        language_codes=[LANG],
+        language_codes=[lang_code],
         checkpoint_dir=str(CKPT),
     )
     runner = inf.ModelRunner(config)
@@ -68,32 +84,27 @@ def main():
     # Stub the model just enough for _group_hook_names (n_layers); no weights needed.
     runner.model = SimpleNamespace(cfg=SimpleNamespace(n_layers=n_layers))
 
-    export_dir = EXPORT / model_id.replace("/", "__")
+    export_dir = EXPORT / model_id.replace("/", "__") / lang
     export_dir.mkdir(parents=True, exist_ok=True)
 
     # --- activations: assemble shards + index via production methods ---
     print("Assembling activations from shards...")
-    arrays = runner._assemble_activations(LANG)
+    arrays = runner._assemble_activations(lang_code)
     print(f"  groups: {sorted(arrays.keys())}")
-
-    ds = CrossLingualRuleFollowingDataset(config.dataset_config).df
-    print(f"  dataset rows: {len(ds)}")
-    assert len(ds) == EXPECTED_ROWS, f"expected {EXPECTED_ROWS} rows, got {len(ds)}"
 
     index = runner._build_activation_index(ds)
     print(f"  index rows: {len(index)} | columns: {list(index.columns)}")
 
-    n_layers = n_layers
     d_model = 4096
     expected = {
-        "hook_embed": (EXPECTED_ROWS, d_model),
-        "hook_resid_post": (EXPECTED_ROWS, n_layers, d_model),
-        "hook_attn_out": (EXPECTED_ROWS, n_layers, d_model),
-        "hook_mlp_out": (EXPECTED_ROWS, n_layers, d_model),
-        "attn_q_input": (EXPECTED_ROWS, n_layers, d_model),
-        "attn_k_input": (EXPECTED_ROWS, n_layers, d_model),
-        "attn_v_input": (EXPECTED_ROWS, n_layers, d_model),
-        "hook_out": (EXPECTED_ROWS, n_layers, d_model),
+        "hook_embed": (expected_rows, d_model),
+        "hook_resid_post": (expected_rows, n_layers, d_model),
+        "hook_attn_out": (expected_rows, n_layers, d_model),
+        "hook_mlp_out": (expected_rows, n_layers, d_model),
+        "attn_q_input": (expected_rows, n_layers, d_model),
+        "attn_k_input": (expected_rows, n_layers, d_model),
+        "attn_v_input": (expected_rows, n_layers, d_model),
+        "hook_out": (expected_rows, n_layers, d_model),
     }
     for group, shape in expected.items():
         assert group in arrays, f"missing group {group}"
@@ -114,20 +125,20 @@ def main():
         print(f"  wrote {path.name} ({path.stat().st_size/1e6:.1f} MB)")
 
     # --- responses: verify + export parquet ---
-    resp_path = CKPT / f"{model_id.replace('/', '__')}_en_responses.jsonl"
+    resp_path = CKPT / f"{model_id.replace('/', '__')}_{lang}_responses.jsonl"
     rows = [json.loads(line) for line in open(resp_path) if line.strip()]
     print(f"responses: {len(rows)} rows")
-    assert len(rows) == EXPECTED_ROWS * N_SAMPLES, (
-        f"expected {EXPECTED_ROWS * N_SAMPLES} response rows, got {len(rows)}"
+    assert len(rows) == expected_rows * N_SAMPLES, (
+        f"expected {expected_rows * N_SAMPLES} response rows, got {len(rows)}"
     )
     by_id = {}
     for r in rows:
         by_id.setdefault(r["id"], []).append(r)
     assert all(len(v) == N_SAMPLES for v in by_id.values()), "not all ids have 10 samples"
-    assert len(by_id) == EXPECTED_ROWS, f"expected {EXPECTED_ROWS} unique ids, got {len(by_id)}"
+    assert len(by_id) == expected_rows, f"expected {expected_rows} unique ids, got {len(by_id)}"
     assert all(isinstance(r["response"], str) and r["response"] for r in rows)
     df = pd.DataFrame(rows)
-    resp_export = EXPORT / f"{model_id.replace('/', '__')}_en_responses.parquet"
+    resp_export = EXPORT / f"{model_id.replace('/', '__')}_{lang}_responses.parquet"
     df.to_parquet(resp_export, index=False)
     print(f"  wrote {resp_export} ({resp_export.stat().st_size/1e6:.1f} MB)")
 
@@ -141,8 +152,8 @@ def main():
 
     manifest = {
         "model": model_id,
-        "language": "en",
-        "n_dataset_rows": EXPECTED_ROWS,
+        "language": lang,
+        "n_dataset_rows": expected_rows,
         "n_samples": N_SAMPLES,
         "n_response_rows": len(rows),
         "activation_groups": {g: list(arrays[g].shape) for g in sorted(arrays)},
@@ -152,7 +163,7 @@ def main():
         "checkpoint_src": str(CKPT),
         "exported": str(EXPORT),
     }
-    with open(EXPORT / "MANIFEST.json", "w") as f:
+    with open(EXPORT / f"MANIFEST_{model_id.replace('/', '__')}_{lang}.json", "w") as f:
         json.dump(manifest, f, indent=2)
     print("\n=== ASSEMBLY + VERIFICATION: ALL PASS ===")
     print(json.dumps(manifest, indent=2))
