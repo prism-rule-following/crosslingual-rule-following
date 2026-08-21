@@ -95,7 +95,7 @@ def main():
 
     if is_qwen:
         prompt = runner.format_chat_prompt(df.iloc[0]["system"], df.iloc[0]["user_query"])
-        check(" response" in prompt, "qwen: prompt closes the think block")
+        check("</think>" in prompt, "qwen: prompt closes the think block")
         check("<|im_start|>think" not in prompt, "qwen: prompt has no thinking-open marker")
 
     resp = runner.generate_response(df, lang_code=lang_code)
