@@ -9,6 +9,7 @@ import json
 import os
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 
@@ -16,6 +17,12 @@ from pathlib import Path
 READONLY = [
     "id", "category", "topic", "grammar_type", "language", "pair_type",
     "check_native", "checker", "target_lang", "target_count",
+]
+
+JUDGMENT_READONLY = [
+    "id", "category", "topic", "grammar_type", "pressure_level", "pressure_name",
+    "checker_tier", "language", "pair_type", "active_status", "revoked_status",
+    "active_checker", "revoked_checker",
 ]
 
 #: Friendly names for the editable rows. Anything not listed keeps its key.
@@ -37,6 +44,7 @@ LABELS = {
     "ack_token": "Acknowledgement token",
     "expected_full": "Expected full reply",
     "banned_word": "Banned word",
+    "user_turns": "User turns (one per line)",
 }
 
 REVIEWER_INSTRUCTIONS = (
@@ -51,6 +59,73 @@ REVIEWER_INSTRUCTIONS = (
 
 LAYOUT = Path(__file__).with_name("labeling_config.xml")
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+# --------------------------------------------------------------------------
+# Dataset families
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Family:
+    """One kind of dataset: where its files live and how they are shaped.
+
+    Everything structural is here rather than spread through the two scripts,
+    so a third dataset is a third entry in FAMILIES and nothing else. The
+    reviewer screen is deliberately not part of this: labeling_config.xml names
+    no field, it just renders whatever `build_tasks` puts in `fields`.
+    """
+
+    key: str
+    records_key: str            #: the top-level list of records: "pairs", "items"
+    data_dir: str
+    english: str                #: the source every other language is compared against
+    filename: str               #: template with {lang}, for one language's file
+    title: str                  #: template with {name}, the Label Studio project title
+    subject: str                #: what a reviewer is checking, for the project description
+    readonly: tuple             #: shown in the meta panel, never editable
+    hidden: tuple               #: not shown at all
+    out_stem: str               #: template with {lang}, for out/<stem>.json
+    notes_stem: str             #: template with {lang}, for out/<stem>.json
+
+    def path_for(self, lang: str) -> Path:
+        return Path(self.data_dir) / self.filename.format(lang=lang)
+
+    def title_for(self, lang_name: str) -> str:
+        return self.title.format(name=lang_name)
+
+
+FAMILIES = {
+    "translation": Family(
+        key="translation",
+        records_key="pairs",
+        data_dir="data",
+        english="data/full_dataset.json",
+        filename="full_dataset_{lang}.json",
+        title="{name} translation review",
+        subject="translation",
+        readonly=tuple(READONLY),
+        hidden=(),
+        out_stem="tasks_{lang}",
+        notes_stem="notes_{lang}",
+    ),
+    "judgment": Family(
+        key="judgment",
+        records_key="items",
+        data_dir="data/review",
+        english="data/review/judgment_rules_expanded.en.review.json",
+        filename="judgment_rules_expanded.{lang}.review.json",
+        #The prefix is what separates this set from the translation projects there.
+        title="[Judgment] {name}",
+        subject="judgment-rule translation",
+        readonly=tuple(JUDGMENT_READONLY),
+        hidden=("generation_metadata",),      # null on every record so far
+        out_stem="tasks_judgment_{lang}",
+        notes_stem="notes_judgment_{lang}",
+    ),
+}
+
+DEFAULT_FAMILY = "translation"
 
 
 # --------------------------------------------------------------------------
@@ -97,10 +172,10 @@ ENV_FILE = load_env()
 # --------------------------------------------------------------------------
 
 
-def load_dataset(path: str | Path) -> dict:
+def load_dataset(path: str | Path, records_key: str = "pairs") -> dict:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(data.get("pairs"), list):
-        raise ValueError(f"{path}: expected a top-level 'pairs' list")
+    if not isinstance(data.get(records_key), list):
+        raise ValueError(f"{path}: expected a top-level {records_key!r} list")
     return data
 
 
@@ -124,14 +199,23 @@ def save_json(path: str | Path, data, indent=None) -> None:
             fh.write("\n")
 
 
-def find_languages(data_dir: str | Path, english: str | Path) -> list[tuple[str, Path]]:
-    """Every full_dataset_<lang>.json next to the English file, as (lang, path)."""
-    english = Path(english).resolve()
+def find_languages(family: Family, data_dir: str | Path | None = None,
+                   english: str | Path | None = None) -> list[tuple[str, Path]]:
+    """Every one of the family's files beside the English one, as (lang, path).
+
+    The language code is whatever sits where {lang} does in `family.filename`,
+    so this works for `full_dataset_ig.json` and for
+    `judgment_rules_expanded.ig.review.json` alike.
+    """
+    prefix, _, suffix = family.filename.partition("{lang}")
+    english = Path(english or family.english).resolve()
     found = []
-    for path in sorted(Path(data_dir).glob("full_dataset_*.json")):
+    for path in sorted(Path(data_dir or family.data_dir).glob(f"{prefix}*{suffix}")):
         if path.resolve() == english or path.stem.endswith("_reviewed"):
             continue
-        found.append((path.stem[len("full_dataset_"):], path))
+        code = path.name[len(prefix):len(path.name) - len(suffix)]
+        if code:
+            found.append((code, path))
     return found
 
 
@@ -154,18 +238,52 @@ def esc(value) -> str:
     return escape(str(value), quote=False).replace('"', "&quot;")
 
 
-def meta_html(en: dict, tr: dict) -> str:
+def meta_cell(key: str, value) -> str:
+    """One meta value as HTML.
+
+    A nested value -- the judgment set's `active_checker` and `revoked_checker`
+    -- is pretty-printed JSON in a <pre>, which the stylesheet caps and makes
+    scrollable; `str(dict)` would be a single unreadable Python-repr line.
+    sanitizeHtml allows pre, code, table and class, which the meta table
+    already relies on.
+    """
+    if isinstance(value, (dict, list)):
+        body = json.dumps(value, ensure_ascii=False, indent=2)
+        return f"<pre>{esc(body)}</pre>"
+    if key == "checker":
+        return f"<code>{esc(value)}</code>"
+    return esc(value)
+
+
+def meta_html(en: dict, tr: dict, readonly=None) -> str:
     rows = []
-    for key in READONLY:
+    for key in (READONLY if readonly is None else readonly):
         if key not in tr and key not in en:
             continue
         value = tr[key] if key in tr else en[key]
-        cell = f"<code>{esc(value)}</code>" if key == "checker" else esc(value)
-        rows.append(f'<tr><td class="k">{esc(key)}</td><td>{cell}</td></tr>')
+        rows.append(
+            f'<tr><td class="k">{esc(key)}</td><td>{meta_cell(key, value)}</td></tr>')
     return f'<table>{"".join(rows)}</table>'
 
 
-def build_tasks(en_pairs: list, tr_pairs: list, lang_name: str):
+def is_editable(value) -> bool:
+    """Can this value be shown as, and typed back as, plain text?
+
+    A dict cannot: it would reach the reviewer as `str(dict)` in a textarea and
+    come back as an unparseable string. Neither can a list of anything but
+    scalars, for the same reason -- lists round-trip one item per line. Guards
+    the conversion against a nested key appearing upstream later; the keys we
+    already know about are listed in each family's `readonly` or `hidden`.
+    """
+    if isinstance(value, dict):
+        return False
+    if isinstance(value, list):
+        return all(not isinstance(v, (dict, list)) for v in value)
+    return True
+
+
+def build_tasks(en_records: list, tr_records: list, lang_name: str,
+                family: Family | None = None):
     """One task per record: every editable field as an English/translation row.
 
     Records are matched by id, not position, so a reordered file still works.
@@ -176,10 +294,11 @@ def build_tasks(en_pairs: list, tr_pairs: list, lang_name: str):
     are rendered by the review screen, `lang_name` titles the right-hand column,
     and `record_id` is what collect.py matches work back on.
     """
-    by_id = {r.get("id"): r for r in en_pairs}
+    family = family or FAMILIES[DEFAULT_FAMILY]
+    by_id = {r.get("id"): r for r in en_records}
     tasks, missing = [], []
 
-    for i, tr in enumerate(tr_pairs):
+    for i, tr in enumerate(tr_records):
         en = by_id.get(tr.get("id"))
         if en is None:
             missing.append(tr.get("id"))
@@ -187,9 +306,17 @@ def build_tasks(en_pairs: list, tr_pairs: list, lang_name: str):
 
         fields = []
         for key in tr:                       # the record's own key order
-            if key in READONLY:
+            if key in family.readonly or key in family.hidden:
                 continue
             tv, ev = tr[key], en.get(key, "")
+            # A null is the record saying the key does not apply -- the judgment
+            # set carries `user_turns: null` on the 42 single-turn records. Left
+            # in, it would reach the reviewer as the literal text "None" and come
+            # back as that string. There are no nulls in the translation set.
+            if tv is None:
+                continue
+            if not is_editable(tv) or not is_editable(ev):
+                continue
             is_list = isinstance(tv, list)
             fields.append({
                 "key": key,
@@ -202,8 +329,8 @@ def build_tasks(en_pairs: list, tr_pairs: list, lang_name: str):
         tasks.append({"data": {
             "record_id": tr.get("id"),
             "lang_name": lang_name,
-            "position": f"Record {i + 1} of {len(tr_pairs)}  ·  {tr.get('id')}",
-            "meta_html": meta_html(en, tr),
+            "position": f"Record {i + 1} of {len(tr_records)}  ·  {tr.get('id')}",
+            "meta_html": meta_html(en, tr, family.readonly),
             "fields": fields,
         }})
 
@@ -238,14 +365,16 @@ def with_prefill(task: dict) -> dict:
 # --------------------------------------------------------------------------
 
 
-def apply_review(export_tasks: list, original: dict):
+def apply_review(export_tasks: list, original: dict, records_key: str = "pairs"):
     """Fold reviewed records back into a copy of the original dataset.
 
     A row the reviewer never touched submits nothing, so it keeps its original
     value. Nothing is recomputed or corrected -- whatever was typed is stored.
+    Keys the review screen never showed -- the checkers, the metadata -- are
+    carried through untouched, because only keys named in `fields` are written.
     """
     out = json.loads(json.dumps(original))
-    by_id = {r.get("id"): r for r in out["pairs"]}
+    by_id = {r.get("id"): r for r in out[records_key]}
 
     reviewed = changed = unmatched = 0
     notes = []
