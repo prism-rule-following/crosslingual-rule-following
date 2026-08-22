@@ -3,12 +3,15 @@
 import os
 import json
 import numpy as np
+from huggingface_hub import hf_hub_download
 from datasets import load_dataset
-from typing import Dict
+from typing import Any, List, Dict, Tuple
+import pandas as pd
 
 from canonical.probing.config import RunConfig
 
 
+# TODO ALL
 # Checking data
 def check_X(layer_X: Dict[int, np.ndarray]):
     """Checks the input validity and converts it to numpy."""
@@ -41,16 +44,76 @@ def check_y(y):
 
 def check_XY(data, labels):
     """Checks the input validity and converts it to numpy."""
-    # check that the shape of X and y matches
+    # TODO check that the shape of X and y matches
     pass
 
 
+def check_length(arrays: List[Any]):
+    """Checks the file length."""
+    assert len({len(arr) for arr in arrays}) == 1
+
+
 # Data loading and saving
-def load_from_hf(url: str):
+def load_dataset_from_hf(url: str):
+    """Loads full dataset from HF."""
     try:
         return load_dataset(url)
     except Exception:
         print(f"An error occurred. Unable to load {url!r} from HuggingFace.")
+        raise
+
+
+def download_XY_from_hf(
+    activations_path_in_repo: str,
+    y_path_in_repo: str,
+    repo_ix: str,
+    repo_type: str = "dataset",
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Loads only certain file patterns from HF."""
+    try:
+        X_activations = hf_hub_download(
+            repo_id=repo_ix,
+            filename=activations_path_in_repo,
+            repo_type=repo_type,
+        )
+        y_labels = hf_hub_download(
+            repo_id=repo_ix,
+            filename=y_path_in_repo,
+            repo_type=repo_type,
+        )
+    except Exception as e:
+        print(
+            f"An error occurred. Unable to load {activations_path_in_repo} or {y_path_in_repo} from HuggingFace. {e}"
+        )
+        raise
+    try:
+        X_acts = np.load(X_activations)
+        y = np.load(y_labels)
+        return X_acts, y
+    except Exception as e:
+        print(f"Couldnt load downloaded X and y due to {e}")
+
+
+def download_text_index_from_hf(
+    text_index_path_in_repo: str,
+    repo_ix: str,
+    repo_type: str = "dataset",
+):
+    """Downloads the text data with indices corresponding to activations and labels.
+    Function expects to download a parquet file from HF.
+    """
+    try:
+        text_index_path = hf_hub_download(
+            repo_id=repo_ix,
+            filename=text_index_path_in_repo,
+            repo_type=repo_type,
+        )
+        textdf = pd.read_parquet(text_index_path)
+        return textdf
+    except Exception as e:
+        print(
+            f"Error while processing text index. Path from HF {text_index_path}. Error: {e}"
+        )
         raise
 
 
@@ -63,7 +126,6 @@ def upload_repo_to_hf(
     cfg: RunConfig,
     remove_local: bool = False,
     repo_type: str = "model",
-    save_path_prefix: str = "",
 ):
     """Uploads the data to HuggingFace."""
     from huggingface_hub import upload_folder

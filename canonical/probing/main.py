@@ -1,6 +1,6 @@
 """Main script for running the probes."""
 
-from canonical.probing.utils import load_from_hf, check_XY, create_results_path
+from canonical.probing.utils import load_dataset_from_hf, check_XY, create_results_path
 from canonical.probing.train_probes import training
 from canonical.probing.evaluate_probes import evaluate
 from canonical.probing.plot_probes import plot_accuracy_per_layer
@@ -17,7 +17,7 @@ def main(
 ):
     """Main function for running training, evaluation and visualisation of the probes."""
     # load the activations TODO: create this data - asked how to do it better.
-    hf_activations = load_from_hf(hf_data_url)
+    hf_activations = load_dataset_from_hf(hf_data_url)
 
     # init config
     run_cfg = RunConfig(
@@ -62,6 +62,8 @@ def main(
         heldout_y,
         save_path_prefix="Held",
     )
+    # run control experiments
+    # TODO write the code for control experiments
     # visualisation
     plot_accuracy_per_layer(run_cfg, validation_evals, save_path_prefix="Valid")
     plot_accuracy_per_layer(run_cfg, held_out_evals, save_path_prefix="Held")
