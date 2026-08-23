@@ -1,0 +1,27 @@
+{
+    "model_ids": [
+        "Qwen/Qwen3-8B"
+    ],
+    "n_samples": 10,
+    "push_to_hf": false,
+    "language_codes": [
+        "it"
+    ],
+    "max_new_tokens": 50,
+    "temperature": 1.0,
+    "generation_batch_size": 30,
+    "activation_batch_size": 4,
+    "checkpoint_dir": "/workspace/inference",
+    "random_seed": 42,
+    "hf_result_repo": "crosslingual-rule-following/model-inference-responses",
+    "hf_activations_repo": "crosslingual-rule-following/model-inference-activations",
+    "run_inference_response": true,
+    "run_inference_activations": true,
+    "enable_thinking": false,
+    "dataset_config": {
+        "url": "/workspace/data/it/test.jsonl",
+        "source": "gh",
+        "validate_rows": true,
+        "strict": true
+    }
+}
