@@ -3,15 +3,28 @@
 import os
 import json
 import numpy as np
+import torch
 from huggingface_hub import hf_hub_download
-from datasets import load_dataset
 from typing import Any, List, Dict, Tuple
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 from canonical.probing.config import RunConfig
 
 
-# TODO ALL
+def open_local_json(filepath):
+    """Util function to open a local json file."""
+    try:
+        with open(filepath) as file:
+            data = json.load(file)
+            return data
+    except Exception as e:
+        print(f"Couldnt load {filepath} due to: {e}")
+        raise
+
+
 # Checking data
 def check_X(layer_X: Dict[int, np.ndarray]):
     """Checks the input validity and converts it to numpy."""
@@ -42,27 +55,12 @@ def check_y(y):
     return y
 
 
-def check_XY(data, labels):
-    """Checks the input validity and converts it to numpy."""
-    # TODO check that the shape of X and y matches
-    pass
-
-
-def check_length(arrays: List[Any]):
+def check_length(*arrays: Any):
     """Checks the file length."""
     assert len({len(arr) for arr in arrays}) == 1
 
 
 # Data loading and saving
-def load_dataset_from_hf(url: str):
-    """Loads full dataset from HF."""
-    try:
-        return load_dataset(url)
-    except Exception:
-        print(f"An error occurred. Unable to load {url!r} from HuggingFace.")
-        raise
-
-
 def download_XY_from_hf(
     activations_path_in_repo: str,
     y_path_in_repo: str,
@@ -92,9 +90,10 @@ def download_XY_from_hf(
         return X_acts, y
     except Exception as e:
         print(f"Couldnt load downloaded X and y due to {e}")
+        raise
 
 
-def download_text_index_from_hf(
+def download_parquet_from_hf(
     text_index_path_in_repo: str,
     repo_ix: str,
     repo_type: str = "dataset",
@@ -155,7 +154,7 @@ def create_results_path(run_config):
         # one for evals
         os.makedirs(f"{run_config.eval_path}", exist_ok=True)
         # one for visualisations
-        os.makedirs(f"{run_config.vis_folder}", exist_ok=True)
+        os.makedirs(f"{run_config.vis_path}", exist_ok=True)
     except Exception as e:
         print(f"Error during creating results path: {e}")
         raise
@@ -169,8 +168,57 @@ def make_trained_probes_metadata(cfg: RunConfig, probe_models: Dict):
         **cfg.model_dump(),
     }
     try:
-        with open(f"{cfg.trained_probes_path}/metadata.json", "w") as file:
+        with open(f"{cfg.trained_probes_path}/metadata_{cfg.language}.json", "w") as file:
             json.dump(metadata, file)
     except Exception as e:
         print(f"Exception during saving the metadata for trained probes: {e}")
         raise
+
+
+def extract_model_activations(
+    model: Any,
+    texts: List[str],
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
+) -> np.ndarray:
+    """Extract activations with TransformerLens HookedTransformer and returns a tensor."""
+    try:
+        _, cache = model.run_with_cache(
+            texts,
+            names_filter=lambda name: name.endswith(hook_name),
+            pos_slice=pos_slice,
+        )
+        layers = sorted(int(name.split(".")[1]) for name in cache.keys())
+        stacked = torch.stack(
+            [cache[f"blocks.{l}.{hook_name}"].squeeze() for l in layers], dim=1
+        )
+        activations = stacked.cpu().detach().numpy()
+        return activations
+    except Exception as e:
+        print(f"Error while extracting activations: {e}")
+        raise
+
+
+# TODO function for system chat settings for the model {"system": system_text, "user": query}
+def make_chat_settings(
+    model: Any, system_texts: List[str], queries: List[str]
+) -> List[str]:
+    chats = [
+        [{"role": "system", "content": system_text}, {"role": "user", "content": query}]
+        for system_text, query in zip(system_texts, queries)
+    ]
+    return [
+        model.tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+        for chat in chats
+    ]
+
+
+CLASSIFIER_REGISTRY = {
+    "logistic_regression": LogisticRegression,
+    "mlp": MLPClassifier,
+    "knn": KNeighborsClassifier,
+}
+
+
+def build_classifiers(names: List[str]) -> List[Any]:
+    return [CLASSIFIER_REGISTRY[name]() for name in names]
