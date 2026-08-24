@@ -1,10 +1,9 @@
 """Probes training."""
 
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict, List
 
 import numpy as np
 from canonical.probing.config import RunConfig
-from canonical.probing.utils import make_trained_probes_metadata, upload_repo_to_hf
 from sklearn.base import clone
 
 
@@ -13,13 +12,8 @@ def training(
     classifiers: List[Callable],
     train_X: Dict[int, np.ndarray],
     train_y: np.ndarray,
-    remove_local: bool = False,
-    save_path_prefix: str = "",
-    upload_to_hf: bool = False,
-) -> Tuple[Dict[str, Dict[int, object]], str]:
-    """Train the probes."""
-    import skops.io as sio
-
+) -> Dict[str, Dict[int, object]]:
+    """Train the probes. Pure: fits and returns classifiers, no file I/O."""
     # check clfs
     valid_clfs = [clf for clf in classifiers if hasattr(clf, "fit")]
     if len(valid_clfs) == 0:
@@ -38,39 +32,32 @@ def training(
                 layer_clf = clone(clf)
                 layer_clf.fit(train_X[layer], train_y)
                 trained_classifiers[name][layer] = layer_clf
-                sio.dump(
-                    layer_clf,
-                    f"{run_config.trained_probes_path}/{save_path_prefix}{name}_layer_{layer}_{run_config.language}.skops",
-                )
-
         except Exception as e:
             raise ValueError(f"An error occurred while training the classifier: {e}")
-    # make and save metadata file
-    make_trained_probes_metadata(run_config, trained_classifiers)
 
-    # uploading the probes repo to hf
-    if upload_to_hf:
-        upload_repo_to_hf(
-            run_config.trained_probes_path,
-            run_config,
-            remove_local=remove_local,
-            save_path_prefix=save_path_prefix,
-        )
-
-    return trained_classifiers, run_config.trained_probes_path
+    return trained_classifiers
 
 
 def _build_arg_parser():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Train probes per layer on activations.")
-    parser.add_argument(
-        "--train-x-dir", required=True, help="Directory of layer_{N}.npy activation files."
+    parser = argparse.ArgumentParser(
+        description="Train probes per layer on activations."
     )
-    parser.add_argument("--train-y-path", required=True, help="Path to a .npy file of labels.")
     parser.add_argument(
-        "--classifiers", required=True, help="Comma-separated classifier names."
+        "--data-path",
+        default=None,
+        help="Local filepath for double-rule data, unused otherwise.",
     )
+    parser.add_argument("--classifiers", required=True, help="JSON object mapping classifier name to kwargs.")
+    parser.add_argument("--llm", default=None, type=str)
+    parser.add_argument("--hook", default="hook_resid_post", type=str)
+    parser.add_argument("--pos-slice", default=-1, type=int)
+    parser.add_argument("--activations-hf", type=str, default=None)
+    parser.add_argument("--y-hf", type=str, default=None)
+    parser.add_argument("--jsonl-in-hf", type=str)
+    parser.add_argument("--hf-repo-ix", type=str)
+    parser.add_argument("--hf-repo-type", default="dataset", type=str)
     parser.add_argument("--language", required=True)
     parser.add_argument("--n-layers", type=int, required=True)
     parser.add_argument("--dataset-name", required=True)
@@ -78,22 +65,53 @@ def _build_arg_parser():
     parser.add_argument("--remove-local", action="store_true")
     parser.add_argument("--save-path-prefix", default="")
     parser.add_argument("--upload-to-hf", action="store_true")
+    parser.add_argument("--train-double-rule-data", action="store_true")
     return parser
 
 
 def main():
-    import glob
-    import os
+    import json
 
-    from canonical.probing.utils import build_classifiers, create_results_path
+    from canonical.probing.probes_dataset_creation_script import (
+        create_canonical_dataset,
+        opposite_statuses_rules,
+    )
+    from canonical.probing.utils import (
+        build_classifiers,
+        create_results_path,
+        save_clf_with_skops,
+        split_by_layer,
+        upload_repo_to_hf,
+    )
 
     args = _build_arg_parser().parse_args()
 
-    train_X = {
-        int(os.path.basename(path).split("_")[1].split(".")[0]): np.load(path)
-        for path in glob.glob(os.path.join(args.train_x_dir, "layer_*.npy"))
-    }
-    train_y = np.load(args.train_y_path)
+    model = None
+    if args.llm:
+        from transformer_lens import HookedTransformer
+
+        model = HookedTransformer.from_pretrained(args.llm)
+
+    if args.train_double_rule_data:
+        dataset = opposite_statuses_rules(
+            args.data_path,
+            model,
+            hook_name=args.hook,
+            pos_slice=args.pos_slice,
+        )
+        train_x, train_y = dataset.doublerule_x, dataset.doublerule_y
+    else:
+        dataset = create_canonical_dataset(
+            args.jsonl_in_hf,
+            args.hf_repo_ix,
+            hf_repo_type=args.hf_repo_type,
+            activations_in_hf=args.activations_hf,
+            y_in_hf=args.y_hf,
+            model=model,
+            hook_name=args.hook,
+            pos_slice=args.pos_slice,
+        )
+        train_x, train_y = dataset.train_x, dataset.train_y
 
     run_config = RunConfig(
         language=args.language,
@@ -102,16 +120,21 @@ def main():
         results_folder=args.results_folder,
     )
     create_results_path(run_config)
-    classifiers = build_classifiers(args.classifiers.split(","))
-    _, trained_probes_path = training(
+    classifiers = build_classifiers(json.loads(args.classifiers))
+
+    trained_classifiers = training(
         run_config,
         classifiers,
-        train_X,
+        split_by_layer(train_x),
         train_y,
-        remove_local=args.remove_local,
-        save_path_prefix=args.save_path_prefix,
-        upload_to_hf=args.upload_to_hf,
     )
+    trained_probes_path = save_clf_with_skops(
+        run_config, trained_classifiers, save_path_prefix=args.save_path_prefix
+    )
+    if args.upload_to_hf:
+        upload_repo_to_hf(
+            trained_probes_path, run_config, remove_local=args.remove_local
+        )
     print(trained_probes_path)
 
 

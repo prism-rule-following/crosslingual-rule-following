@@ -6,7 +6,7 @@ from typing import Dict, Tuple
 
 from canonical.probing.config import RunConfig
 from canonical.probing.utils import upload_repo_to_hf
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, roc_auc_score
 
 
 def evaluate(
@@ -26,9 +26,9 @@ def evaluate(
         evaluation_results[model_name] = {}
         for layer, clf in layer_dict.items():
             predictions = clf.predict(test_X[layer])
-            evaluation_results[model_name][layer] = classification_report(
-                test_y, predictions, output_dict=True
-            )
+            report = classification_report(test_y, predictions, output_dict=True)
+            report["roc_auc"] = roc_auc_score(test_y, clf.predict_proba(test_X[layer])[:, 1])
+            evaluation_results[model_name][layer] = report
     # saving the results
     try:
         with open(f"{cfg.eval_path}/{save_path_prefix}Eval_{cfg.language}.json", "w") as f:
@@ -67,8 +67,7 @@ def main():
     import os
 
     import numpy as np
-    import skops.io as sio
-    from canonical.probing.utils import create_results_path
+    from canonical.probing.utils import create_results_path, load_trained_clfs
 
     args = _build_arg_parser().parse_args()
 
@@ -80,14 +79,9 @@ def main():
     )
     create_results_path(cfg)
 
-    probe_clfs = {}
-    suffix = f"_{cfg.language}.skops"
-    pattern = os.path.join(args.trained_probes_path, f"{args.save_path_prefix}*{suffix}")
-    for path in glob.glob(pattern):
-        stem = os.path.basename(path)[len(args.save_path_prefix) : -len(suffix)]
-        name, layer = stem.rsplit("_layer_", 1)
-        untrusted_types = sio.get_untrusted_types(file=path)
-        probe_clfs.setdefault(name, {})[int(layer)] = sio.load(path, trusted=untrusted_types)
+    probe_clfs = load_trained_clfs(
+        args.trained_probes_path, cfg.language, save_path_prefix=args.save_path_prefix
+    )
 
     test_X = {
         int(os.path.basename(path).split("_")[1].split(".")[0]): np.load(path)

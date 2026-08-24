@@ -1,17 +1,17 @@
 """Util function for training the probes."""
 
-import os
 import json
-import numpy as np
-import torch
-from huggingface_hub import hf_hub_download
-from typing import Any, List, Dict, Tuple
-import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
+import os
+from typing import Any, Dict, List, Tuple
 
+import numpy as np
+import pandas as pd
+import torch
 from canonical.probing.config import RunConfig
+from huggingface_hub import hf_hub_download
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 
 
 def open_local_json(filepath):
@@ -58,6 +58,10 @@ def check_y(y):
 def check_length(*arrays: Any):
     """Checks the file length."""
     assert len({len(arr) for arr in arrays}) == 1
+
+
+def split_by_layer(x: np.ndarray) -> Dict[int, np.ndarray]:
+    return {layer: x[:, layer, :] for layer in range(x.shape[1])}
 
 
 # Data loading and saving
@@ -116,6 +120,28 @@ def download_parquet_from_hf(
         raise
 
 
+def download_jsonl_from_hf(
+    data_path_in_repo: str,
+    repo_ix: str,
+    repo_type: str = "dataset",
+) -> List[Dict]:
+    """Reads and loads jsonl from HF."""
+    try:
+        data_path = hf_hub_download(
+            repo_id=repo_ix,
+            filename=data_path_in_repo,
+            repo_type=repo_type,
+        )
+        with open(data_path) as f:
+            datalines = [json.loads(line) for line in f]
+        return datalines
+    except Exception as e:
+        print(
+            f"Error while processing JSONL data. Path from HF {data_path_in_repo}. Error: {e}"
+        )
+        raise
+
+
 # TODO: add various functions to create metadata files for each folder
 # They should include the language too!
 
@@ -168,11 +194,68 @@ def make_trained_probes_metadata(cfg: RunConfig, probe_models: Dict):
         **cfg.model_dump(),
     }
     try:
-        with open(f"{cfg.trained_probes_path}/metadata_{cfg.language}.json", "w") as file:
+        with open(
+            f"{cfg.trained_probes_path}/metadata_{cfg.language}.json", "w"
+        ) as file:
             json.dump(metadata, file)
     except Exception as e:
         print(f"Exception during saving the metadata for trained probes: {e}")
         raise
+
+
+def save_clf_with_skops(
+    run_config: RunConfig,
+    trained_classifiers: Dict[str, Dict[int, object]],
+    save_path_prefix: str = "",
+) -> str:
+    """Saves trained classifiers per layer into the run's trained-probes folder."""
+    import skops.io as sio
+
+    try:
+        for name, layer_clfs in trained_classifiers.items():
+            for layer, clf in layer_clfs.items():
+                sio.dump(
+                    clf,
+                    f"{run_config.trained_probes_path}/{save_path_prefix}{name}_layer_{layer}_{run_config.language}.skops",
+                )
+    except Exception as e:
+        raise ValueError(f"An error occurred while saving the classifiers: {e}")
+    make_trained_probes_metadata(run_config, trained_classifiers)
+    return run_config.trained_probes_path
+
+
+def load_trained_clfs(
+    trained_probes_path: str, language: str, save_path_prefix: str = ""
+) -> Dict[str, Dict[int, object]]:
+    """Loads previously saved skops classifiers from a trained-probes folder."""
+    import glob
+
+    import skops.io as sio
+
+    valid_names = {cls.__name__ for cls in CLASSIFIER_REGISTRY.values()}
+    trained_classifiers = {}
+    suffix = f"_{language}.skops"
+    pattern = os.path.join(trained_probes_path, f"{save_path_prefix}*{suffix}")
+    for path in glob.glob(pattern):
+        stem = os.path.basename(path)[len(save_path_prefix) : -len(suffix)]
+        name, layer = stem.rsplit("_layer_", 1)
+        if name not in valid_names:
+            continue
+        untrusted_types = sio.get_untrusted_types(file=path)
+        trained_classifiers.setdefault(name, {})[int(layer)] = sio.load(
+            path, trusted=untrusted_types
+        )
+    return trained_classifiers
+
+
+def check_clf_match(loaded_names, classifiers) -> None:
+    """Checks that a set of loaded classifier names matches the classifiers passed for this call."""
+    expected = {type(clf).__name__ for clf in classifiers}
+    actual = set(loaded_names)
+    if expected != actual:
+        raise ValueError(
+            f"Loaded classifiers {sorted(actual)} do not match classifiers passed for this call {sorted(expected)}."
+        )
 
 
 def extract_model_activations(
@@ -208,7 +291,9 @@ def make_chat_settings(
         for system_text, query in zip(system_texts, queries)
     ]
     return [
-        model.tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+        model.tokenizer.apply_chat_template(
+            chat, tokenize=False, add_generation_prompt=True
+        )
         for chat in chats
     ]
 
@@ -220,5 +305,6 @@ CLASSIFIER_REGISTRY = {
 }
 
 
-def build_classifiers(names: List[str]) -> List[Any]:
-    return [CLASSIFIER_REGISTRY[name]() for name in names]
+# TODO: add arg per classifier. E.g. the names could be a dict {clf: {kwargs}, ...}
+def build_classifiers(names: Dict[str, Dict]) -> List[Any]:
+    return [CLASSIFIER_REGISTRY[name](**kwargs) for name, kwargs in names.items()]

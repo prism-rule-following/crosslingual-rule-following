@@ -1,5 +1,5 @@
 import random
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -9,18 +9,22 @@ from canonical.probing.pydantic_models import (
     DoubleRuleDataset,
     IndexParquetColumns,
     NeutralFillerDataset,
+    NoKeywordRuleDataset,
     SplitActivationDataset,
     distractor_words,
     labels2words,
+    words2labels,
 )
 from canonical.probing.utils import (
     check_length,
+    download_jsonl_from_hf,
     download_parquet_from_hf,
     download_XY_from_hf,
     extract_model_activations,
     make_chat_settings,
     open_local_json,
 )
+from sklearn.model_selection import GroupShuffleSplit
 
 
 def test_heldout_split(
@@ -30,15 +34,16 @@ def test_heldout_split(
     Assumes some column names that could be accessed/changed in the pydantic_models.py.
     """
     # choose two pairs for heldout testing, take them out
-    pos1, pos2 = random.sample(labels2words[1], k=2)
-    neg1, neg2 = random.sample(labels2words[0], k=2)
+    seeded_random = random.Random(42)
+    pos1, pos2 = seeded_random.sample(labels2words[1], k=2)
+    neg1, neg2 = seeded_random.sample(labels2words[0], k=2)
 
     # split the rest into test and training, keep test and minimal at this point
     textdf[IndexParquetColumns.clean_id] = textdf[IndexParquetColumns.str_id].apply(
         lambda ix: ix.rsplit("_", 1)[0]
     )
     held_split = textdf.loc[
-        ~textdf[IndexParquetColumns.rule_status].isin([pos1, pos2, neg1, neg2])
+        textdf[IndexParquetColumns.rule_status].isin([pos1, pos2, neg1, neg2])
     ].copy()
     held_ids = held_split[IndexParquetColumns.row_idx].tolist()
     held_x = x[held_ids].copy()
@@ -51,24 +56,21 @@ def test_heldout_split(
     rest_y = y[held_mask].copy()
     rest_text = textdf.drop(held_ids, axis=0).copy()
 
-    # splitting 80/20
-    unique_clean_ids = rest_text[IndexParquetColumns.clean_id].unique().tolist()
-    sample_size = int(len(unique_clean_ids) * 0.2)  # test sample ids
-    unique_ids = random.sample(unique_clean_ids, k=sample_size)
-    test_ids = rest_text[rest_text[IndexParquetColumns.clean_id].isin(unique_ids)][
-        IndexParquetColumns.row_idx
-    ].tolist()
+    # splitting 80/20 by clean_id groups, so variant rows never split across train/test
+    splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    train_pos, test_pos = next(
+        splitter.split(rest_x, rest_y, groups=rest_text[IndexParquetColumns.clean_id])
+    )
 
     # test split
-    test_x = x[test_ids].copy()
-    test_y = y[test_ids].copy()
-    test_text = rest_text.loc[test_ids, :].copy()
+    test_x = rest_x[test_pos].copy()
+    test_y = rest_y[test_pos].copy()
+    test_text = rest_text.iloc[test_pos].copy()
 
     # train split
-    train_text = rest_text.drop(test_ids, axis=0).copy()
-    train_ids = train_text[IndexParquetColumns.row_idx].tolist()
-    train_x = x[train_ids].copy()
-    train_y = y[train_ids].copy()
+    train_x = rest_x[train_pos].copy()
+    train_y = rest_y[train_pos].copy()
+    train_text = rest_text.iloc[train_pos].copy()
 
     # check they all turned out in "shape"
     check_length(train_x, train_y, train_text)
@@ -88,24 +90,58 @@ def test_heldout_split(
     )
 
 
-def create_from_xy_text(
-    activations_in_hf: str,
-    y_in_hf: str,
-    text_id_hf: str,
+def create_canonical_dataset(
+    jsonl_in_hf: str,
     hf_repo_ix: str,
     hf_repo_type: str = "dataset",
+    activations_in_hf: Optional[str] = None,
+    y_in_hf: Optional[str] = None,
+    model: Any = None,
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
 ) -> SplitActivationDataset:
-    """Load necessary files and split the data into train, test and held out subsets."""
-    # pull matching x and y
-    X, y = download_XY_from_hf(
-        activations_in_hf,
-        y_in_hf,
-        hf_repo_ix,
-        repo_type=hf_repo_type,
+    """Load necessary files and split the data into train, test and held out subsets.
+    Each jsonl line yields two rows: one for the active rule, one for the cancelled rule.
+    Activations are downloaded if activations_in_hf is given, else extracted on the fly.
+    """
+    data = download_jsonl_from_hf(jsonl_in_hf, hf_repo_ix, hf_repo_type)
+
+    rows = []
+    for item in data:
+        rows.append(
+            {
+                IndexParquetColumns.str_id: f"{item['id']}_0",
+                IndexParquetColumns.rule_status: item["active_status"],
+                CanonicalDatasetColumns.system_rule: item["system_rule"],
+                "query": item["user_query"],
+            }
+        )
+        rows.append(
+            {
+                IndexParquetColumns.str_id: f"{item['id']}_1",
+                IndexParquetColumns.rule_status: item["revoked_status"],
+                CanonicalDatasetColumns.system_rule: item["system_non_rule"],
+                "query": item["user_query"],
+            }
+        )
+    textid_df = pd.DataFrame(rows)
+    textid_df[IndexParquetColumns.row_idx] = range(len(textid_df))
+    y = np.array(
+        [words2labels[status] for status in textid_df[IndexParquetColumns.rule_status]]
     )
 
-    # download the rules themselves to construct labels
-    textid_df = download_parquet_from_hf(text_id_hf, hf_repo_ix, hf_repo_type)
+    if activations_in_hf:
+        X, y = download_XY_from_hf(
+            activations_in_hf, y_in_hf, hf_repo_ix, repo_type=hf_repo_type
+        )
+    else:
+        systems = textid_df[CanonicalDatasetColumns.system_rule].tolist()
+        queries = textid_df["query"].tolist()
+        chat = make_chat_settings(model, systems, queries)
+        X = extract_model_activations(
+            model, chat, hook_name=hook_name, pos_slice=pos_slice
+        )
+
     check_length(X, y, textid_df)
 
     # split into train, test and heldout
@@ -137,7 +173,7 @@ def neutral_filler_data(
     )
     check_length(activations, text_labels, texts)
     return NeutralFillerDataset(
-        neutral_x=activations, neutral_y=text_labels, neutral_text=texts
+        neutral_x=activations, neutral_y=np.array(text_labels), neutral_text=texts
     )
 
 
@@ -166,6 +202,8 @@ def distractor_word_data(
     hf_repo_ix: str,
     model: Any,
     hf_repo_type: str = "dataset",
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
 ) -> DistractorDataset:
     """Replaces the 'Rule status:' with 'Shopping status:'
     or some other rule unrelated word.
@@ -175,21 +213,37 @@ def distractor_word_data(
     encoded a mechanism, like 'check the Rule status:, your label is there'.
     """
     # download the rules themselves to construct labels
-    ogdf = download_parquet_from_hf(original_text_hf, hf_repo_ix, hf_repo_type)
-    sample_df = ogdf.sample(n=500)
+    ogdf = download_jsonl_from_hf(original_text_hf, hf_repo_ix, hf_repo_type)
+    sample_df = pd.DataFrame(ogdf).sample(n=min(500, len(ogdf)))
 
     # replacing the 'Rule status:'
-    sample_df["distractors"] = sample_df[CanonicalDatasetColumns.system_rule].apply(
+    sample_df["rule_distractors"] = sample_df[
+        CanonicalDatasetColumns.system_rule
+    ].apply(
         lambda x: x.replace(
             "Rule status:", f"{random.choice(distractor_words)} status:"
         )
     )
-    sample_texts = sample_df["distractors"].tolist()
-    activations = extract_model_activations(
-        model, sample_texts, hook_name="hook_resid_post", pos_slice=-1
+    sample_df["non_rule_distractors"] = sample_df[
+        CanonicalDatasetColumns.system_non_rule
+    ].apply(
+        lambda x: x.replace(
+            "Rule status:", f"{random.choice(distractor_words)} status:"
+        )
     )
-    labels = [1] * len(activations)
-    check_length(activations, labels, sample_df)
+    sample_texts = (
+        sample_df["rule_distractors"].tolist()
+        + sample_df["non_rule_distractors"].tolist()
+    )
+
+    # extracting activations
+    activations = extract_model_activations(
+        model, sample_texts, hook_name=hook_name, pos_slice=pos_slice
+    )
+
+    # labels
+    labels = np.array(([1] * len(sample_df)) + ([0] * len(sample_df)))
+    check_length(activations, labels)
     return DistractorDataset(
         distractor_x=activations, distractor_y=labels, distractor_text=sample_df
     )
@@ -233,22 +287,73 @@ def opposite_statuses_rules(
     )
     check_length(texts, labels, queries, activations)
     return DoubleRuleDataset(
-        doublerule_text=chat, doublerule_x=activations, doublerule_y=labels
+        doublerule_text=chat, doublerule_x=activations, doublerule_y=np.array(labels)
+    )
+
+
+def no_rule_keyword(
+    model,
+    jsonl_in_hf: str,
+    repo_ix: str,
+    repo_type: str = "dataset",
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
+):
+    """Tests whether a probe holds when there is no explicit 'Rule' keyword in the system."""
+    # download original dataset
+    data = download_jsonl_from_hf(
+        data_path_in_repo=jsonl_in_hf, repo_ix=repo_ix, repo_type=repo_type
+    )
+
+    # construct new system clause
+    # TODO: move the column names into smth structural, e.g. StrEnum, class
+    positive_lines = [
+        {
+            "no_rule_label": 1,
+            "no_rule_system_text": item["context"] + " " + item["rule_clause"] + ".",
+            **item,
+        }
+        for item in data
+    ]
+    negative_lines = [
+        {"no_rule_label": 0, "no_rule_system_text": item["context"], **item}
+        for item in data
+    ]
+    new_lines = positive_lines + negative_lines
+    labels = np.array([int(item["no_rule_label"]) for item in new_lines])
+    systems = [item["no_rule_system_text"] for item in new_lines]
+    user_queries = [item["user_query"] for item in new_lines]
+    chats = make_chat_settings(model, systems, user_queries)
+
+    # extract activations
+    activations = extract_model_activations(
+        model, chats, hook_name=hook_name, pos_slice=pos_slice
+    )
+    check_length(labels, systems, user_queries, activations)
+
+    # construct dataset
+    return NoKeywordRuleDataset(
+        nokrule_x=activations, nokrule_y=labels, nokrule_text=new_lines
     )
 
 
 def _build_arg_parser():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Dataset creation utilities for probing.")
+    parser = argparse.ArgumentParser(
+        description="Dataset creation utilities for probing."
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    create_xy_text = subparsers.add_parser("create-xy-text")
-    create_xy_text.add_argument("--activations-in-hf", required=True)
-    create_xy_text.add_argument("--y-in-hf", required=True)
-    create_xy_text.add_argument("--text-id-hf", required=True)
-    create_xy_text.add_argument("--hf-repo-ix", required=True)
-    create_xy_text.add_argument("--hf-repo-type", default="dataset")
+    create_canonical = subparsers.add_parser("create-canonical-dataset")
+    create_canonical.add_argument("--jsonl-in-hf", required=True)
+    create_canonical.add_argument("--hf-repo-ix", required=True)
+    create_canonical.add_argument("--hf-repo-type", default="dataset")
+    create_canonical.add_argument("--activations-in-hf", default=None)
+    create_canonical.add_argument("--y-in-hf", default=None)
+    create_canonical.add_argument("--model-name", default=None)
+    create_canonical.add_argument("--hook-name", default="hook_resid_post")
+    create_canonical.add_argument("--pos-slice", type=int, default=-1)
 
     neutral_filler = subparsers.add_parser("neutral-filler")
     neutral_filler.add_argument("--neutral-fillers-path", required=True)
@@ -273,6 +378,14 @@ def _build_arg_parser():
     opposite_rules.add_argument("--hook-name", default="hook_resid_post")
     opposite_rules.add_argument("--pos-slice", type=int, default=-1)
 
+    no_keyword = subparsers.add_parser("no-keyword")
+    no_keyword.add_argument("--jsonl-in-hf", required=True)
+    no_keyword.add_argument("--hf-repo-ix", required=True)
+    no_keyword.add_argument("--model-name", required=True)
+    no_keyword.add_argument("--hf-repo-type", default="dataset")
+    no_keyword.add_argument("--hook-name", default="hook_resid_post")
+    no_keyword.add_argument("--pos-slice", type=int, default=-1)
+
     return parser
 
 
@@ -281,13 +394,21 @@ def main():
 
     args = _build_arg_parser().parse_args()
 
-    if args.command == "create-xy-text":
-        dataset = create_from_xy_text(
-            args.activations_in_hf,
-            args.y_in_hf,
-            args.text_id_hf,
+    if args.command == "create-canonical-dataset":
+        model = (
+            HookedTransformer.from_pretrained(args.model_name)
+            if args.model_name
+            else None
+        )
+        dataset = create_canonical_dataset(
+            args.jsonl_in_hf,
             args.hf_repo_ix,
             hf_repo_type=args.hf_repo_type,
+            activations_in_hf=args.activations_in_hf,
+            y_in_hf=args.y_in_hf,
+            model=model,
+            hook_name=args.hook_name,
+            pos_slice=args.pos_slice,
         )
         print(dataset)
     elif args.command == "neutral-filler":
@@ -318,6 +439,17 @@ def main():
         dataset = opposite_statuses_rules(
             args.filepath,
             model,
+            hook_name=args.hook_name,
+            pos_slice=args.pos_slice,
+        )
+        print(dataset)
+    elif args.command == "no-keyword":
+        model = HookedTransformer.from_pretrained(args.model_name)
+        dataset = no_rule_keyword(
+            model,
+            args.jsonl_in_hf,
+            args.hf_repo_ix,
+            repo_type=args.hf_repo_type,
             hook_name=args.hook_name,
             pos_slice=args.pos_slice,
         )

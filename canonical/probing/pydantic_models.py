@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List
 
 import numpy as np
 import pandas as pd
@@ -64,7 +64,7 @@ class NeutralFillerDataset(BaseModel):
 
     neutral_x: np.ndarray
     neutral_y: np.ndarray
-    neutral_text: Dict
+    neutral_text: Any
 
 
 class DistractorDataset(BaseModel):
@@ -80,7 +80,15 @@ class DoubleRuleDataset(BaseModel):
 
     doublerule_x: np.ndarray
     doublerule_y: np.ndarray
-    doublerule_text: pd.DataFrame
+    doublerule_text: Any
+
+
+class NoKeywordRuleDataset(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    nokrule_x: np.ndarray
+    nokrule_y: np.ndarray
+    nokrule_text: List[Dict]
 
 
 class IndexParquetColumns:
@@ -88,10 +96,12 @@ class IndexParquetColumns:
     row_idx: str = "row_idx"
     rule_status: str = "rule_status"
     clean_id: str = "clean_id"
+    rule_clause: str = "rule_clause"
 
 
 class CanonicalDatasetColumns:
     system_rule: str = "system_rule"
+    system_non_rule: str = "system_non_rule"
     # ...
 
 
