@@ -50,3 +50,6 @@ activations/
 .ruff_cache/
 htmlcov/
 .coverage
+
+# Local operational scripts/logs
+.local/

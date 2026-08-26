@@ -689,7 +689,16 @@ class Dataset(BaseModel):
 # Config
 # --------------------------------------------------------------------------- #
 class DatasetConfig(BaseModel):
-    url: str = Field(..., description="HuggingFace dataset id or JSON file path/URL")
+    url: Optional[str] = Field(
+        default=None,
+        description="HuggingFace dataset id or JSON file path/URL",
+    )
+    data_dir: Optional[str] = Field(
+        default=None,
+        description="optional directory of per-language dataset files "
+        "({data_dir}/{lang}/test.jsonl); when set, datasets are loaded per "
+        "language instead of from a single url",
+    )
     source: DatasetSource = Field(..., description="dataset source")
     split: Optional[str] = Field(
         default=None,
@@ -741,6 +750,12 @@ class DatasetConfig(BaseModel):
                 "Update DatasetLanguageCode/LANGUAGE_NAMES to add support for this language."
             )
         return value
+
+    @model_validator(mode="after")
+    def _require_source(self) -> "DatasetConfig":
+        if not self.url and not self.data_dir:
+            raise ValueError("one of url or data_dir is required")
+        return self
 
 
 # --------------------------------------------------------------------------- #

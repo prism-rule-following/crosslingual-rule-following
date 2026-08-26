@@ -37,6 +37,7 @@ import pandas as pd
 
 from canonical.evaluation import inference as inf
 from canonical.model.dataset import (
+    ACTIVE_STATUSES,
     DatasetConfig,
     DatasetLanguageCode,
     DatasetSource,
@@ -124,18 +125,30 @@ def main():
         np.save(path, arr)
         print(f"  wrote {path.name} ({path.stat().st_size/1e6:.1f} MB)")
 
-    # --- responses: verify + export parquet ---
+    # --- responses: retain only active-side rows and sample indices 0,1,2 ---
     resp_path = CKPT / f"{model_id.replace('/', '__')}_{lang}_responses.jsonl"
-    rows = [json.loads(line) for line in open(resp_path) if line.strip()]
-    print(f"responses: {len(rows)} rows")
-    assert len(rows) == expected_rows * N_SAMPLES, (
-        f"expected {expected_rows * N_SAMPLES} response rows, got {len(rows)}"
+    raw_rows = [json.loads(line) for line in open(resp_path) if line.strip()]
+    active_values = {status.value for status in ACTIVE_STATUSES}
+    rows = [
+        row
+        for row in raw_rows
+        if row["rule_status"] in active_values
+        and int(row.get("sample_idx", 0)) in {0, 1, 2}
+    ]
+    expected_active_rows = sum(
+        1 for value in index["rule_status"] if value in active_values
+    )
+    print(f"responses: {len(raw_rows)} raw rows -> {len(rows)} active/sample-3 rows")
+    assert len(rows) == expected_active_rows * N_SAMPLES, (
+        f"expected {expected_active_rows * N_SAMPLES} response rows, got {len(rows)}"
     )
     by_id = {}
     for r in rows:
         by_id.setdefault(r["id"], []).append(r)
-    assert all(len(v) == N_SAMPLES for v in by_id.values()), "not all ids have 10 samples"
-    assert len(by_id) == expected_rows, f"expected {expected_rows} unique ids, got {len(by_id)}"
+    assert all(len(v) == N_SAMPLES for v in by_id.values()), "not all active ids have 3 samples"
+    assert len(by_id) == expected_active_rows, (
+        f"expected {expected_active_rows} active ids, got {len(by_id)}"
+    )
     assert all(isinstance(r["response"], str) and r["response"] for r in rows)
     df = pd.DataFrame(rows)
     resp_export = EXPORT / f"{model_id.replace('/', '__')}_{lang}_responses.parquet"
@@ -143,7 +156,7 @@ def main():
     print(f"  wrote {resp_export} ({resp_export.stat().st_size/1e6:.1f} MB)")
 
     # --- cross-check: every index id has responses and vice versa ---
-    idx_ids = set(index["id"])
+    idx_ids = set(index.loc[index["rule_status"].isin(active_values), "id"])
     resp_ids = set(by_id.keys())
     assert idx_ids == resp_ids, (
         f"index/responses id mismatch: {len(idx_ids ^ resp_ids)} ids differ"
@@ -154,8 +167,10 @@ def main():
         "model": model_id,
         "language": lang,
         "n_dataset_rows": expected_rows,
+        "n_active_dataset_rows": expected_active_rows,
         "n_samples": N_SAMPLES,
         "n_response_rows": len(rows),
+        "response_filter": {"active_statuses": sorted(active_values), "sample_idx": [0, 1, 2]},
         "activation_groups": {g: list(arrays[g].shape) for g in sorted(arrays)},
         "activation_dtype": "float16",
         "n_layers": n_layers,

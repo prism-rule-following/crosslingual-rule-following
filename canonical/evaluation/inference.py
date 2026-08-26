@@ -25,6 +25,7 @@ from canonical.model.dataset import (
     Category,
     Checker,
     CrossLingualRuleFollowingDataset,
+    ACTIVE_STATUSES,
     DatasetConfig,
     DatasetLanguageCode,
     GrammarType,
@@ -220,6 +221,15 @@ class ModelGenerationConfig(BaseModel):
         "Qwen3); None leaves the tokenizer default. Set false to run without "
         "the thinking block (injects ' thinking\\n\\n response\\n\\n' for Qwen3).",
     )
+    attention_implementation: Literal["eager", "sdpa", "flash_attention_2"] = Field(
+        default="sdpa",
+        description="attention backend for response-only generation; activation "
+        "runs retain the hook-compatible backend",
+    )
+    active_only: bool = Field(
+        default=False,
+        description="run only the binding/active side of each contrastive pair",
+    )
 
     @property
     def device(self) -> str:
@@ -257,6 +267,8 @@ class ModelRunner:
         self.model.cfg.use_attn_result = True
         self.model.cfg.use_split_qkv_input = True
         self.model.cfg.use_hook_mlp_in = True
+        if self.config.run_inference_response and not self.config.run_inference_activations:
+            self._set_generation_attention_backend()
         self.supports_system_role = self._check_system_role_support()
         self._validate_hooks()
 
@@ -270,6 +282,31 @@ class ModelRunner:
             f"Model: {model_id} | {n_parameters / 1e9:.2f}B params | {n_layers} layers | "
             f"{n_heads} heads | {d_vocab} vocabulary | {architecture} architecture"
         )
+
+    def _set_generation_attention_backend(self) -> None:
+        """Use an optimized HF attention backend when the bridge supports it.
+
+        TransformerLens activation runs need the hook-compatible attention path,
+        so this is deliberately limited to response-only jobs. Older bridge/model
+        combinations may not support switching after load; retain the default in
+        that case rather than making generation brittle.
+        """
+        model = self.model.original_model
+        backend = self.config.attention_implementation
+        try:
+            if hasattr(model, "set_attn_implementation"):
+                model.set_attn_implementation(backend)
+            elif hasattr(model.config, "_attn_implementation"):
+                model.config._attn_implementation = backend
+            else:
+                print(f"  ! Attention backend '{backend}' is unsupported; using default")
+                return
+            print(f"Generation attention backend: {backend}")
+        except Exception as exc:
+            print(
+                f"  ! Could not enable attention backend '{backend}' ({exc}); "
+                "using default"
+            )
 
     def _check_system_role_support(self) -> bool:
         """Some chat templates (e.g. Gemma's) reject a system-role message.
@@ -553,7 +590,6 @@ class ModelRunner:
             self._append_checkpoint(lang_code, "responses", batch_results)
 
             del outputs, input_prompt
-            torch.cuda.empty_cache()
 
         return results
 
@@ -638,7 +674,14 @@ class ModelRunner:
 def run(config: ModelGenerationConfig) -> None:
     torch.set_grad_enabled(False)
     try:
-        dataset = CrossLingualRuleFollowingDataset(config.dataset_config)
+        def load_dataset(lang_code: Optional[DatasetLanguageCode] = None) -> CrossLingualRuleFollowingDataset:
+            ds_config = config.dataset_config
+            if ds_config.data_dir:
+                lang = lang_code.value if lang_code is not None else "en"
+                ds_config = ds_config.model_copy(
+                    update={"url": f"{ds_config.data_dir}/{lang}/test.jsonl"}
+                )
+            return CrossLingualRuleFollowingDataset(ds_config)
 
         result_helper = (
             HFDataHelper(config.hf_result_repo)
@@ -656,7 +699,15 @@ def run(config: ModelGenerationConfig) -> None:
             model_runner.load(model_id=model_name)
 
             for lang_code in config.language_codes:
-                lang_dataset = dataset.subset(language=lang_code.value)
+                lang_dataset = load_dataset(lang_code).subset(language=lang_code.value)
+                if config.active_only:
+                    lang_dataset = lang_dataset.subset(
+                        rule_status=[status.value for status in ACTIVE_STATUSES]
+                    )
+                    print(
+                        f"Active-only inference: {len(lang_dataset.df)} rows "
+                        f"for {model_name}/{lang_code}"
+                    )
 
                 if config.run_inference_response:
                     if result_helper and result_helper.exists(
@@ -714,14 +765,51 @@ def run(config: ModelGenerationConfig) -> None:
         raise
 
 
-def main(hyperparameter_path: str) -> None:
+def main(
+    hyperparameter_path: str,
+    n_samples_override: Optional[int] = None,
+    generation_batch_size_override: Optional[int] = None,
+    active_only_override: Optional[bool] = None,
+) -> None:
     with open(hyperparameter_path) as f:
         config = ModelGenerationConfig.model_validate_json(f.read())
+    if n_samples_override is not None:
+        if n_samples_override < 1:
+            raise ValueError("--n-samples must be at least 1")
+        config.n_samples = n_samples_override
+    if generation_batch_size_override is not None:
+        if generation_batch_size_override < 1:
+            raise ValueError("--generation-batch-size must be at least 1")
+        config.generation_batch_size = generation_batch_size_override
+    if active_only_override is not None:
+        config.active_only = active_only_override
     run(config=config)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--hyperparameter-file", required=True)
+    ap.add_argument(
+        "--n-samples",
+        type=int,
+        default=None,
+        help="override the config sample count for this run",
+    )
+    ap.add_argument(
+        "--generation-batch-size",
+        type=int,
+        default=None,
+        help="override the config generation batch size for this run",
+    )
+    ap.add_argument(
+        "--active-only",
+        action="store_true",
+        help="generate only rows whose rule status is in ACTIVE_STATUSES",
+    )
     args = ap.parse_args()
-    main(args.hyperparameter_file)
+    main(
+        args.hyperparameter_file,
+        n_samples_override=args.n_samples,
+        generation_batch_size_override=args.generation_batch_size,
+        active_only_override=True if args.active_only else None,
+    )
