@@ -2,7 +2,7 @@
 
 import json
 import os
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -10,8 +10,16 @@ import torch
 from canonical.probing.config import RunConfig
 from huggingface_hub import hf_hub_download
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+
+
+def safe_roc_auc(y_true, y_score) -> float:
+    """roc_auc_score needs both classes present; a permutation or a small eval split can produce only one by chance."""
+    if len(np.unique(y_true)) < 2:
+        return 0.5
+    return roc_auc_score(y_true, y_score)
 
 
 def open_local_json(filepath):
@@ -36,7 +44,7 @@ def check_X(layer_X: Dict[int, np.ndarray]):
             layer_X[layer] = np.array(X)
         elif isinstance(X, torch.Tensor):
             layer_X[layer] = X.detach().cpu().numpy()
-        else:
+        elif not isinstance(X, np.ndarray):
             raise ValueError(f"X is not of the right format, got {type(X)}")
 
     return layer_X
@@ -50,7 +58,7 @@ def check_y(y):
         y = np.array(y)
     elif isinstance(y, torch.Tensor):
         y = y.detach().cpu().numpy()
-    else:
+    elif not isinstance(y, np.ndarray):
         raise ValueError(f"y is not of the right format, got {type(y)}")
     return y
 
@@ -148,18 +156,23 @@ def download_jsonl_from_hf(
 
 def upload_repo_to_hf(
     repo_path: str,
-    cfg: RunConfig,
+    cfg: Optional[RunConfig] = None,
     remove_local: bool = False,
     repo_type: str = "model",
+    repo_id: Optional[str] = None,
+    path_in_repo: Optional[str] = None,
 ):
-    """Uploads the data to HuggingFace."""
-    from huggingface_hub import upload_folder
+    """Uploads the data to HuggingFace. Uploads to cfg.hf_repo_id unless repo_id is given."""
+    from huggingface_hub import create_repo, upload_folder
 
+    target_repo_id = repo_id or cfg.hf_repo_id
     try:
+        create_repo(target_repo_id, repo_type=repo_type, exist_ok=True)
         upload_folder(
             folder_path=repo_path,
-            repo_id=cfg.hf_repo_id,
+            repo_id=target_repo_id,
             repo_type=repo_type,
+            path_in_repo=path_in_repo,
         )
     except Exception as e:
         print(f"An error occurred while uploading probes to HuggingFace: {e}")
@@ -169,6 +182,25 @@ def upload_repo_to_hf(
         import shutil
 
         shutil.rmtree(repo_path)
+
+
+def save_dataset_locally(
+    local_dir: str,
+    activations: np.ndarray,
+    labels: np.ndarray,
+    text,
+    hook_name: str = "hook_resid_post",
+) -> str:
+    """Saves activations/labels/text locally as {hook_name}_activations.npy/{hook_name}_labels.npy/text.parquet(or .json)."""
+    os.makedirs(local_dir, exist_ok=True)
+    np.save(f"{local_dir}/{hook_name}_activations.npy", activations)
+    np.save(f"{local_dir}/{hook_name}_labels.npy", labels)
+    if isinstance(text, pd.DataFrame):
+        text.to_parquet(f"{local_dir}/text.parquet")
+    else:
+        with open(f"{local_dir}/text.json", "w") as file:
+            json.dump(text, file)
+    return local_dir
 
 
 def create_results_path(run_config):
@@ -263,20 +295,29 @@ def extract_model_activations(
     texts: List[str],
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    batch_size: int = 4,
 ) -> np.ndarray:
-    """Extract activations with TransformerLens HookedTransformer and returns a tensor."""
+    """Extract activations with TransformerLens HookedTransformer and returns a tensor.
+    Runs in batches under no_grad, moving each batch to CPU and freeing GPU memory
+    before the next, to avoid holding the whole input in GPU memory at once.
+    """
     try:
-        _, cache = model.run_with_cache(
-            texts,
-            names_filter=lambda name: name.endswith(hook_name),
-            pos_slice=pos_slice,
-        )
-        layers = sorted(int(name.split(".")[1]) for name in cache.keys())
-        stacked = torch.stack(
-            [cache[f"blocks.{l}.{hook_name}"].squeeze() for l in layers], dim=1
-        )
-        activations = stacked.cpu().detach().numpy()
-        return activations
+        batches = []
+        with torch.no_grad():
+            for start in range(0, len(texts), batch_size):
+                _, cache = model.run_with_cache(
+                    texts[start : start + batch_size],
+                    names_filter=lambda name: name.endswith(hook_name),
+                    pos_slice=pos_slice,
+                )
+                layers = sorted(int(name.split(".")[1]) for name in cache.keys())
+                stacked = torch.stack(
+                    [cache[f"blocks.{l}.{hook_name}"].squeeze(dim=1) for l in layers], dim=1
+                )
+                batches.append(stacked.cpu().detach().numpy())
+                del cache, stacked
+                torch.cuda.empty_cache()
+        return np.concatenate(batches, axis=0)
     except Exception as e:
         print(f"Error while extracting activations: {e}")
         raise
@@ -286,6 +327,10 @@ def extract_model_activations(
 def make_chat_settings(
     model: Any, system_texts: List[str], queries: List[str]
 ) -> List[str]:
+    if len(system_texts) != len(queries):
+        raise ValueError(
+            f"system_texts and queries must be the same length, got {len(system_texts)} and {len(queries)}"
+        )
     chats = [
         [{"role": "system", "content": system_text}, {"role": "user", "content": query}]
         for system_text, query in zip(system_texts, queries)

@@ -4,9 +4,10 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 from matplotlib import pyplot as plt
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import roc_curve
 
 from canonical.probing.config import RunConfig
+from canonical.probing.utils import safe_roc_auc
 
 
 def accuracies_from_evaluation_results(evaluation_results) -> Tuple[List[Dict[int, float]], List[str]]:
@@ -60,7 +61,7 @@ def plot_auroc_curves(
     plt.figure(figsize=(10, 6))
     for y_true, y_score, label in zip(y_trues, y_scores, legend):
         fpr, tpr, _ = roc_curve(y_true, y_score)
-        auc = roc_auc_score(y_true, y_score)
+        auc = safe_roc_auc(y_true, y_score)
         plt.plot(fpr, tpr, label=f"{label} (AUC={auc:.3f})")
 
     plt.plot([0, 1], [0, 1], linestyle="--", color="grey")

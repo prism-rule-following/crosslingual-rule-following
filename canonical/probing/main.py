@@ -24,9 +24,12 @@ def main(
     hf_repo_type: str = "dataset",
     activations_in_hf: Optional[str] = None,
     y_in_hf: Optional[str] = None,
+    hf_dataset_repo: Optional[str] = None,
     model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
     remove_local: bool = False,
     upload_to_hf: bool = False,
     language: str = "en",
@@ -51,9 +54,13 @@ def main(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
+        cfg=run_cfg,
     )
 
     # training
@@ -91,9 +98,12 @@ def main(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
     )
     p_value_results = p_value_control(
         run_cfg,
@@ -103,9 +113,12 @@ def main(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
         load_normal_eval_scores=f"{run_cfg.eval_path}/ValidEval_{run_cfg.language}.json",
     )
     weights_results = weights_vs_diff_of_means(
@@ -116,9 +129,12 @@ def main(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
         trained_clfs_folder=trained_probes_path,
     )
     # visualisation
@@ -144,12 +160,24 @@ def _build_arg_parser():
     )
     parser.add_argument("--y-in-hf", default=None)
     parser.add_argument(
+        "--hf-dataset-repo",
+        default=None,
+        help="Repo to download activations-in-hf/y-in-hf from, if different from hf-repo-ix.",
+    )
+    parser.add_argument(
         "--model-name",
         default=None,
         help="Required when activations aren't precomputed, to extract them on the fly.",
     )
     parser.add_argument("--hook-name", default="hook_resid_post")
     parser.add_argument("--pos-slice", type=int, default=-1)
+    parser.add_argument(
+        "--no-push-full-dataset-to-hf",
+        dest="push_full_dataset_to_hf",
+        action="store_false",
+        default=True,
+    )
+    parser.add_argument("--push-path-in-repo", default=None)
     parser.add_argument(
         "--classifiers", required=True, help="JSON object mapping classifier name to kwargs."
     )
@@ -185,9 +213,12 @@ def cli():
         hf_repo_type=args.hf_repo_type,
         activations_in_hf=args.activations_in_hf,
         y_in_hf=args.y_in_hf,
+        hf_dataset_repo=args.hf_dataset_repo,
         model=model,
         hook_name=args.hook_name,
         pos_slice=args.pos_slice,
+        push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+        push_path_in_repo=args.push_path_in_repo,
         remove_local=args.remove_local,
         upload_to_hf=args.upload_to_hf,
         language=args.language,

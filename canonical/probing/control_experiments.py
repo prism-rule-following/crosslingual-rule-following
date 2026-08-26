@@ -23,18 +23,11 @@ from canonical.probing.train_probes import training
 from canonical.probing.utils import (
     check_clf_match,
     load_trained_clfs,
+    safe_roc_auc,
     save_clf_with_skops,
     split_by_layer,
 )
-from sklearn.metrics import classification_report, roc_auc_score
-
-
-def _safe_roc_auc(y_true, y_score) -> float:
-    """roc_auc_score needs both classes present; a permutation can produce only one by chance."""
-    if len(np.unique(y_true)) < 2:
-        return 0.5
-    return roc_auc_score(y_true, y_score)
-
+from sklearn.metrics import classification_report
 
 METRIC_EXTRACTORS = {
     "roc_auc": lambda report: report["roc_auc"],
@@ -53,9 +46,12 @@ def train_on_shuffled_labels(
     hf_repo_type: str = "dataset",
     activations_in_hf: Optional[str] = None,
     y_in_hf: Optional[str] = None,
+    hf_dataset_repo: Optional[str] = None,
     model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
 ) -> ShuffledLabelsResults:
     """Control training on shuffled labels."""
     # loading and shuffling the data
@@ -65,11 +61,15 @@ def train_on_shuffled_labels(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
+        cfg=cfg,
     )
-    np.random.shuffle(dataset.train_y)
+    np.random.default_rng(42).shuffle(dataset.train_y)
 
     # training on shuffled labels
     shuffled_path_prefix = "ShuffledLabels"
@@ -106,9 +106,12 @@ def p_value_control(
     hf_repo_type: str = "dataset",
     activations_in_hf: Optional[str] = None,
     y_in_hf: Optional[str] = None,
+    hf_dataset_repo: Optional[str] = None,
     model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
     n_perm: int = 1000,
     save_path_prefix: str = "PValue",
     load_normal_eval_scores: Optional[str] = None,
@@ -121,9 +124,13 @@ def p_value_control(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
+        cfg=cfg,
     )
     train_X = split_by_layer(dataset.train_x)
     test_X = split_by_layer(dataset.test_x)
@@ -136,7 +143,7 @@ def p_value_control(
             for layer, clf in layer_clfs.items():
                 predictions = clf.predict(test_X[layer])
                 report = classification_report(dataset.test_y, predictions, output_dict=True)
-                report["roc_auc"] = _safe_roc_auc(
+                report["roc_auc"] = safe_roc_auc(
                     dataset.test_y, clf.predict_proba(test_X[layer])[:, 1]
                 )
                 layer_reports[layer] = report
@@ -205,7 +212,7 @@ def _confound_p_value(
             layer_reports = {}
             for layer in predictions:
                 report = classification_report(y, predictions[layer], output_dict=True)
-                report["roc_auc"] = _safe_roc_auc(y, probabilities[layer])
+                report["roc_auc"] = safe_roc_auc(y, probabilities[layer])
                 layer_reports[layer] = report
             return {
                 m: max(f(r) for r in layer_reports.values()) for m, f in METRIC_EXTRACTORS.items()
@@ -232,23 +239,37 @@ def neutral_filler_control(
     cfg: RunConfig,
     trained_classifiers: Dict[str, Dict[int, object]],
     neutral_fillers_path: str,
-    model: Any,
+    model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    hf_dataset_repo: Optional[str] = None,
+    activations_in_hf: Optional[str] = None,
+    y_in_hf: Optional[str] = None,
     n_perm: int = 1000,
 ) -> Dict[str, Dict[str, Dict]]:
     """Checks whether the probe still performs above chance with the rule replaced by neutral text."""
     dataset = neutral_filler_data(
-        neutral_fillers_path, model, hook_name=hook_name, pos_slice=pos_slice
+        neutral_fillers_path,
+        model,
+        hook_name=hook_name,
+        pos_slice=pos_slice,
+        hf_dataset_repo=hf_dataset_repo,
+        activations_in_hf=activations_in_hf,
+        y_in_hf=y_in_hf,
     )
-    results = _confound_p_value(
+    # results = _confound_p_value(
+    #     trained_classifiers,
+    #     split_by_layer(dataset.neutral_x),
+    #     np.array(dataset.neutral_y),
+    #     n_perm=n_perm,
+    # )
+    results, _ = evaluate(
+        cfg,
         trained_classifiers,
         split_by_layer(dataset.neutral_x),
         np.array(dataset.neutral_y),
-        n_perm=n_perm,
+        save_path_prefix="NeutralFiller",
     )
-    with open(f"{cfg.eval_path}/NeutralFiller_{cfg.language}.json", "w") as f:
-        json.dump(results, f)
     return results
 
 
@@ -257,20 +278,40 @@ def distractor_control(
     trained_classifiers: Dict[str, Dict[int, object]],
     original_text_hf: str,
     hf_repo_ix: str,
-    model: Any,
+    model: Any = None,
     hf_repo_type: str = "dataset",
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
+    hf_dataset_repo: Optional[str] = None,
+    activations_in_hf: Optional[str] = None,
+    y_in_hf: Optional[str] = None,
     n_perm: int = 1000,
 ) -> Dict[str, Dict[str, Dict]]:
     """Checks whether the probe still performs above chance with 'Rule status:' replaced by a distractor word."""
-    dataset = distractor_word_data(original_text_hf, hf_repo_ix, model, hf_repo_type=hf_repo_type)
-    results = _confound_p_value(
+    dataset = distractor_word_data(
+        original_text_hf,
+        hf_repo_ix,
+        model,
+        hf_repo_type=hf_repo_type,
+        hook_name=hook_name,
+        pos_slice=pos_slice,
+        hf_dataset_repo=hf_dataset_repo,
+        activations_in_hf=activations_in_hf,
+        y_in_hf=y_in_hf,
+    )
+    # results = _confound_p_value(
+    #     trained_classifiers,
+    #     split_by_layer(dataset.distractor_x),
+    #     np.array(dataset.distractor_y),
+    #     n_perm=n_perm,
+    # )
+    results, _ = evaluate(
+        cfg,
         trained_classifiers,
         split_by_layer(dataset.distractor_x),
         np.array(dataset.distractor_y),
-        n_perm=n_perm,
+        save_path_prefix="Distractor",
     )
-    with open(f"{cfg.eval_path}/Distractor_{cfg.language}.json", "w") as f:
-        json.dump(results, f)
     return results
 
 
@@ -279,10 +320,13 @@ def no_keyword_control(
     trained_classifiers: Dict[str, Dict[int, object]],
     jsonl_in_hf: str,
     hf_repo_ix: str,
-    model: Any,
+    model: Any = None,
     hf_repo_type: str = "dataset",
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    hf_dataset_repo: Optional[str] = None,
+    activations_in_hf: Optional[str] = None,
+    y_in_hf: Optional[str] = None,
     n_perm: int = 1000,
 ) -> Dict[str, Dict[str, Dict]]:
     """Checks whether the probe still performs above chance with no explicit 'Rule' keyword present."""
@@ -293,15 +337,23 @@ def no_keyword_control(
         repo_type=hf_repo_type,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        hf_dataset_repo=hf_dataset_repo,
+        activations_in_hf=activations_in_hf,
+        y_in_hf=y_in_hf,
     )
-    results = _confound_p_value(
+    # results = _confound_p_value(
+    #     trained_classifiers,
+    #     split_by_layer(dataset.nokrule_x),
+    #     np.array(dataset.nokrule_y),
+    #     n_perm=n_perm,
+    # )
+    results, _ = evaluate(
+        cfg,
         trained_classifiers,
         split_by_layer(dataset.nokrule_x),
         np.array(dataset.nokrule_y),
-        n_perm=n_perm,
+        save_path_prefix="NoKeyword",
     )
-    with open(f"{cfg.eval_path}/NoKeyword_{cfg.language}.json", "w") as f:
-        json.dump(results, f)
     return results
 
 
@@ -309,21 +361,37 @@ def double_rule_control(
     cfg: RunConfig,
     trained_classifiers: Dict[str, Dict[int, object]],
     filepath: str,
-    model: Any,
+    model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    hf_dataset_repo: Optional[str] = None,
+    activations_in_hf: Optional[str] = None,
+    y_in_hf: Optional[str] = None,
     n_perm: int = 1000,
 ) -> Dict[str, Dict[str, Dict]]:
     """Checks whether the probe survives two rules with opposite statuses in the same system prompt."""
-    dataset = opposite_statuses_rules(filepath, model, hook_name=hook_name, pos_slice=pos_slice)
-    results = _confound_p_value(
+    dataset = opposite_statuses_rules(
+        filepath,
+        model,
+        hook_name=hook_name,
+        pos_slice=pos_slice,
+        hf_dataset_repo=hf_dataset_repo,
+        activations_in_hf=activations_in_hf,
+        y_in_hf=y_in_hf,
+    )
+    # results = _confound_p_value(
+    #     trained_classifiers,
+    #     split_by_layer(dataset.doublerule_x),
+    #     np.array(dataset.doublerule_y),
+    #     n_perm=n_perm,
+    # )
+    results, _ = evaluate(
+        cfg,
         trained_classifiers,
         split_by_layer(dataset.doublerule_x),
         np.array(dataset.doublerule_y),
-        n_perm=n_perm,
+        save_path_prefix="DoubleRule",
     )
-    with open(f"{cfg.eval_path}/DoubleRule_{cfg.language}.json", "w") as f:
-        json.dump(results, f)
     return results
 
 
@@ -340,8 +408,11 @@ def confound_datasets_control(
     hf_repo_type: str = "dataset",
     activations_in_hf: Optional[str] = None,
     y_in_hf: Optional[str] = None,
+    hf_dataset_repo: Optional[str] = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
     trained_clfs_folder: Optional[str] = None,
     n_perm: int = 1000,
 ) -> Dict[str, Dict[str, Dict]]:
@@ -364,9 +435,13 @@ def confound_datasets_control(
             hf_repo_type=hf_repo_type,
             activations_in_hf=activations_in_hf,
             y_in_hf=y_in_hf,
+            hf_dataset_repo=hf_dataset_repo,
             model=model,
             hook_name=hook_name,
             pos_slice=pos_slice,
+            push_full_dataset_to_hf=push_full_dataset_to_hf,
+            push_path_in_repo=push_path_in_repo,
+            cfg=cfg,
         )
         trained_classifiers = training(
             cfg, classifiers, split_by_layer(dataset.train_x), dataset.train_y
@@ -408,9 +483,12 @@ def weights_vs_diff_of_means(
     hf_repo_type: str = "dataset",
     activations_in_hf: Optional[str] = None,
     y_in_hf: Optional[str] = None,
+    hf_dataset_repo: Optional[str] = None,
     model: Any = None,
     hook_name: str = "hook_resid_post",
     pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
     trained_clfs_folder: Optional[str] = None,
 ) -> Dict[str, Dict[int, float]]:
     """Checks how similar the probe's learnt weights are to the diff of means.
@@ -421,9 +499,13 @@ def weights_vs_diff_of_means(
         hf_repo_type=hf_repo_type,
         activations_in_hf=activations_in_hf,
         y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
+        push_full_dataset_to_hf=push_full_dataset_to_hf,
+        push_path_in_repo=push_path_in_repo,
+        cfg=cfg,
     )
     train_X = split_by_layer(dataset.train_x)
     if trained_clfs_folder:
@@ -474,12 +556,24 @@ def _build_arg_parser():
         )
         sp.add_argument("--y-in-hf", default=None)
         sp.add_argument(
+            "--hf-dataset-repo",
+            default=None,
+            help="Repo to download activations-in-hf/y-in-hf from, if different from hf-repo-ix.",
+        )
+        sp.add_argument(
             "--model-name",
             default=None,
             help="Required when activations aren't precomputed, to extract them on the fly.",
         )
         sp.add_argument("--hook-name", default="hook_resid_post")
         sp.add_argument("--pos-slice", type=int, default=-1)
+        sp.add_argument(
+            "--no-push-full-dataset-to-hf",
+            dest="push_full_dataset_to_hf",
+            action="store_false",
+            default=True,
+        )
+        sp.add_argument("--push-path-in-repo", default=None)
         sp.add_argument(
             "--classifiers",
             required=True,
@@ -546,9 +640,12 @@ def main():
             hf_repo_type=args.hf_repo_type,
             activations_in_hf=args.activations_in_hf,
             y_in_hf=args.y_in_hf,
+            hf_dataset_repo=args.hf_dataset_repo,
             model=model,
             hook_name=args.hook_name,
             pos_slice=args.pos_slice,
+            push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+            push_path_in_repo=args.push_path_in_repo,
         )
     elif args.command == "p-value":
         results = p_value_control(
@@ -559,9 +656,12 @@ def main():
             hf_repo_type=args.hf_repo_type,
             activations_in_hf=args.activations_in_hf,
             y_in_hf=args.y_in_hf,
+            hf_dataset_repo=args.hf_dataset_repo,
             model=model,
             hook_name=args.hook_name,
             pos_slice=args.pos_slice,
+            push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+            push_path_in_repo=args.push_path_in_repo,
             n_perm=args.n_perm,
             save_path_prefix=args.save_path_prefix,
             load_normal_eval_scores=args.load_normal_eval_scores,
@@ -575,9 +675,12 @@ def main():
             hf_repo_type=args.hf_repo_type,
             activations_in_hf=args.activations_in_hf,
             y_in_hf=args.y_in_hf,
+            hf_dataset_repo=args.hf_dataset_repo,
             model=model,
             hook_name=args.hook_name,
             pos_slice=args.pos_slice,
+            push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+            push_path_in_repo=args.push_path_in_repo,
             trained_clfs_folder=args.trained_clfs_folder,
         )
     elif args.command == "confound-datasets":
@@ -597,6 +700,9 @@ def main():
             hf_repo_type=args.hf_repo_type,
             activations_in_hf=args.activations_in_hf,
             y_in_hf=args.y_in_hf,
+            hf_dataset_repo=args.hf_dataset_repo,
+            push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+            push_path_in_repo=args.push_path_in_repo,
             trained_clfs_folder=args.trained_clfs_folder,
             n_perm=args.n_perm,
         )

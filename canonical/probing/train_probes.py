@@ -13,13 +13,16 @@ def training(
     train_X: Dict[int, np.ndarray],
     train_y: np.ndarray,
 ) -> Dict[str, Dict[int, object]]:
-    """Train the probes. Pure: fits and returns classifiers, no file I/O."""
+    """Train the probes. Pure: fits and returns classifiers."""
     # check clfs
     valid_clfs = [clf for clf in classifiers if hasattr(clf, "fit")]
     if len(valid_clfs) == 0:
         raise ValueError(
             f"Classifiers do not have a fit() method. Pass valid classifiers."
         )
+    names = [type(clf).__name__ for clf in valid_clfs]
+    if len(names) != len(set(names)):
+        raise ValueError(f"Duplicate classifier types are not supported: {names}")
 
     # do the training
     trained_classifiers = {}
@@ -49,12 +52,28 @@ def _build_arg_parser():
         default=None,
         help="Local filepath for double-rule data, unused otherwise.",
     )
-    parser.add_argument("--classifiers", required=True, help="JSON object mapping classifier name to kwargs.")
+    parser.add_argument(
+        "--classifiers",
+        required=True,
+        help="JSON object mapping classifier name to kwargs.",
+    )
     parser.add_argument("--llm", default=None, type=str)
     parser.add_argument("--hook", default="hook_resid_post", type=str)
     parser.add_argument("--pos-slice", default=-1, type=int)
     parser.add_argument("--activations-hf", type=str, default=None)
     parser.add_argument("--y-hf", type=str, default=None)
+    parser.add_argument(
+        "--hf-dataset-repo",
+        default=None,
+        help="Repo to download activations-hf/y-hf from, if different from hf-repo-ix.",
+    )
+    parser.add_argument(
+        "--no-push-full-dataset-to-hf",
+        dest="push_full_dataset_to_hf",
+        action="store_false",
+        default=True,
+    )
+    parser.add_argument("--push-path-in-repo", default=None)
     parser.add_argument("--jsonl-in-hf", type=str)
     parser.add_argument("--hf-repo-ix", type=str)
     parser.add_argument("--hf-repo-type", default="dataset", type=str)
@@ -92,6 +111,15 @@ def main():
 
         model = HookedTransformer.from_pretrained(args.llm)
 
+    run_config = RunConfig(
+        language=args.language,
+        n_layers=args.n_layers,
+        dataset_name=args.dataset_name,
+        results_folder=args.results_folder,
+    )
+    create_results_path(run_config)
+    classifiers = build_classifiers(json.loads(args.classifiers))
+
     if args.train_double_rule_data:
         dataset = opposite_statuses_rules(
             args.data_path,
@@ -107,20 +135,15 @@ def main():
             hf_repo_type=args.hf_repo_type,
             activations_in_hf=args.activations_hf,
             y_in_hf=args.y_hf,
+            hf_dataset_repo=args.hf_dataset_repo,
             model=model,
             hook_name=args.hook,
             pos_slice=args.pos_slice,
+            push_full_dataset_to_hf=args.push_full_dataset_to_hf,
+            push_path_in_repo=args.push_path_in_repo,
+            cfg=run_config,
         )
         train_x, train_y = dataset.train_x, dataset.train_y
-
-    run_config = RunConfig(
-        language=args.language,
-        n_layers=args.n_layers,
-        dataset_name=args.dataset_name,
-        results_folder=args.results_folder,
-    )
-    create_results_path(run_config)
-    classifiers = build_classifiers(json.loads(args.classifiers))
 
     trained_classifiers = training(
         run_config,

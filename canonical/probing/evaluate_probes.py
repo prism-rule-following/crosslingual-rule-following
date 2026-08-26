@@ -5,8 +5,8 @@ from datetime import datetime as dt
 from typing import Dict, Tuple
 
 from canonical.probing.config import RunConfig
-from canonical.probing.utils import upload_repo_to_hf
-from sklearn.metrics import classification_report, roc_auc_score
+from canonical.probing.utils import safe_roc_auc, upload_repo_to_hf
+from sklearn.metrics import classification_report
 
 
 def evaluate(
@@ -27,7 +27,7 @@ def evaluate(
         for layer, clf in layer_dict.items():
             predictions = clf.predict(test_X[layer])
             report = classification_report(test_y, predictions, output_dict=True)
-            report["roc_auc"] = roc_auc_score(test_y, clf.predict_proba(test_X[layer])[:, 1])
+            report["roc_auc"] = safe_roc_auc(test_y, clf.predict_proba(test_X[layer])[:, 1])
             evaluation_results[model_name][layer] = report
     # saving the results
     try:
