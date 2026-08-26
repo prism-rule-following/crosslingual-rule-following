@@ -5,20 +5,27 @@ uploading results (responses, activations) to the Hugging Face Hub.
 
 import argparse
 import json
-import torch
-import pandas as pd
+import tempfile
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Literal, Optional
+
+import numpy as np
+import pandas as pd
+import torch
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from tqdm import tqdm
 from transformers import AutoTokenizer
-from transformer_lens.model_bridge import TransformerBridge
+
 import transformer_lens.utilities as utils
-from pydantic import BaseModel, Field
-from typing import Any, Dict, List, Optional
+from transformer_lens.model_bridge import TransformerBridge
 
 from canonical.model.dataset import (
     Category,
     Checker,
     CrossLingualRuleFollowingDataset,
+    ACTIVE_STATUSES,
     DatasetConfig,
     DatasetLanguageCode,
     GrammarType,
@@ -30,9 +37,73 @@ from canonical.model.dataset import (
     Topic,
     nan_to_none,
 )
-from dotenv import load_dotenv
 
 load_dotenv()
+
+
+# --------------------------------------------------------------------------- #
+# Activation hook groups
+# --------------------------------------------------------------------------- #
+# Each group maps to one file on the Hub. `hook_embed` is a single top-level
+# hook; every other group is a per-layer hook (suffix appended to blocks.{i}.)
+# and is stored as a (n_rows, n_layers, *hook_shape) array.
+PROBING_HOOK_SUFFIXES = ["hook_resid_post", "hook_attn_out", "hook_mlp_out"]
+# TransformerLens 3.x/TransformerBridge splits the old concatenated
+# `attn.qkv.hook_in` into per-QKV pre-projection input hooks; use those.
+PATCHING_HOOK_SUFFIXES = [
+    "attn.q.hook_in",
+    "attn.k.hook_in",
+    "attn.v.hook_in",
+    "hook_out",
+]
+
+# (file group name, per-layer hook suffix, or "" for the top-level hook_embed)
+ACTIVATION_GROUPS: List[tuple] = [
+    ("hook_embed", ""),
+    *[(s, s) for s in PROBING_HOOK_SUFFIXES],
+    *[
+        ("attn_q_input", "attn.q.hook_in"),
+        ("attn_k_input", "attn.k.hook_in"),
+        ("attn_v_input", "attn.v.hook_in"),
+        ("hook_out", "hook_out"),
+    ],
+]
+
+# Columns carried in the activations index so a probe can be built without
+# touching the responses file: labels + the join key back to responses.
+ACTIVATION_INDEX_COLUMNS = [
+    "id",
+    "rule_status",
+    "grammar_type",
+    "category",
+    "topic",
+    "pair_type",
+    "pressure_level",
+    "pressure_name",
+    "language",
+]
+
+
+def _activation_filename(group: str, dtype: str) -> str:
+    return f"{group}.{dtype}.npy"
+
+
+def _activation_hf_dir(model_id: str, lang_code: "DatasetLanguageCode") -> str:
+    return f"{model_id.replace('/', '__')}/{lang_code.value}"
+
+
+@dataclass
+class ActivationOutput:
+    """Assembled activations for one (model, language), ready to upload.
+
+    arrays: group name -> fp16 numpy array, row order == index row order.
+    index:  DataFrame of label columns + row_idx (join key / array row order).
+    n_rows: number of dataset rows the arrays/index cover.
+    """
+
+    arrays: Dict[str, "np.ndarray"]
+    index: "pd.DataFrame"
+    n_rows: int
 
 
 class ModelResponse(BaseModel):
@@ -117,6 +188,11 @@ class ModelGenerationConfig(BaseModel):
         description="batch size for hidden-state extraction; kept separate from "
         "generation_batch_size since caching activations is far more memory-hungry per example",
     )
+    activation_dtype: Literal["float16", "float32"] = Field(
+        default="float16",
+        description="dtype to store cached activations in; float16 halves size "
+        "and is sufficient for linear probes / logit-lens",
+    )
     checkpoint_dir: str = Field(
         default="/content/drive/MyDrive/crosslingual-rule-following/inference",
         description="local directory for per-batch response/activation checkpoints, "
@@ -138,6 +214,21 @@ class ModelGenerationConfig(BaseModel):
     )
     run_inference_activations: bool = Field(
         default=False, description="whether to run the activation-extraction pass"
+    )
+    enable_thinking: Optional[bool] = Field(
+        default=None,
+        description="chat-template toggle for reasoning-capable models (e.g. "
+        "Qwen3); None leaves the tokenizer default. Set false to run without "
+        "the thinking block (injects ' thinking\\n\\n response\\n\\n' for Qwen3).",
+    )
+    attention_implementation: Literal["eager", "sdpa", "flash_attention_2"] = Field(
+        default="sdpa",
+        description="attention backend for response-only generation; activation "
+        "runs retain the hook-compatible backend",
+    )
+    active_only: bool = Field(
+        default=False,
+        description="run only the binding/active side of each contrastive pair",
     )
 
     @property
@@ -176,7 +267,10 @@ class ModelRunner:
         self.model.cfg.use_attn_result = True
         self.model.cfg.use_split_qkv_input = True
         self.model.cfg.use_hook_mlp_in = True
+        if self.config.run_inference_response and not self.config.run_inference_activations:
+            self._set_generation_attention_backend()
         self.supports_system_role = self._check_system_role_support()
+        self._validate_hooks()
 
         n_layers = self.model.cfg.n_layers
         # cfg.n_params is None under TransformerBridge; count directly instead.
@@ -188,6 +282,31 @@ class ModelRunner:
             f"Model: {model_id} | {n_parameters / 1e9:.2f}B params | {n_layers} layers | "
             f"{n_heads} heads | {d_vocab} vocabulary | {architecture} architecture"
         )
+
+    def _set_generation_attention_backend(self) -> None:
+        """Use an optimized HF attention backend when the bridge supports it.
+
+        TransformerLens activation runs need the hook-compatible attention path,
+        so this is deliberately limited to response-only jobs. Older bridge/model
+        combinations may not support switching after load; retain the default in
+        that case rather than making generation brittle.
+        """
+        model = self.model.original_model
+        backend = self.config.attention_implementation
+        try:
+            if hasattr(model, "set_attn_implementation"):
+                model.set_attn_implementation(backend)
+            elif hasattr(model.config, "_attn_implementation"):
+                model.config._attn_implementation = backend
+            else:
+                print(f"  ! Attention backend '{backend}' is unsupported; using default")
+                return
+            print(f"Generation attention backend: {backend}")
+        except Exception as exc:
+            print(
+                f"  ! Could not enable attention backend '{backend}' ({exc}); "
+                "using default"
+            )
 
     def _check_system_role_support(self) -> bool:
         """Some chat templates (e.g. Gemma's) reject a system-role message.
@@ -212,22 +331,68 @@ class ModelRunner:
         else:
             # Fold the system instruction into the user turn instead.
             chat = [{"role": "user", "content": f"{system}\n\n{user}"}]
+        kwargs: Dict[str, Any] = {}
+        if self.config.enable_thinking is not None:
+            kwargs["enable_thinking"] = self.config.enable_thinking
         return self.tokenizer.apply_chat_template(
-            chat, tokenize=False, add_generation_prompt=True
+            chat, tokenize=False, add_generation_prompt=True, **kwargs
         )
 
-    def get_hook_filter(self) -> List[str]:
-        """Hook names to cache: per-layer attention/MLP outputs, needed as the
-        injectable values for edge activation patching (see attribution_patching.py).
-        """
+    def get_probing_hooks(self) -> List[str]:
+        """Probing hooks: residual stream + per-layer attention/MLP outputs at
+        the decision position, for linear probes / logit lens."""
         n_layers = self.model.cfg.n_layers
-        names = [
+        return ["hook_embed"] + [
             f"blocks.{i}.{hook}"
             for i in range(n_layers)
-            for hook in ["attn.qkv.hook_in", "hook_out"]
+            for hook in PROBING_HOOK_SUFFIXES
         ]
-        names.append("hook_embed")
-        return names
+
+    def get_patching_hooks(self) -> List[str]:
+        """Patching hooks: injectable values for edge activation patching."""
+        n_layers = self.model.cfg.n_layers
+        return [
+            f"blocks.{i}.{hook}"
+            for i in range(n_layers)
+            for hook in PATCHING_HOOK_SUFFIXES
+        ]
+
+    def get_hook_filter(self) -> List[str]:
+        """All hooks to cache (probing + patching). Kept as one list so
+        run_with_cache does a single forward pass for both."""
+        return self.get_probing_hooks() + self.get_patching_hooks()
+
+    def _group_hook_names(self) -> Dict[str, List[str]]:
+        """Map file group name -> full hook names (single for hook_embed,
+        one per layer otherwise)."""
+        n_layers = self.model.cfg.n_layers
+        groups: Dict[str, List[str]] = {}
+        for group, suffix in ACTIVATION_GROUPS:
+            if not suffix:
+                groups[group] = ["hook_embed"]
+            else:
+                groups[group] = [f"blocks.{i}.{suffix}" for i in range(n_layers)]
+        return groups
+
+    def _validate_hooks(self) -> None:
+        """Warn about requested hooks absent from the model's hook_dict (names
+        are architecture-dependent; some may not exist for a given model)."""
+        hook_dict = getattr(self.model, "hook_dict", None) or {}
+        if not hook_dict:
+            return
+        missing = [
+            h for names in self._group_hook_names().values() for h in names
+            if h not in hook_dict
+        ]
+        if missing:
+            print(
+                f"  ! WARNING: {len(missing)} requested hooks absent from hook_dict "
+                "(architecture-specific; they will be skipped):"
+            )
+            for h in missing[:12]:
+                print(f"      - {h}")
+            if len(missing) > 12:
+                print(f"      ... and {len(missing) - 12} more")
 
     def _checkpoint_path(self, lang_code: DatasetLanguageCode, kind: str) -> Path:
         model_slug = self.model_id.replace("/", "__")
@@ -258,6 +423,111 @@ class ModelRunner:
         with open(path, "a") as f:
             for row in rows:
                 f.write(json.dumps(row) + "\n")
+
+    def clear_checkpoint(self, lang_code: DatasetLanguageCode, kind: str) -> None:
+        """Delete the local checkpoint file after its rows have been safely
+        uploaded to the Hub, keeping the persistent volume free of
+        already-persisted checkpoints. Only called after a successful upload
+        (see run()) — if upload is skipped or fails, the checkpoint is kept."""
+        path = self._checkpoint_path(lang_code, kind)
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+    # ------------------------------------------------------------------ #
+    # Activation checkpointing (numpy shards + id manifest)
+    # ------------------------------------------------------------------ #
+    def _activation_dir(self, lang_code: DatasetLanguageCode) -> Path:
+        model_slug = self.model_id.replace("/", "__")
+        return (
+            Path(self.config.checkpoint_dir)
+            / f"{model_slug}_{lang_code.value}_activations"
+        )
+
+    def _activation_shards_dir(self, lang_code: DatasetLanguageCode) -> Path:
+        return self._activation_dir(lang_code) / "shards"
+
+    def _activation_done_path(self, lang_code: DatasetLanguageCode) -> Path:
+        return self._activation_dir(lang_code) / "done.jsonl"
+
+    def _activation_done_count(self, lang_code: DatasetLanguageCode) -> int:
+        """Number of rows already checkpointed. Rows are processed in dataset
+        order and written to the manifest in order, so the count is the prefix
+        length already persisted (and the resume offset)."""
+        p = self._activation_done_path(lang_code)
+        if not p.exists():
+            return 0
+        return sum(1 for _ in open(p))
+
+    def _append_activation_done(
+        self, lang_code: DatasetLanguageCode, ids: List[str]
+    ) -> None:
+        p = self._activation_done_path(lang_code)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a") as f:
+            for i in ids:
+                f.write(i + "\n")
+
+    def _write_activation_shard(
+        self, lang_code: DatasetLanguageCode, group: str, start_idx: int, arr: "np.ndarray"
+    ) -> None:
+        """Write one batch's array for a group. Keyed by the absolute row
+        offset so a re-processed batch overwrites the same file (no duplicates)."""
+        shards_dir = self._activation_shards_dir(lang_code)
+        shards_dir.mkdir(parents=True, exist_ok=True)
+        np.save(shards_dir / f"{group}_{start_idx:07d}.npy", arr)
+
+    def _assemble_activations(
+        self, lang_code: DatasetLanguageCode
+    ) -> Dict[str, "np.ndarray"]:
+        """Concatenate per-group shards in row order into the final arrays."""
+        shards_dir = self._activation_shards_dir(lang_code)
+        arrays: Dict[str, "np.ndarray"] = {}
+        for group in self._group_hook_names():
+            files = sorted(
+                shards_dir.glob(f"{group}_*.npy"),
+                key=lambda p: int(p.stem.rsplit("_", 1)[1]),
+            )
+            if files:
+                arrays[group] = np.concatenate(
+                    [np.load(f) for f in files], axis=0
+                )
+        return arrays
+
+    def clear_activation_checkpoint(self, lang_code: DatasetLanguageCode) -> None:
+        """Remove the whole activation checkpoint dir (shards + manifest)
+        after its data has been uploaded to the Hub."""
+        import shutil
+
+        shutil.rmtree(self._activation_dir(lang_code), ignore_errors=True)
+
+    def _build_activation_index(self, dataset: pd.DataFrame) -> pd.DataFrame:
+        cols = [c for c in ACTIVATION_INDEX_COLUMNS if c in dataset.columns]
+        index = dataset[cols].reset_index(drop=True)
+        index.insert(0, "row_idx", range(len(index)))
+        return index
+
+    def upload_activations(
+        self,
+        helper: "HFDataHelper",
+        act: "ActivationOutput",
+        lang_code: DatasetLanguageCode,
+    ) -> None:
+        """Upload assembled activations: index.parquet + one .npy per group,
+        under {model_slug}/{lang}/ in the activations repo."""
+        hf_dir = _activation_hf_dir(self.model_id, lang_code)
+        dtype_label = "fp16" if self.config.activation_dtype == "float16" else "fp32"
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            idx_path = tmp_path / "index.parquet"
+            act.index.to_parquet(idx_path, index=False)
+            helper.upload_file(idx_path, f"{hf_dir}/index.parquet")
+            for group, arr in act.arrays.items():
+                filename = _activation_filename(group, dtype_label)
+                arr_path = tmp_path / filename
+                np.save(arr_path, arr)
+                helper.upload_file(arr_path, f"{hf_dir}/{filename}")
 
     @torch.no_grad
     def generate_response(
@@ -320,26 +590,38 @@ class ModelRunner:
             self._append_checkpoint(lang_code, "responses", batch_results)
 
             del outputs, input_prompt
-            torch.cuda.empty_cache()
 
         return results
 
     @torch.no_grad
     def extract_hidden_states(
         self, dataset: pd.DataFrame, lang_code: DatasetLanguageCode
-    ) -> List[Dict[str, Any]]:
+    ) -> ActivationOutput:
+        """Extract last-token activations for every hook group, checkpointing
+        per-batch numpy shards so a crash resumes from the last completed
+        batch. Returns assembled fp16 arrays + a label index ready to upload."""
         assert self.model is not None, ValueError(
             "Initialize model by calling load() first"
         )
-        results: List[Dict[str, Any]] = self._load_checkpoint(lang_code, "activations")
-        completed_ids = {row["id"] for row in results}
-        dataset = dataset[~dataset["id"].isin(completed_ids)].reset_index(drop=True)
+        dataset = dataset.reset_index(drop=True)
+        dtype = (
+            torch.float16
+            if self.config.activation_dtype == "float16"
+            else torch.float32
+        )
+
+        done_count = self._activation_done_count(lang_code)
+        done_count = min(done_count, len(dataset))
+        if done_count:
+            print(f"Resuming activations: {done_count}/{len(dataset)} rows already done")
+        remaining = dataset.iloc[done_count:]
 
         for start in tqdm(
-            range(0, len(dataset), self.config.activation_batch_size),
+            range(0, len(remaining), self.config.activation_batch_size),
             desc="Extracting hidden states...",
         ):
-            batch_rows = dataset.iloc[
+            global_start = done_count + start
+            batch_rows = remaining.iloc[
                 start : start + self.config.activation_batch_size
             ].to_dict(orient="records")
             prompts = [
@@ -363,34 +645,43 @@ class ModelRunner:
                 len(input_prompt["input_ids"]), device=input_prompt["input_ids"].device
             )
 
-            batch_activations = {
-                name: acts[batch_indices, last_token_indices].cpu().numpy().tolist()
-                for name, acts in cache.items()
-            }
-            batch_results = []
-            for i, row in enumerate(batch_rows):
-                batch_results.append(
-                    {
-                        "id": row["id"],
-                        **{
-                            name: values[i]
-                            for name, values in batch_activations.items()
-                        },
-                    }
-                )
-            results.extend(batch_results)
-            self._append_checkpoint(lang_code, "activations", batch_results)
+            for group, hook_names in self._group_hook_names().items():
+                present = [h for h in hook_names if h in cache]
+                if not present:
+                    continue
+                if group == "hook_embed":
+                    arr = cache["hook_embed"][batch_indices, last_token_indices]
+                else:
+                    arr = torch.stack(
+                        [cache[h][batch_indices, last_token_indices] for h in present],
+                        dim=1,
+                    )
+                arr = arr.to(dtype).cpu().numpy()
+                self._write_activation_shard(lang_code, group, global_start, arr)
+
+            self._append_activation_done(
+                lang_code, [r["id"] for r in batch_rows]
+            )
 
             del cache, input_prompt
             torch.cuda.empty_cache()
 
-        return results
+        arrays = self._assemble_activations(lang_code)
+        index = self._build_activation_index(dataset)
+        return ActivationOutput(arrays=arrays, index=index, n_rows=len(dataset))
 
 
 def run(config: ModelGenerationConfig) -> None:
     torch.set_grad_enabled(False)
     try:
-        dataset = CrossLingualRuleFollowingDataset(config.dataset_config)
+        def load_dataset(lang_code: Optional[DatasetLanguageCode] = None) -> CrossLingualRuleFollowingDataset:
+            ds_config = config.dataset_config
+            if ds_config.data_dir:
+                lang = lang_code.value if lang_code is not None else "en"
+                ds_config = ds_config.model_copy(
+                    update={"url": f"{ds_config.data_dir}/{lang}/test.jsonl"}
+                )
+            return CrossLingualRuleFollowingDataset(ds_config)
 
         result_helper = (
             HFDataHelper(config.hf_result_repo)
@@ -408,7 +699,15 @@ def run(config: ModelGenerationConfig) -> None:
             model_runner.load(model_id=model_name)
 
             for lang_code in config.language_codes:
-                lang_dataset = dataset.subset(language=lang_code.value)
+                lang_dataset = load_dataset(lang_code).subset(language=lang_code.value)
+                if config.active_only:
+                    lang_dataset = lang_dataset.subset(
+                        rule_status=[status.value for status in ACTIVE_STATUSES]
+                    )
+                    print(
+                        f"Active-only inference: {len(lang_dataset.df)} rows "
+                        f"for {model_name}/{lang_code}"
+                    )
 
                 if config.run_inference_response:
                     if result_helper and result_helper.exists(
@@ -428,14 +727,18 @@ def run(config: ModelGenerationConfig) -> None:
                                 model_id=model_name,
                                 lang_code=lang_code,
                             )
+                            model_runner.clear_checkpoint(lang_code, "responses")
                         else:
                             print(
                                 f"Skipping response upload for {model_name}/{lang_code}"
                             )
 
                 if config.run_inference_activations:
-                    if activations_helper and activations_helper.exists(
-                        model_id=model_name, lang_code=lang_code
+                    act_index_path = (
+                        f"{_activation_hf_dir(model_name, lang_code)}/index.parquet"
+                    )
+                    if activations_helper and activations_helper.exists_path(
+                        act_index_path
                     ):
                         print(
                             f"Skipping activation extraction for {model_name}/{lang_code}: "
@@ -446,11 +749,10 @@ def run(config: ModelGenerationConfig) -> None:
                             dataset=lang_dataset.df, lang_code=lang_code
                         )
                         if activations_helper:
-                            activations_helper.upload(
-                                df=pd.DataFrame(activations),
-                                model_id=model_name,
-                                lang_code=lang_code,
+                            model_runner.upload_activations(
+                                activations_helper, activations, lang_code
                             )
+                            model_runner.clear_activation_checkpoint(lang_code)
                         else:
                             print(
                                 f"Skipping activation upload for {model_name}/{lang_code}"
@@ -463,14 +765,51 @@ def run(config: ModelGenerationConfig) -> None:
         raise
 
 
-def main(hyperparameter_path: str) -> None:
+def main(
+    hyperparameter_path: str,
+    n_samples_override: Optional[int] = None,
+    generation_batch_size_override: Optional[int] = None,
+    active_only_override: Optional[bool] = None,
+) -> None:
     with open(hyperparameter_path) as f:
         config = ModelGenerationConfig.model_validate_json(f.read())
+    if n_samples_override is not None:
+        if n_samples_override < 1:
+            raise ValueError("--n-samples must be at least 1")
+        config.n_samples = n_samples_override
+    if generation_batch_size_override is not None:
+        if generation_batch_size_override < 1:
+            raise ValueError("--generation-batch-size must be at least 1")
+        config.generation_batch_size = generation_batch_size_override
+    if active_only_override is not None:
+        config.active_only = active_only_override
     run(config=config)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--hyperparameter-file", required=True)
+    ap.add_argument(
+        "--n-samples",
+        type=int,
+        default=None,
+        help="override the config sample count for this run",
+    )
+    ap.add_argument(
+        "--generation-batch-size",
+        type=int,
+        default=None,
+        help="override the config generation batch size for this run",
+    )
+    ap.add_argument(
+        "--active-only",
+        action="store_true",
+        help="generate only rows whose rule status is in ACTIVE_STATUSES",
+    )
     args = ap.parse_args()
-    main(args.hyperparameter_file)
+    main(
+        args.hyperparameter_file,
+        n_samples_override=args.n_samples,
+        generation_batch_size_override=args.generation_batch_size,
+        active_only_override=True if args.active_only else None,
+    )

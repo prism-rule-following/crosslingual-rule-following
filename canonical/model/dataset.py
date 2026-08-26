@@ -689,7 +689,16 @@ class Dataset(BaseModel):
 # Config
 # --------------------------------------------------------------------------- #
 class DatasetConfig(BaseModel):
-    url: str = Field(..., description="HuggingFace dataset id or JSON file path/URL")
+    url: Optional[str] = Field(
+        default=None,
+        description="HuggingFace dataset id or JSON file path/URL",
+    )
+    data_dir: Optional[str] = Field(
+        default=None,
+        description="optional directory of per-language dataset files "
+        "({data_dir}/{lang}/test.jsonl); when set, datasets are loaded per "
+        "language instead of from a single url",
+    )
     source: DatasetSource = Field(..., description="dataset source")
     split: Optional[str] = Field(
         default=None,
@@ -741,6 +750,12 @@ class DatasetConfig(BaseModel):
                 "Update DatasetLanguageCode/LANGUAGE_NAMES to add support for this language."
             )
         return value
+
+    @model_validator(mode="after")
+    def _require_source(self) -> "DatasetConfig":
+        if not self.url and not self.data_dir:
+            raise ValueError("one of url or data_dir is required")
+        return self
 
 
 # --------------------------------------------------------------------------- #
@@ -1043,12 +1058,29 @@ class HFDataHelper:
             )
         os.unlink(tmp.name)
 
+    def upload_file(self, path_or_fileobj: Any, path_in_repo: str) -> None:
+        """Upload an arbitrary local file to a path inside this repo (used for
+        activation .npy arrays and the index.parquet)."""
+        self._ensure_repo()
+        self._api.upload_file(
+            path_or_fileobj=path_or_fileobj,
+            path_in_repo=path_in_repo,
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            token=self.token,
+        )
+
     def exists(self, model_id: str, lang_code: DatasetLanguageCode) -> bool:
+        return self.exists_path(self._hf_path(model_id, lang_code))
+
+    def exists_path(self, path_in_repo: str) -> bool:
+        """Whether a specific path already exists in the repo (used to skip
+        already-uploaded results)."""
         try:
             info = self._api.get_paths_info(
                 repo_id=self.repo_id,
                 repo_type="dataset",
-                paths=[self._hf_path(model_id, lang_code)],
+                paths=[path_in_repo],
                 token=self.token,
             )
             return len(info) > 0
