@@ -43,6 +43,16 @@ distractor_words = [
 ]
 
 
+class CanonicalActivationDataset(BaseModel):
+    """Unsplit dataset class."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    full_x: np.ndarray
+    full_y: np.ndarray
+    full_text: pd.DataFrame
+
+
 class SplitActivationDataset(
     BaseModel
 ):  # dataset for activations split into train, test and heldout

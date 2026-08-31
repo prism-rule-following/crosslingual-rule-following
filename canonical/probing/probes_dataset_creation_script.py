@@ -1,10 +1,11 @@
 import random
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 from canonical.probing.config import RunConfig
 from canonical.probing.pydantic_models import (
+    CanonicalActivationDataset,
     CanonicalDatasetColumns,
     DistractorDataset,
     DoubleRuleDataset,
@@ -30,7 +31,12 @@ from canonical.probing.utils import (
 from sklearn.model_selection import GroupShuffleSplit
 
 
-def test_heldout_split(
+def test_heldout_split():
+    """If we don't want to split"""
+    pass
+
+
+def canonical_test_heldout_split(
     x: np.ndarray, y: np.ndarray, textdf: pd.DataFrame
 ) -> SplitActivationDataset:
     """Split original activation dataset into train/test/heldout.
@@ -132,27 +138,8 @@ def get_xy(
     return X, y
 
 
-def create_canonical_dataset(
-    jsonl_in_hf: str,
-    hf_repo_ix: str,
-    hf_repo_type: str = "dataset",
-    activations_in_hf: Optional[str] = None,
-    y_in_hf: Optional[str] = None,
-    hf_dataset_repo: Optional[str] = None,
-    model: Any = None,
-    hook_name: str = "hook_resid_post",
-    pos_slice: int = -1,
-    push_full_dataset_to_hf: bool = True,
-    push_path_in_repo: Optional[str] = None,
-    cfg: Optional[RunConfig] = None,
-) -> SplitActivationDataset:
-    """Load necessary files and split the data into train, test and held out subsets.
-    Activations are downloaded from hf_dataset_repo if given (falling back to on-the-fly
-    extraction if that fails), else extracted on the fly directly.
-    Each jsonl line yields two rows: one for the active rule, one for the cancelled rule.
-    """
-    data = download_jsonl_from_hf(jsonl_in_hf, hf_repo_ix, hf_repo_type)
-
+def split_rows(data: list[Dict]):
+    """Util to split one entry into two rows for some datasets."""
     rows = []
     for item in data:
         rows.append(
@@ -168,18 +155,61 @@ def create_canonical_dataset(
                 IndexParquetColumns.str_id: f"{item['id']}_1",
                 IndexParquetColumns.rule_status: item["revoked_status"],
                 CanonicalDatasetColumns.system_rule: item["system_non_rule"],
-                "query": item["user_query"],
+                "user_query": item["user_query"],
             }
         )
+    return rows
+
+
+def create_canonical_dataset(
+    jsonl_in_hf: str,  # /data/en/test.jsonl
+    hf_repo_ix: str,  # crosslingual
+    hf_repo_type: str = "dataset",
+    activations_in_hf: Optional[str] = None,  # hf path to activations .npy
+    y_in_hf: Optional[str] = None,  # hf path to labels .npy for activations
+    hf_dataset_repo: Optional[str] = None,  # my prism repo
+    model: Any = None,  # loaded model
+    hook_name: str = "hook_resid_post",
+    pos_slice: int = -1,
+    push_full_dataset_to_hf: bool = True,
+    push_path_in_repo: Optional[str] = None,
+    cfg: Optional[RunConfig] = None,
+    split_rows: Optional[bool] = False,
+) -> CanonicalActivationDataset:
+    """Load necessary files and split the data into train, test and held out subsets.
+    Activations are downloaded from hf_dataset_repo if given (falling back to on-the-fly
+    extraction if that fails), else extracted on the fly directly.
+    Each jsonl line yields two rows: one for the active rule, one for the cancelled rule.
+    """
+    data = download_jsonl_from_hf(jsonl_in_hf, hf_repo_ix, hf_repo_type)
+    rows = data if not split_rows else split_rows(data)
+
+    # IMPORTANT:
+    # any dataset is expected to have columns:
+    # 1. system_rule 2. system_non_rule 3. user_query  4. label
+    # for every row to have non-nan values
     textid_df = pd.DataFrame(rows)
     textid_df[IndexParquetColumns.row_idx] = range(len(textid_df))
-    y = np.array(
-        [words2labels[status] for status in textid_df[IndexParquetColumns.rule_status]]
-    )
+    if "label" not in textid_df.columns:
+        # expected to have a rule_status column if the 'label' column isnt present
+        unique_labels = textid_df[IndexParquetColumns.rule_status].unique().tolist()
+        if all([word in words2labels.keys() for word in unique_labels]):
+            y = np.array(
+                [
+                    words2labels[status]
+                    for status in textid_df[IndexParquetColumns.rule_status]
+                ]
+            )
+        else:
+            print(
+                "No 'label' columns and 'rule_status' doesn't contain correct values."
+            )
+            raise
+    y = textid_df["label"].to_numpy()
 
     def build_chat_and_labels():
         systems = textid_df[CanonicalDatasetColumns.system_rule].tolist()
-        queries = textid_df["query"].tolist()
+        queries = textid_df["user_query"].tolist()
         return make_chat_settings(model, systems, queries), y
 
     X, y = get_xy(
@@ -187,9 +217,9 @@ def create_canonical_dataset(
         model=model,
         hook_name=hook_name,
         pos_slice=pos_slice,
-        hf_dataset_repo=hf_dataset_repo,
-        activations_in_hf=activations_in_hf,
-        y_in_hf=y_in_hf,
+        hf_dataset_repo=hf_dataset_repo,  # my repo
+        activations_in_hf=activations_in_hf,  # acts in my repo
+        y_in_hf=y_in_hf,  # labels in my repo
         hf_repo_type=hf_repo_type,
     )
 
@@ -213,7 +243,7 @@ def create_canonical_dataset(
                 path_in_repo=path_in_repo,
             )
 
-    return test_heldout_split(X, y, textid_df)
+    return CanonicalActivationDataset(full_x=X, full_y=y, full_text=textid_df)
 
 
 ### Confound sets ###
@@ -379,6 +409,7 @@ def opposite_statuses_rules(
     return DoubleRuleDataset(doublerule_text=texts, doublerule_x=X, doublerule_y=y)
 
 
+# TODO change here too (changed in the cloud)
 def no_rule_keyword(
     model,
     jsonl_in_hf: str,

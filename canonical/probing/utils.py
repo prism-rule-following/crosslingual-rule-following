@@ -13,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 
 
 def safe_roc_auc(y_true, y_score) -> float:
@@ -312,7 +313,8 @@ def extract_model_activations(
                 )
                 layers = sorted(int(name.split(".")[1]) for name in cache.keys())
                 stacked = torch.stack(
-                    [cache[f"blocks.{l}.{hook_name}"].squeeze(dim=1) for l in layers], dim=1
+                    [cache[f"blocks.{l}.{hook_name}"].squeeze(dim=1) for l in layers],
+                    dim=1,
                 )
                 batches.append(stacked.cpu().detach().numpy())
                 del cache, stacked
@@ -327,10 +329,7 @@ def extract_model_activations(
 def make_chat_settings(
     model: Any, system_texts: List[str], queries: List[str]
 ) -> List[str]:
-    if len(system_texts) != len(queries):
-        raise ValueError(
-            f"system_texts and queries must be the same length, got {len(system_texts)} and {len(queries)}"
-        )
+    check_length(system_texts, queries)
     chats = [
         [{"role": "system", "content": system_text}, {"role": "user", "content": query}]
         for system_text, query in zip(system_texts, queries)
@@ -347,6 +346,7 @@ CLASSIFIER_REGISTRY = {
     "logistic_regression": LogisticRegression,
     "mlp": MLPClassifier,
     "knn": KNeighborsClassifier,
+    "svc": SVC,
 }
 
 
