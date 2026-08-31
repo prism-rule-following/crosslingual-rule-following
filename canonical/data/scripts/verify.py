@@ -22,8 +22,8 @@ from typing import Dict, List, Optional, Tuple
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-import schema
-from schema import RulePair, Dataset, carry_metadata, compute_row_counts
+import model.dataset as schema
+from model.dataset import RulePair, Dataset, carry_metadata, compute_row_counts
 from quality_gate import (
     check_selfcontained,
     check_against_reference,

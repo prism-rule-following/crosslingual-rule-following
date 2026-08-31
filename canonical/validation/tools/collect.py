@@ -7,12 +7,15 @@ Every language at once:
 Just one:
     python3 tools/collect.py --lang ig
 
+The judgment-rules projects rather than the translation ones:
+    python3 tools/collect.py --family judgment
+
 From a file you exported yourself (Export -> JSON in Label Studio):
     python3 tools/collect.py --lang ig --export out/export_ig.json
 
-Writes data/reviewed/full_dataset_<lang>.json — the same filename as the source,
-so a finished file drops straight in over the original when you are ready. The
-originals in data/ are never written to. Reviewer notes go to out/notes_<lang>.json.
+Writes to data/reviewed/ under the same filename as the source, so a finished file
+drops straight in over the original when you are ready. The originals are never
+written to. Reviewer notes go to out/notes_<lang>.json.
 """
 
 from __future__ import annotations
@@ -27,7 +30,37 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import prism_review as P  # noqa: E402
 
 
-def project_for(projects: list[dict], lang: str, lang_name: str):
+def family_marker(family) -> str:
+    """The fixed part of a family's title template, before {name}.
+
+    Label Studio Community has no folders, so the two dataset families live in
+    one flat project list and are told apart by this prefix alone.
+    """
+    return family.title.partition("{name}")[0].casefold()
+
+
+def of_family(projects: list[dict], family) -> list[dict]:
+    """Only the projects belonging to this family.
+
+    Without this, the whole-word fallback below sees both "[Judgment] Igbo" and
+    "Igbo translation review" for `ig` and reports an ambiguity it can resolve
+    perfectly well. A family with a prefix takes the titles that carry it;
+    a family without one takes the titles that carry no other family's prefix.
+    """
+    marker = family_marker(family)
+    others = [family_marker(f) for f in P.FAMILIES.values()
+              if f.key != family.key and family_marker(f)]
+
+    def belongs(project):
+        title = (project.get("title") or "").casefold()
+        if marker:
+            return title.startswith(marker)
+        return not any(title.startswith(other) for other in others)
+
+    return [p for p in projects if belongs(p)]
+
+
+def project_for(projects: list[dict], lang: str, lang_name: str, family):
     """Find the one project for a language. Returns (project, ambiguous_matches).
 
     Matching is by whole word, never bare substring: a two-letter code like `ig`
@@ -36,11 +69,12 @@ def project_for(projects: list[dict], lang: str, lang_name: str):
     and an ambiguous result is reported rather than guessed at.
     """
     name, code = lang_name.casefold(), lang.casefold()
+    wanted = family.title_for(lang_name).casefold()
     exact, by_name, by_code = [], [], []
 
-    for project in projects:
+    for project in of_family(projects, family):
         title = (project.get("title") or "").casefold()
-        if title == f"{name} translation review":
+        if title == wanted:
             exact.append(project)
         elif re.search(rf"(?<![a-z]){re.escape(name)}(?![a-z])", title):
             by_name.append(project)
@@ -63,12 +97,14 @@ def describe(projects: list[dict]) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--family", choices=sorted(P.FAMILIES), default=P.DEFAULT_FAMILY,
+                    help="which dataset to collect for (default: %(default)s)")
     ap.add_argument("--lang", help="one language code; default is every language found")
     ap.add_argument("--export", help="a Label Studio JSON export; otherwise it is fetched")
     ap.add_argument("--project", type=int,
                     help="project id, when the title doesn't identify the language")
-    ap.add_argument("--en", default="data/full_dataset.json")
-    ap.add_argument("--data-dir", default="data")
+    ap.add_argument("--en", help="English source (default: the family's)")
+    ap.add_argument("--data-dir", help="default: the family's")
     ap.add_argument("--reviewed-dir",
                     help="where finished datasets go (default: <data-dir>/reviewed)")
     ap.add_argument("--out-dir", default="out", help="where reviewer notes go")
@@ -78,23 +114,30 @@ def main() -> int:
     ap.add_argument("--token", help="access token (or LABEL_STUDIO_API_KEY)")
     args = ap.parse_args()
 
+    family = P.FAMILIES[args.family]
+    en_path = args.en or family.english
+    data_dir = args.data_dir or family.data_dir
+
     if args.project and not args.lang:
         raise SystemExit("--project applies to one language, so use it with --lang.")
     if args.export and not args.lang:
         raise SystemExit("--export is one language's export, so use it with --lang.")
 
     if args.lang:
-        path = Path(args.data_dir) / f"full_dataset_{args.lang}.json"
+        path = Path(data_dir) / family.filename.format(lang=args.lang)
         if not path.exists():
             raise SystemExit(f"{path} not found.")
         languages = [(args.lang, path)]
     else:
-        languages = P.find_languages(args.data_dir, args.en)
+        languages = P.find_languages(family, data_dir, en_path)
         if not languages:
-            raise SystemExit(f"No full_dataset_<lang>.json files in {args.data_dir}/.")
+            pattern = family.filename.format(lang="<lang>")
+            raise SystemExit(f"No {pattern} files in {data_dir}/.")
 
+    # Both families collect into data/reviewed/, whatever data-dir they read
+    # from, so a reviewed judgment file never lands beside its own source.
     reviewed_dir = Path(args.reviewed_dir) if args.reviewed_dir \
-        else Path(args.data_dir) / "reviewed"
+        else Path("data") / "reviewed"
 
     ls = None
     projects: list[dict] = []
@@ -119,7 +162,7 @@ def main() -> int:
                 "GET", f"/api/projects/{args.project}/export"
                        f"?exportType=JSON&download_all_tasks=false") or []
         else:
-            project, ambiguous = project_for(projects, lang, name)
+            project, ambiguous = project_for(projects, lang, name, family)
             if ambiguous:
                 print(f"      more than one project could be {name}:")
                 print(describe(ambiguous))
@@ -127,8 +170,8 @@ def main() -> int:
                 continue
             if project is None:
                 print(f"      no Label Studio project is named after {name}. "
-                      f"Projects available:")
-                print(describe(projects))
+                      f"{args.family} projects available:")
+                print(describe(of_family(projects, family)))
                 print("      use --project <id> if one of these is it — skipped")
                 continue
             print(f"      project {project['id']}: {project['title']}")
@@ -136,8 +179,8 @@ def main() -> int:
                 "GET", f"/api/projects/{project['id']}/export"
                        f"?exportType=JSON&download_all_tasks=false") or []
 
-        original = P.load_dataset(path)
-        out, stats = P.apply_review(export, original)
+        original = P.load_dataset(path, family.records_key)
+        out, stats = P.apply_review(export, original, family.records_key)
 
         if not stats["reviewed"]:
             print("      nobody has submitted a record yet — nothing written")
@@ -147,7 +190,8 @@ def main() -> int:
             "records_reviewed": stats["reviewed"],
             "fields_edited": stats["changed"],
         }
-        out_path = reviewed_dir / f"full_dataset_{lang}{args.suffix}.json"
+        source_name = Path(family.filename.format(lang=lang))
+        out_path = reviewed_dir / f"{source_name.stem}{args.suffix}{source_name.suffix}"
         # The reviewed file has the same name as its source, so a mis-set
         # --reviewed-dir would quietly overwrite the original. Never do that.
         if out_path.resolve() == path.resolve():
@@ -165,7 +209,7 @@ def main() -> int:
             print(f"      note: {stats['unmatched']} reviewed records had no match in "
                   f"{path.name} and were skipped")
         if stats["notes"]:
-            notes_path = Path(args.out_dir) / f"notes_{lang}.json"
+            notes_path = Path(args.out_dir) / f"{family.notes_stem.format(lang=lang)}.json"
             P.save_json(notes_path, stats["notes"], indent=2)
             print(f"      {len(stats['notes'])} notes from reviewers -> {notes_path}")
 
@@ -173,7 +217,7 @@ def main() -> int:
         print("\nNothing was written.")
     else:
         print(f"\n{written} language(s) in {reviewed_dir}/ — the originals in "
-              f"{args.data_dir}/ are unchanged.")
+              f"{data_dir}/ are unchanged.")
     return 0
 
 

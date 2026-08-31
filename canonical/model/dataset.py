@@ -4,11 +4,19 @@ Schema for the judgment-tier rule-following dataset.
 
 from __future__ import annotations
 
+import json
+import os
+import tempfile
+import urllib.request
 from collections import Counter
 from enum import Enum
-from typing import Annotated, Dict, Literal, Optional, Union, List
+from typing import Annotated, Any, Callable, Dict, List, Literal, Optional, Tuple, Union
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+import pandas as pd
+from datasets import load_dataset
+from huggingface_hub import HfApi, hf_hub_download
+from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
+from torch.utils.data import DataLoader, Dataset as TorchDataset
 
 
 # --------------------------------------------------------------------------- #
@@ -62,6 +70,78 @@ class PressureName(StrEnum):
     direct_override = "direct_override"
     emotional_appeal = "emotional_appeal"
     incremental_erosion = "incremental_erosion"
+
+
+class DatasetSource(StrEnum):
+    hf = "hf"
+    gh = "gh"
+
+
+class DataCategories(StrEnum):
+    ack_invert = "ack_invert"
+    active_cancelled = "active_cancelled"
+    banned_word = "banned_word"
+    bold_html = "bold_html"
+    directness = "directness"
+    emotional_expressiveness = "emotional_expressiveness"
+    humility = "humility"
+    humor = "humor"
+    include_word = "include_word"
+    language = "language"
+    second_word = "second_word"
+    single_word = "single_word"
+    start_with = "start_with"
+    tone_provocation = "tone_provocation"
+    word_count = "word_count"
+
+
+class DatasetLanguageCode(StrEnum):
+    en = "en"
+    am = "am"
+    de = "de"
+    hi = "hi"
+    ig = "ig"
+    it = "it"
+    ko = "ko"
+    ru = "ru"
+    sw = "sw"
+    ta = "ta"
+    tr = "tr"
+    ur = "ur"
+    yo = "yo"
+
+
+class DatasetLanguageName(StrEnum):
+    english = "English"
+    amharic = "Amharic"
+    german = "German"
+    hindi = "Hindi"
+    igbo = "Igbo"
+    italian = "Italian"
+    korean = "Korean"
+    russian = "Russian"
+    swahili = "Swahili"
+    tamil = "Tamil"
+    turkish = "Turkish"
+    urdu = "Urdu"
+    yoruba = "Yoruba"
+
+
+LANGUAGE_NAMES: Dict[DatasetLanguageCode, DatasetLanguageName] = {
+    DatasetLanguageCode.en: DatasetLanguageName.english,
+    DatasetLanguageCode.am: DatasetLanguageName.amharic,
+    DatasetLanguageCode.de: DatasetLanguageName.german,
+    DatasetLanguageCode.hi: DatasetLanguageName.hindi,
+    DatasetLanguageCode.ig: DatasetLanguageName.igbo,
+    DatasetLanguageCode.it: DatasetLanguageName.italian,
+    DatasetLanguageCode.ko: DatasetLanguageName.korean,
+    DatasetLanguageCode.ru: DatasetLanguageName.russian,
+    DatasetLanguageCode.sw: DatasetLanguageName.swahili,
+    DatasetLanguageCode.ta: DatasetLanguageName.tamil,
+    DatasetLanguageCode.tr: DatasetLanguageName.turkish,
+    DatasetLanguageCode.ur: DatasetLanguageName.urdu,
+    DatasetLanguageCode.yo: DatasetLanguageName.yoruba,
+}
 
 
 class CheckerTier(StrEnum):
@@ -376,7 +456,9 @@ class RulePair(BaseModel):
         default=CheckerTier.judgment,
         description="Evaluation tier; judgment = discrete nameable event.",
     )
-    language: str = Field(default="en", description="ISO language code.")
+    language: DatasetLanguageCode = Field(
+        default=DatasetLanguageCode.en, description="ISO language code."
+    )
 
     context: str = Field(description="Base system-prompt preamble.")
     rule_clause: str = Field(description="The bare rule clause, grammar-neutral core.")
@@ -591,3 +673,416 @@ class Dataset(BaseModel):
                 f"len(pairs) ({len(self.pairs)})"
             )
         return self
+
+
+# --------------------------------------------------------------------------- #
+# Config
+# --------------------------------------------------------------------------- #
+class DatasetConfig(BaseModel):
+    url: Optional[str] = Field(
+        default=None,
+        description="HuggingFace dataset id or JSON file path/URL",
+    )
+    data_dir: Optional[str] = Field(
+        default=None,
+        description="optional directory of per-language dataset files "
+        "({data_dir}/{lang}/test.jsonl); when set, datasets are loaded per "
+        "language instead of from a single url",
+    )
+    source: DatasetSource = Field(..., description="dataset source")
+    split: Optional[str] = Field(
+        default=None,
+        description="which split to use for HF DatasetDict; defaults to 'train' or first",
+    )
+    categories: List[Category] = Field(
+        default_factory=lambda: list(Category),
+        description="keep only rows whose categories is in this set",
+    )
+    languages: List[DatasetLanguageCode] = Field(
+        default_factory=lambda: list(DatasetLanguageCode),
+        description="keep only rows whose languages is in this set",
+    )
+    grammars: List[GrammarType] = Field(
+        default_factory=lambda: list(GrammarType),
+        description="keep only rows whose grammar_types is in this set",
+    )
+    topics: List[Topic] = Field(
+        default_factory=lambda: list(Topic),
+        description="keep only rows whose topics is in this set",
+    )
+    pressure_levels: List[PressureLevel] = Field(
+        default_factory=lambda: list(PressureLevel),
+        description="keep only rows whose pressure_level is in this set",
+    )
+    pressure_names: List[PressureName] = Field(
+        default_factory=lambda: list(PressureName),
+        description="keep only rows whose pressure_name is in this set",
+    )
+    contrastive_pairs: List[PairType] = Field(
+        default_factory=lambda: list(PairType),
+        description="keep only rows whose pair_type is in this set",
+    )
+    validate_rows: bool = Field(
+        default=True, description="run per-row pydantic validation on load"
+    )
+    strict: bool = Field(
+        default=False,
+        description="raise on the first invalid row instead of dropping it",
+    )
+
+    @field_validator("languages", mode="before")
+    @classmethod
+    def validate_language_code(cls, value: List[Any]) -> List[Any]:
+        unsupported_languages = [x for x in value if not LANGUAGE_NAMES.get(x)]
+        if unsupported_languages:
+            raise ValueError(
+                f"Unsupported languages included {unsupported_languages}. "
+                "Update DatasetLanguageCode/LANGUAGE_NAMES to add support for this language."
+            )
+        return value
+
+    @model_validator(mode="after")
+    def _require_source(self) -> "DatasetConfig":
+        if not self.url and not self.data_dir:
+            raise ValueError("one of url or data_dir is required")
+        return self
+
+
+# --------------------------------------------------------------------------- #
+# Loading
+# --------------------------------------------------------------------------- #
+
+
+def split_constrast_pairs(df: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for _, row in df.iterrows():
+        base = row.to_dict()
+        clean_label, corrupt_label = row["active_status"], row["revoked_status"]
+        constant_fields = {
+            k: v
+            for k, v in base.items()
+            if k
+            not in (
+                "system_rule",
+                "system_non_rule",
+                "rule_text",
+                "non_rule_text",
+                "active_checker",
+                "revoked_checker",
+            )
+        }
+
+        rows.append(
+            {
+                **constant_fields,
+                "id": f"{base['id']}_clean",
+                "system": base["system_rule"],
+                "rule_status": clean_label,
+                "checker": base["active_checker"],
+            }
+        )
+
+        rows.append(
+            {
+                **constant_fields,
+                "id": f"{base['id']}_revoked",
+                "system": base["system_non_rule"],
+                "rule_status": corrupt_label,
+                "checker": base["revoked_checker"],
+            }
+        )
+
+    return pd.DataFrame(rows).reset_index(drop=True)
+
+
+def load_from_github(url: str) -> Any:
+    # Expects a raw content URL or local path to a .json / .jsonl file.
+    try:
+        if url.startswith("http://") or url.startswith("https://"):
+            with urllib.request.urlopen(url) as resp:
+                raw = json.load(resp)
+        else:
+            with open(url) as f:
+                raw = json.load(f)
+    except json.JSONDecodeError:
+        try:
+            return load_dataset("json", data_files=url)
+        except Exception:
+            print(f"An error occurred. Unable to load {url!r} as JSON.")
+            raise
+    except Exception:
+        print(f"An error occurred. Unable to load {url!r} as JSON.")
+        raise
+
+    if isinstance(raw, dict):
+        raw = raw.get("pairs", raw)
+    if isinstance(raw, list):
+        return pd.DataFrame(raw)
+    raise TypeError(f"Unsupported dataset object of type {type(raw)!r}")
+
+
+def _to_dataframe(raw: Any, split: Optional[str]) -> pd.DataFrame:
+    """Normalize whatever `load_dataset` returns into a pandas DataFrame."""
+    # DatasetDict (has split keys) -> pick a split first.
+    if isinstance(raw, dict):
+        if split is not None:
+            if split not in raw:
+                raise KeyError(
+                    f"split {split!r} not found; available: {list(raw.keys())}"
+                )
+            chosen = split
+        else:
+            chosen = "train" if "train" in raw else next(iter(raw.keys()))
+        raw = raw[chosen]
+    # HF Dataset -> DataFrame
+    if hasattr(raw, "to_pandas"):
+        return raw.to_pandas()
+    # Already a DataFrame
+    if isinstance(raw, pd.DataFrame):
+        return raw
+
+    raise TypeError(f"Unsupported dataset object of type {type(raw)!r}")
+
+
+def nan_to_none(row: Dict[str, Any]) -> Dict[str, Any]:
+    """Pandas fills missing values with NaN (a float), which fails validation
+    for Optional[...] fields expecting None. Normalize row dicts pulled from
+    a DataFrame (e.g. via to_dict(orient="records")) before passing them to
+    any pydantic model - RulePair here, but also e.g. ModelResponse elsewhere.
+    """
+    return {
+        k: (None if (isinstance(v, float) and pd.isna(v)) else v)
+        for k, v in row.items()
+    }
+
+
+def _validate_rows(df: pd.DataFrame, strict: bool) -> pd.DataFrame:
+    """Validate each row against RulePair. Drop or raise on failure."""
+    kept: List[Dict[str, Any]] = []
+    errors: List[Tuple[str, ValidationError]] = []
+    for i, row in enumerate(df.to_dict(orient="records")):
+        row = nan_to_none(row)
+        try:
+            RulePair(**row)
+            kept.append(row)
+        except ValidationError as e:
+            errors.append((row.get("id", f"<index {i}>"), e))
+            if strict:
+                raise
+    return pd.DataFrame(kept).reset_index(drop=True)
+
+
+def _apply_filters(df: pd.DataFrame, config: DatasetConfig) -> pd.DataFrame:
+    """Apply all subset filters. Missing columns are treated as 'no filter'."""
+
+    def keep(col: str, allowed_values: List[str]) -> None:
+        nonlocal df
+        if col in df.columns:
+            df = df[df[col].isin(allowed_values) | df[col].isna()]
+
+    keep("category", [c.value for c in config.categories])
+    keep("language", [code.value for code in config.languages])
+    keep("grammar_type", [g.value for g in config.grammars])
+    keep("topic", [t.value for t in config.topics])
+    keep("pair_type", [p.value for p in config.contrastive_pairs])
+    keep("pressure_level", [p.value for p in config.pressure_levels])
+    keep("pressure_name", [p.value for p in config.pressure_names])
+
+    return df.reset_index(drop=True)
+
+
+def dataset_generator(config: DatasetConfig) -> pd.DataFrame:
+    """Load -> normalize -> (validate) -> filter. Returns a DataFrame."""
+    raw = (
+        HFDataHelper.load_source_dataset(config.url)
+        if config.source == DatasetSource.hf
+        else load_from_github(config.url)
+    )
+    df = _to_dataframe(raw, config.split)
+    if config.validate_rows:
+        df = _validate_rows(df, config.strict)
+    df = _apply_filters(df, config)
+    return split_constrast_pairs(df)
+
+
+def collate_behavioral(
+    batch: List[Dict[str, Any]],
+) -> Tuple[List[str], List[str], List[str], List[Dict[str, Any]]]:
+    """Behavioral eval only scores the active-rule half of each pair - drop
+    revoked-side rows (rule_status not in ACTIVE_STATUSES) before collating.
+    Each surviving row's `checker` is its active_checker (see
+    split_constrast_pairs), so callers get the right checker for free."""
+    active_rows = [r for r in batch if r["rule_status"] in ACTIVE_STATUSES]
+    system = [r["system"] for r in active_rows]
+    user_query = [r["user_query"] for r in active_rows]
+    ids = [r["id"] for r in active_rows]
+    checkers = [r["checker"] for r in active_rows]
+    return system, user_query, ids, checkers
+
+
+# --------------------------------------------------------------------------- #
+# Dataset
+# --------------------------------------------------------------------------- #
+class CrossLingualRuleFollowingDataset(TorchDataset):
+    def __init__(self, config: DatasetConfig) -> None:
+        self.config = config
+        self.df = dataset_generator(config)
+
+    @classmethod
+    def from_dataframe(cls, df: pd.DataFrame) -> "CrossLingualRuleFollowingDataset":
+        """Wrap an already-loaded DataFrame directly, skipping fetch/validate/filter.
+
+        For data that's already in the right shape - e.g. model outputs pulled
+        back from HFDataHelper.fetch() - rather than the raw source dataset.
+        """
+        obj = cls.__new__(cls)
+        obj.config = None
+        obj.df = df.reset_index(drop=True)
+        return obj
+
+    def __len__(self) -> int:
+        return len(self.df)
+
+    def shuffle(self, seed: Optional[int] = None) -> "CrossLingualRuleFollowingDataset":
+        self.df = self.df.sample(frac=1, random_state=seed).reset_index(drop=True)
+        return self
+
+    def head(self, n: int) -> "CrossLingualRuleFollowingDataset":
+        self.df = self.df.head(n).reset_index(drop=True)
+        return self
+
+    def subset(self, **filters: Any) -> "CrossLingualRuleFollowingDataset":
+        """Return a shallow copy filtered by column -> allowed value(s).
+
+        Example: ds.subset(category=["start_with", "language"], topic="legal")
+        """
+        import copy
+
+        df = self.df
+        for col, val in filters.items():
+            if col not in df.columns:
+                continue
+            allowed = val if isinstance(val, (list, set, tuple)) else [val]
+            df = df[df[col].isin(list(allowed))]
+        new = copy.copy(self)
+        new.df = df.reset_index(drop=True)
+        return new
+
+    def build_indices(
+        self,
+        fn: Callable[[Dict[str, Any]], Optional[Tuple[int, int]]],
+    ) -> "CrossLingualRuleFollowingDataset":
+        """Populate correct_idx/incorrect_idx via a model-aware callback.
+
+        `fn(row) -> (correct_idx, incorrect_idx) | None`. Rows where fn returns
+        None (e.g. banned_word, which has no single-token contrast) are left
+        with null indices. Keeps this util model-agnostic while giving a clean
+        place to plug tokenization in.
+        """
+        correct, incorrect = [], []
+        for row in self.df.to_dict(orient="records"):
+            result = fn(row)
+            if result is None:
+                correct.append(None)
+                incorrect.append(None)
+            else:
+                c, i = result
+                correct.append(int(c))
+                incorrect.append(int(i))
+        self.df = self.df.assign(correct_idx=correct, incorrect_idx=incorrect)
+        return self
+
+    def __getitem__(self, index: int) -> Dict[str, Any]:
+        # neutral: hand back the whole row as a dict
+        return self.df.iloc[index].to_dict()
+
+    def to_dataloader(
+        self, batch_size: int, collate_fn: Callable[..., Any], shuffle: bool = False
+    ) -> DataLoader:
+        return DataLoader(
+            self, batch_size=batch_size, collate_fn=collate_fn, shuffle=shuffle
+        )
+
+
+class HFDataHelper:
+    def __init__(self, repo_id: str) -> None:
+        self.repo_id = repo_id
+        self.token = os.environ.get("HF_TOKEN")
+        self._api = HfApi()
+
+    @staticmethod
+    def load_source_dataset(repo_id: str) -> Any:
+        try:
+            return load_dataset(repo_id)
+        except Exception:
+            print(f"An error occurred. Unable to load {repo_id!r} from HuggingFace.")
+            raise
+
+    def _ensure_repo(self) -> None:
+        self._api.create_repo(
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            token=self.token,
+            exist_ok=True,
+        )
+
+    def _model_slug(self, model_id: str) -> str:
+        return model_id.replace("/", "__")
+
+    def _hf_path(self, model_id: str, lang_code: DatasetLanguageCode) -> str:
+        return f"{self._model_slug(model_id)}/{lang_code.value}.parquet"
+
+    def upload(
+        self, df: pd.DataFrame, model_id: str, lang_code: DatasetLanguageCode
+    ) -> None:
+        self._ensure_repo()
+        hf_path = self._hf_path(model_id, lang_code)
+        with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as tmp:
+            df.to_parquet(tmp.name, index=False)
+            self._api.upload_file(
+                path_or_fileobj=tmp.name,
+                path_in_repo=hf_path,
+                repo_id=self.repo_id,
+                repo_type="dataset",
+                token=self.token,
+            )
+        os.unlink(tmp.name)
+
+    def upload_file(self, path_or_fileobj: Any, path_in_repo: str) -> None:
+        """Upload an arbitrary local file to a path inside this repo (used for
+        activation .npy arrays and the index.parquet)."""
+        self._ensure_repo()
+        self._api.upload_file(
+            path_or_fileobj=path_or_fileobj,
+            path_in_repo=path_in_repo,
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            token=self.token,
+        )
+
+    def exists(self, model_id: str, lang_code: DatasetLanguageCode) -> bool:
+        return self.exists_path(self._hf_path(model_id, lang_code))
+
+    def exists_path(self, path_in_repo: str) -> bool:
+        """Whether a specific path already exists in the repo (used to skip
+        already-uploaded results)."""
+        try:
+            info = self._api.get_paths_info(
+                repo_id=self.repo_id,
+                repo_type="dataset",
+                paths=[path_in_repo],
+                token=self.token,
+            )
+            return len(info) > 0
+        except Exception:
+            return False
+
+    def fetch(self, model_id: str, lang_code: DatasetLanguageCode) -> pd.DataFrame:
+        """Download a previously-uploaded output file back into a DataFrame."""
+        local_path = hf_hub_download(
+            repo_id=self.repo_id,
+            repo_type="dataset",
+            filename=self._hf_path(model_id, lang_code),
+            token=self.token,
+        )
+        return pd.read_parquet(local_path)
