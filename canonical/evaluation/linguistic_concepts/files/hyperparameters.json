@@ -1,0 +1,171 @@
+{
+  "models": {
+    "qwen3-8b": {
+      "hf_name": "Qwen/Qwen3-8B",
+      "dtype": "bfloat16",
+      "device": "cuda",
+      "trust_remote_code": true,
+      "chat_template": "default",
+      "system_supported": true,
+      "enable_thinking": false,
+      "n_layers": 36,
+      "d_model": 4096,
+      "batch_size": 8
+    },
+    "llama3.1-8b": {
+      "hf_name": "meta-llama/Llama-3.1-8B-Instruct",
+      "dtype": "bfloat16",
+      "device": "cuda",
+      "trust_remote_code": false,
+      "chat_template": "default",
+      "system_supported": true,
+      "n_layers": 32,
+      "d_model": 4096,
+      "batch_size": 8
+    }
+  },
+  "data": {
+    "path": "obligation_full.json",
+    "rule_field_map": {
+      "clean": "must_text",
+      "corrupt_may": "may_text",
+      "corrupt_neutral": "neutral_text"
+    },
+    "contrast_token_field": {
+      "clean": "must_token",
+      "corrupt_may": "may_token",
+      "corrupt_neutral": "neutral_token"
+    },
+    "context_field": "context",
+    "query_field": "user_query",
+    "frame_field": "frame_id",
+    "group_fields": [
+      "frame_id",
+      "category",
+      "topic"
+    ]
+  },
+  "extraction": {
+    "positions": [
+      "contrast_token",
+      "rule_clause_end",
+      "post_instruction"
+    ],
+    "hook_point": "resid_post",
+    "contrasts": [
+      "must_may",
+      "must_neutral"
+    ],
+    "contrast_token_agg": "per_frame_mean",
+    "post_instruction_agg": "pooled",
+    "rule_clause_end_agg": "pooled",
+    "save_raw_activations": false,
+    "normalize_directions": true,
+    "seed": 0,
+    "stimulus_mode": "system_user",
+    "raw_add_special_tokens": true
+  },
+  "selection": {
+    "method": "separation_then_intervention",
+    "val_fraction": 0.3,
+    "separation_metric": "cohens_d",
+    "intervention": {
+      "enabled": true,
+      "ablation": true,
+      "activation_addition": true,
+      "kl_penalty": true,
+      "add_coeff": 1.0,
+      "n_eval_prompts": 40,
+      "target_token_scoring": true
+    }
+  },
+  "transfer_check": {
+    "enabled": true,
+    "source_frames": [
+      "adj_mandatory",
+      "adj_obligatory"
+    ],
+    "target_frames": [
+      "modal_core",
+      "modal_have"
+    ],
+    "metric": "cosine_and_projection"
+  },
+  "output": {
+    "dir": "dim_out",
+    "save_candidate_tensor": true,
+    "save_report_json": true
+  },
+  "hf": {
+    "dataset_repo": "nunaa/canonical_obligation_dataset",
+    "activations_repo": "nunaa/crosslingual_rf-activations",
+    "directions_repo": "nunaa/crosslingual_rf-directions",
+    "results_repo": "nunaa/crosslingual_rf-results",
+    "repo_private": true,
+    "create_if_missing": true,
+    "token_env": "HF_TOKEN",
+    "dataset_split": "train",
+    "dataset_load": "hub",
+    "dataset_files": {
+      "obligation/en": "obligation_en.json",
+      "obligation/yoruba": "obligation_yoruba.json",
+      "obligation/igbo": "obligation_igbo.json"
+    }
+  },
+  "checkpoint": {
+    "enabled": true,
+    "drive_dir": "/content/drive/MyDrive/crosslingual_rf/ckpt",
+    "row_cache_subdir": "row_activations",
+    "flush_every": 1,
+    "resume": true,
+    "manifest_name": "manifest.json",
+    "upload_row_cache_to_hf": false
+  },
+  "optim": {
+    "bf16": true,
+    "use_cache": false,
+    "attn_implementation": "sdpa",
+    "torch_compile": true,
+    "compile_mode": "reduce-overhead",
+    "batch_size": 8,
+    "empty_cache_every_n_batches": 4,
+    "hooks_only_needed_layers": true,
+    "pad_to_multiple_of": 8
+  },
+  "presets": {
+    "rule_following": {
+      "stimulus_mode": "system_user",
+      "positions": [
+        "contrast_token",
+        "rule_clause_end",
+        "post_instruction"
+      ],
+      "contrasts": [
+        "must_may",
+        "must_neutral"
+      ]
+    },
+    "concept": {
+      "stimulus_mode": "user_only",
+      "positions": [
+        "contrast_token",
+        "sentence_end"
+      ],
+      "contrasts": [
+        "must_may",
+        "must_neutral"
+      ]
+    },
+    "concept_raw": {
+      "stimulus_mode": "raw_sentence",
+      "positions": [
+        "contrast_token",
+        "sentence_end"
+      ],
+      "contrasts": [
+        "must_may",
+        "must_neutral"
+      ]
+    }
+  }
+}
