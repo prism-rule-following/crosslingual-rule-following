@@ -107,6 +107,7 @@ def export_to_hf(
         local_path = Path(tmp) / "responses.parquet"
         df.to_parquet(local_path)
         api = HfApi()
+        api.create_repo(repo_id, repo_type="dataset", private=True, exist_ok=True)
         api.upload_file(
             path_or_fileobj=str(local_path),
             path_in_repo=path_in_repo,

@@ -62,7 +62,8 @@ def run_intervention(
     the completion text (prompt stripped)."""
     hook_point = f"blocks.{layer}.{hook_name}"
     n_prompt = tokens.shape[-1]
-    with model.hooks(fwd_hooks=[(hook_point, hook_fn)]):
+
+    with torch.no_grad(), model.hooks(fwd_hooks=[(hook_point, hook_fn)]):
         out = model.generate(
             tokens,
             max_new_tokens=max_new_tokens,

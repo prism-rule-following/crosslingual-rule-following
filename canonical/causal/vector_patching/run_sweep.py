@@ -73,7 +73,7 @@ def load_model(model_id: str, device: str = "cpu"):
     """Mirrors ModelGenerationRunner.load() in canonical/evaluation/inference.py."""
     from transformer_lens.model_bridge import TransformerBridge
 
-    dtype = torch.bfloat16 if device == "cuda" else torch.float32
+    dtype = torch.bfloat16 if device.startswith("cuda") else torch.float32
     model = TransformerBridge.boot_transformers(model_id, device=device, dtype=dtype)
     model.enable_compatibility_mode(disable_warnings=True, no_processing=True)
     model.original_model.eval()

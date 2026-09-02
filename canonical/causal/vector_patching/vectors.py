@@ -2,6 +2,7 @@
 to Stage 0 verdicts. Pure numpy/pandas -- no GPU, no live model.
 """
 
+import time
 from typing import Dict, List
 
 import numpy as np
@@ -12,6 +13,18 @@ from canonical.causal.vector_patching.config import ACTIVATIONS_REPO, HOOK_NAME,
 from canonical.causal.vector_patching.pair_selection import strip_id_suffix
 
 
+def _download_with_retry(repo_id: str, path: str, attempts: int = 5, base_wait: int = 20) -> str:
+    """HF's Xet backend 429s under concurrent load (seen when two Stage B
+    processes downloaded the same files at once) -- retry with backoff."""
+    for attempt in range(attempts):
+        try:
+            return hf_hub_download(repo_id, path, repo_type="dataset")
+        except Exception:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(base_wait * (attempt + 1))
+
+
 def load_activations(
     model_id: str, language: str, hook_name: str = HOOK_NAME, repo_id: str = ACTIVATIONS_REPO
 ) -> pd.DataFrame:
@@ -19,10 +32,8 @@ def load_activations(
     holding that row's (n_layers, d_model) array. Active-condition (`_clean`)
     rows only -- matches judge-results-active-only's scope."""
     slug = MODEL_SLUGS[model_id]
-    index_path = hf_hub_download(repo_id, f"{slug}/{language}/index.parquet", repo_type="dataset")
-    acts_path = hf_hub_download(
-        repo_id, f"{slug}/{language}/{hook_name}.fp16.npy", repo_type="dataset"
-    )
+    index_path = _download_with_retry(repo_id, f"{slug}/{language}/index.parquet")
+    acts_path = _download_with_retry(repo_id, f"{slug}/{language}/{hook_name}.fp16.npy")
     index = pd.read_parquet(index_path)
     acts = np.load(acts_path)
 

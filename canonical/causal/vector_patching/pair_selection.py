@@ -6,6 +6,7 @@ donor->recipient pair table: same canonical `id`, donor held, recipient
 didn't. Pure CPU/pandas.
 """
 
+import time
 from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
@@ -41,7 +42,15 @@ def load_judge_verdicts(
     counted as failures."""
     frames = []
     for judge in judges:
-        path = hf_hub_download(repo_id, f"{judge}/results.jsonl", repo_type="dataset")
+        path = None
+        for attempt in range(5):
+            try:
+                path = hf_hub_download(repo_id, f"{judge}/results.jsonl", repo_type="dataset")
+                break
+            except Exception:
+                if attempt == 4:
+                    raise
+                time.sleep(20 * (attempt + 1))
         df = pd.read_json(path, lines=True)
         df["judge"] = judge
         frames.append(df)

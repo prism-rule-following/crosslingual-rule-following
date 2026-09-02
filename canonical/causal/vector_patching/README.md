@@ -10,17 +10,102 @@ followed a rule into a language that didn't, at one layer, flip adherence?
 | 0. Donor->recipient pairs | `pair_selection.py` | No | done, run on real data |
 | 1. Donor vectors (dom) | `vectors.py` | No | done, run on real data |
 | A. Feasibility pre-check | `feasibility.py` | No | done, run on real data |
-| B. Patch/steer + generate | `intervene.py`, `run_sweep.py` | **Yes** | written, CPU-smoke-tested only |
-| Export | `export_responses.py` | No (runs right after B) | written, unit-tested |
+| B. Patch/steer + generate | `intervene.py`, `run_sweep.py`, `run_stage_b.py` | **Yes** | done for `patch` mode, yo/ig recipients (2x RTX 5090, real Qwen3-8B) -- `steer` mode untested |
+| Export | `export_responses.py`, `finalize_export.py` | No (runs right after B) | done, uploaded + verified (see "Where the data is" below) |
 
 **Judging is out of scope here.** Stage B produces generations and uploads
 them, labeled; scoring them is a separate, later pass (same as the rest of
 the project's judge pipeline) run by whoever owns that.
 
+## Where the data is
+
+Dataset repo (private, HF org): **[crosslingual-rule-following/vector-patching-responses](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses)**
+
+One parquet file per Stage B run, under `{model_slug}/`. Current run:
+
+- **[qwen3-8b/exp2_yo_ig_20260902_021144.parquet](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_yo_ig_20260902_021144.parquet)**
+  -- Qwen3-8B, recipients yo + ig, real GPU generations, 0 errors. See
+  "Upload log" at the bottom of this file for the exact row/layer/donor
+  breakdown.
+
+You need an HF token with read access to the org (same one used everywhere
+else in this project) -- it's a private repo, not public.
+
+### Scope of the current upload (read before assuming coverage)
+
+- **Recipients**: only `yo` and `ig` -- the two languages that genuinely
+  collapse on Qwen3-8B (see `pair_selection.classify_tiers`). Not a full
+  sweep of all 10 languages as recipients.
+- **Donors**: the other 8 languages individually, plus a pooled
+  `all_avg` direction (mean dom vector across all 8). **No `hr_avg`
+  row exists** -- every one of those 8 donors is tier="high" for both
+  recipients, so `hr_avg` would be numerically identical to `all_avg`;
+  computing both was pure waste, so only `all_avg` was run.
+- **Layers**: 24-31 (the feasibility-grid anchor band, peak at 28) plus
+  layer 15 for both recipients (convergence point across three unrelated
+  methods/models -- see progress log), plus one cheap extra probe layer
+  per recipient (L12 for ig, L19-20 for yo) that Stage A ranked as
+  likely-too-weak-to-work, kept anyway to see *how* it fails, not just
+  whether.
+- **Pairs**: subsampled to 25 (donor, recipient) id-pairs per donor per
+  recipient, not the full pair table (thousands of rows) -- a first
+  statistical sweep, not exhaustive.
+- **Not in this run**: the full 10x9 donor/recipient matrix, `w`
+  (trained-probe) vectors, `steer` mode (Exp 3), `same_lang_control`,
+  Llama-3.1-8B. All supported by the schema/pipeline already, just not
+  run yet.
+
+### Loading it
+
+```python
+import pandas as pd
+from huggingface_hub import hf_hub_download
+
+path = hf_hub_download(
+    "crosslingual-rule-following/vector-patching-responses",
+    "qwen3-8b/exp2_yo_ig_20260902_021144.parquet",
+    repo_type="dataset",
+)
+df = pd.read_parquet(path)
+```
+
+Or list everything that's been uploaded so far instead of hardcoding a
+filename:
+
+```python
+from huggingface_hub import HfApi
+
+files = HfApi().list_repo_files(
+    "crosslingual-rule-following/vector-patching-responses", repo_type="dataset"
+)
+```
+
+### Common filters, once loaded
+
+```python
+# Just the anchor-layer patches for one recipient
+df[(df.language == "yo") & (df.patch_layer == 28)]
+
+# One donor -> recipient pair across all its layers
+df[(df.language == "ig") & (df.donor_language == "it")]
+
+# Only the pooled all-language-average donor (donor_language is null here)
+df[df.donor_kind == "all_avg"]
+
+# Rows worth a second look before reading by hand: response drifted out
+# of the recipient's language, or looks degenerate
+df[(df.still_target_language == False) | (df.non_degenerate == False)]
+```
+
+**This is unjudged data.** `response` is the raw patched generation --
+there's no compliance verdict in this file yet. `still_target_language`/
+`non_degenerate` are cheap sanity flags only (see data dictionary below),
+not a judge score. Scoring is a separate pass, same pipeline as the rest
+of the project's judge-results data (same shared columns, see below).
+
 ## Data dictionary — exported responses
 
-Uploaded to `crosslingual-rule-following/vector-patching-responses` (one
-parquet per run). Shared columns match `judge-results-active-only`'s own
+Shared columns match `judge-results-active-only`'s own
 schema so a judging script written for that dataset needs minimal changes:
 
 `id`, `model_id`, `language` (recipient), `category`, `topic`,
@@ -66,3 +151,10 @@ New columns, specific to this dataset:
   (much larger, unpatched) response runs. If that's too slow at scale on
   the pod, swap in a raw PyTorch forward hook + `original_model.generate()`
   -- not done here since it can't be benchmarked without a GPU.
+
+## Upload log
+
+- **20260902_021144** (4725 total rows, 0 generation errors across both recipients, verified by read-back after upload)
+  - HF: [qwen3-8b/exp2_yo_ig_20260902_021144.parquet](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_yo_ig_20260902_021144.parquet)
+  - `ig`: 2250 rows (0 errors), layers [12, 15, 24, 25, 26, 27, 28, 29, 30, 31], donor_kind counts {'single': 2000, 'all_avg': 250}
+  - `yo`: 2475 rows (0 errors), layers [15, 19, 20, 24, 25, 26, 27, 28, 29, 30, 31], donor_kind counts {'single': 2200, 'all_avg': 275}
