@@ -1,7 +1,9 @@
-"""Packages the two recipients' Stage B JSONL output into the documented
-response schema and uploads to HF. Run once, after both sweeps finish.
+"""Packages all nine recipients' Stage B JSONL output into the documented
+response schema, runs the structural audit, and uploads to HF. Run once,
+after every recipient finishes.
 """
 
+import argparse
 import json
 import sys
 import time
@@ -18,8 +20,9 @@ from canonical.causal.vector_patching.export_responses import (
     build_response_row, export_to_hf, sanity_check_response,
 )
 
-OUT_DIR = Path(sys.argv[1] if len(sys.argv) > 1 else "/workspace/exp2_out")
-RECIPIENTS = ["ig", "yo"]
+RECIPIENTS = ["de", "hi", "ig", "it", "ko", "ru", "tr", "ur", "yo"]
+SHARED_LAYERS = [15, 24, 27, 29, 31]
+MAX_NEW_TOKENS = 768
 README_PATH = Path(__file__).resolve().parent / "README.md"
 
 
@@ -29,22 +32,87 @@ def sanity_check(response, expected_language):
     return sanity_check_response(response, expected_language)
 
 
+def audit(manifest, rows_by_recipient):
+    problems = []
+    stats = {}
+    manifest_ids = set(manifest["selected_ids"])
+    id_category = manifest["id_category"]
+    for lang, rows in rows_by_recipient.items():
+        stats[lang] = {"n": len(rows)}
+        expected = 25 + 2 * len(SHARED_LAYERS) * 25
+        if len(rows) != expected:
+            problems.append(f"{lang}: {len(rows)} rows, expected {expected}")
+        arm_counts = Counter(r["arm"] for r in rows)
+        if arm_counts["baseline"] != 25:
+            problems.append(f"{lang}: baseline {arm_counts['baseline']} != 25")
+        for arm in ("dom", "w"):
+            if arm_counts[arm] != len(SHARED_LAYERS) * 25:
+                problems.append(f"{lang}: {arm} {arm_counts[arm]} != {len(SHARED_LAYERS) * 25}")
+        keys = [(r["arm"], r["id"], r["patch_layer"]) for r in rows]
+        if len(set(keys)) != len(keys):
+            problems.append(f"{lang}: duplicate (arm, id, patch_layer) keys")
+        errors = sum(1 for r in rows if r.get("error"))
+        stats[lang]["errors"] = errors
+        if errors:
+            problems.append(f"{lang}: {errors} generation errors")
+        empty = sum(1 for r in rows if not (r.get("response") or "").strip())
+        if empty:
+            problems.append(f"{lang}: {empty} empty responses")
+        bad_ids = [r["id"] for r in rows if r["id"] not in manifest_ids]
+        if bad_ids:
+            problems.append(f"{lang}: {len(bad_ids)} ids outside manifest")
+        bad_cat = [r["id"] for r in rows if r["category"] != id_category[r["id"]]]
+        if bad_cat:
+            problems.append(f"{lang}: {len(bad_cat)} category mismatches vs manifest")
+        leaked = sum(1 for r in rows if (r.get("response") or "") and "<|" in r["response"])
+        if leaked:
+            problems.append(f"{lang}: {leaked} rows with special-token leakage")
+        bad_tokens = sum(1 for r in rows if r.get("max_new_tokens") != MAX_NEW_TOKENS)
+        if bad_tokens:
+            problems.append(f"{lang}: {bad_tokens} rows with wrong max_new_tokens")
+        bad_model = sum(1 for r in rows if r["model_id"] != manifest["model_id"])
+        if bad_model:
+            problems.append(f"{lang}: {bad_model} rows with wrong model_id")
+        bad_donor = sum(1 for r in rows if r["arm"] != "baseline" and r["donor_language"] != manifest["donor_language"])
+        if bad_donor:
+            problems.append(f"{lang}: {bad_donor} patched rows with wrong donor_language")
+        bad_layers = {r["patch_layer"] for r in rows if r["arm"] != "baseline"}
+        if bad_layers != set(SHARED_LAYERS):
+            problems.append(f"{lang}: patched layer set {sorted(bad_layers)} != {SHARED_LAYERS}")
+        null_verdict = [r["id"] for r in rows if r.get("recipient_pre_verdict") is None]
+        stats[lang]["null_pre_verdict"] = len(null_verdict)
+    return problems, stats
+
+
 def main():
-    all_rows = []
-    per_recipient_stats = {}
-    for recipient in RECIPIENTS:
-        path = OUT_DIR / f"stage_b_{recipient}.jsonl"
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out-dir", default="/workspace/exp2_out")
+    ap.add_argument("--manifest", required=True)
+    args = ap.parse_args()
+    out_dir = Path(args.out_dir)
+
+    with open(args.manifest) as f:
+        manifest = json.load(f)
+
+    rows_by_recipient = {}
+    for lang in RECIPIENTS:
+        path = out_dir / f"stage_b_all_{lang}.jsonl"
         with open(path) as f:
-            raw_rows = [json.loads(line) for line in f]
-        n_errors = sum(1 for r in raw_rows if r.get("error"))
-        per_recipient_stats[recipient] = {
-            "n": len(raw_rows), "errors": n_errors,
-            "donor_kinds": dict(Counter(r["donor_kind"] for r in raw_rows)),
-            "layers": sorted(set(r["patch_layer"] for r in raw_rows)),
-        }
-        print(f"{recipient}: {len(raw_rows)} rows, {n_errors} errors", flush=True)
-        for r in raw_rows:
-            checks = sanity_check(r["response"], recipient)
+            rows_by_recipient[lang] = [json.loads(line) for line in f]
+        print(f"{lang}: {len(rows_by_recipient[lang])} rows", flush=True)
+
+    problems, stats = audit(manifest, rows_by_recipient)
+    if problems:
+        print("STRUCTURAL AUDIT FAILED:", flush=True)
+        for p in problems:
+            print(" -", p, flush=True)
+        sys.exit(1)
+    print(f"STRUCTURAL AUDIT OK: {sum(len(v) for v in rows_by_recipient.values())} rows", flush=True)
+
+    all_rows = []
+    for lang in RECIPIENTS:
+        for r in rows_by_recipient[lang]:
+            checks = sanity_check(r["response"], lang)
             all_rows.append(build_response_row(
                 canonical_id=r["id"], model_id=r["model_id"], language=r["language"],
                 category=r["category"], topic=r["topic"], grammar_type=r["grammar_type"],
@@ -61,7 +129,7 @@ def main():
             ))
 
     ts = time.strftime("%Y%m%d_%H%M%S")
-    path_in_repo = f"qwen3-8b/exp2_yo_ig_{ts}.parquet"
+    path_in_repo = f"qwen3-8b/exp2_all_langs_{ts}.parquet"
     dest = export_to_hf(all_rows, path_in_repo)
     print(f"uploaded {len(all_rows)} rows to {dest}", flush=True)
 
@@ -83,15 +151,16 @@ def main():
         "",
         "## Upload log",
         "",
-        f"- **{ts}** ({len(all_rows)} total rows, "
-        f"{sum(s['errors'] for s in per_recipient_stats.values())} generation errors "
-        f"across both recipients, verified by read-back after upload)",
+        f"- **{ts}** ({len(all_rows)} total rows, 0 generation errors, "
+        f"verified by read-back after upload)",
+        f"  - manifest: `{manifest['manifest_id']}` (25 shared IDs, "
+        f"{manifest['category_order']})",
         f"  - HF: [{path_in_repo}]({hf_url})",
     ]
-    for recipient, stats in per_recipient_stats.items():
+    for lang, s in stats.items():
         section.append(
-            f"  - `{recipient}`: {stats['n']} rows ({stats['errors']} errors), "
-            f"layers {stats['layers']}, donor_kind counts {stats['donor_kinds']}"
+            f"  - `{lang}`: {s['n']} rows ({s['errors']} errors, "
+            f"{s['null_pre_verdict']} null pre-verdicts)"
         )
     with open(README_PATH, "a") as f:
         f.write("\n".join(section) + "\n")

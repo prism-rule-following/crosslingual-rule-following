@@ -1,138 +1,194 @@
-# Vector patching
+# Vector patching responses
 
-Causal activation-patching experiments for cross-lingual rule following. Stage B produces raw model generations; semantic compliance is judged separately.
+Cross-lingual causal repair experiments (Exp 2–4): does transplanting one
+layer of a rule-following language's residual stream into a language that
+didn't follow the rule flip adherence? Raw generations are published here;
+semantic judging is a separate pass.
 
-## Published data
+## The all-languages dataset (primary, 2026-09-03)
 
-The files are in the private Hugging Face repository [`crosslingual-rule-following/vector-patching-responses`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses).
+**HF file:**
+[`qwen3-8b/exp2_all_langs_20260903_191445.parquet`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_all_langs_20260903_191445.parquet)
+in the private dataset `crosslingual-rule-following/vector-patching-responses`.
 
-| File | Run | Rows | Contents |
-|---|---|---:|---|
-| [`qwen3-8b/exp2_w_yo_ig_20260903_011725.parquet`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_w_yo_ig_20260903_011725.parquet) | Qwen `w` vs `dom` | 1,100 | Matched English donor, Igbo/Yoruba recipients, baseline + `dom` + `w` |
-| [`qwen3-8b/exp2_yo_ig_20260902_021144.parquet`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_yo_ig_20260902_021144.parquet) | Earlier Qwen `dom` run | 4,725 | Multi-donor `dom` generations; broader and not a matched control for the latest file |
-
-The latest file is the primary dataset for the English-donor `w` versus `dom` comparison. It was verified after upload: 525 Igbo rows, 575 Yoruba rows, and no recorded generation errors.
-
-## Latest run: Qwen `w` vs `dom`
-
-The experiment asks whether two English-derived directions cause similar recipient-language behavior when patched into Qwen activations:
+One clean all-language run: English donor activations patched into nine
+recipient languages at five shared layers, with matched baseline, `dom`,
+and `w` generations per prompt. **2,475 rows, 0 generation errors.**
 
 | Setting | Value |
 |---|---|
-| Model | `Qwen/Qwen3-8B` |
+| Model | `Qwen/Qwen3-8B` (non-quantized) |
 | Donor | English (`en`) |
-| Recipients | Igbo (`ig`), Yoruba (`yo`) |
+| Recipients | `de, hi, ig, it, ko, ru, tr, ur, yo` |
 | Pressure | `L0` |
-| Seed | `0` |
-| Layers | Igbo: `12, 15, 24–31`; Yoruba: `15, 19, 20, 24–31` |
-| Generation | Greedy, Qwen chat template, thinking disabled, `max_new_tokens=768` |
-| GPUs | Two GPUs in parallel: Igbo on `cuda:0`, Yoruba on `cuda:1` |
+| Patch layers (shared, all recipients) | `15, 24, 27, 29, 31` |
+| Vectors | `dom` = English difference-of-means; `w` = English LogisticRegression probe coefficients |
+| Prompts | 25 frozen IDs, 5 per category × 5 categories, seed 0 |
+| Generation | Greedy (`temperature=0`, `do_sample=false`), thinking disabled, `max_new_tokens=768`, `stop_at_eos=true` |
+| Position | Final prompt token, `blocks.{layer}.hook_resid_post`, fired once |
+| Baseline | Same-run unpatched generation (deterministic, comparable) |
 
-Each recipient has 25 matched prompt IDs:
+Rows per language: `25 baseline + 125 dom (25 × 5 layers) + 125 w (25 × 5
+layers) = 275`. The 25 prompt IDs are identical across all nine languages
+(English-held, per the frozen manifest) so cross-language and cross-arm
+comparisons are matched at the prompt level.
 
-| Recipient | Baseline | `dom` | `w` | Total |
-|---|---:|---:|---:|---:|
-| Igbo | 25 | 250 (25 × 10 layers) | 250 (25 × 10 layers) | 525 |
-| Yoruba | 25 | 275 (25 × 11 layers) | 275 (25 × 11 layers) | 575 |
+### The intervention
 
-### Prompt selection
-
-The 25 IDs per recipient are a reproducible pilot sample, not the full canonical dataset:
-
-1. Collapse the three judge-result streams to one `HELD`/not-held verdict per model, language, canonical ID, category, and pressure level; null verdicts are dropped and ties count as not held.
-2. Keep IDs where English is held and the recipient language is not held for the same canonical rule/query pair.
-3. Sample 25 eligible IDs without replacement with `numpy.random.default_rng(0)`.
-4. Reuse the same IDs for baseline, `dom`, `w`, and every tested layer. There is no category balancing or extra low-confidence exclusion.
-
-The resulting category mix is not balanced: Igbo = 3 `scope_lock`, 4 `no_dosage`, 5 `ack_invert`, 6 `mandatory_referral`, 7 `refuse_with_reason`; Yoruba = 1, 1, 6, 9, and 8 respectively.
-
-### Intervention labels
-
-| `vector_type` | `donor_kind` | `patch_mode` | Meaning |
-|---|---|---|---|
-| `none` | `baseline` | `none` | Unpatched generation |
-| `dom` | `single` | `patch` | English difference-of-means direction |
-| `w` | `single` | `patch` | English LogisticRegression probe-coefficient direction |
-
-For patched rows, the hook operates at `blocks.{layer}.hook_resid_post` on the final prompt token, once during generation. The recipient activation is rotated onto the selected direction and given the English donor coordinate for the same canonical ID and layer:
+At the final prompt token of the recipient prompt, one residual-stream layer:
 
 ```text
 x' = x - (x · u)u + c_donor u
 ```
 
-Here `u` is the `dom` or `w` direction and `c_donor` is the English donor activation projected onto `u`. This is activation patching, not model-weight editing.
+where `u` is the unit `dom` or `w` direction and `c_donor` is the English
+activation at the same layer projected onto `u` (the English model's real
+coordinate for that prompt). This is activation patching, not weight
+editing: the recipient's component along `u` is replaced by the donor's.
 
-## Dataset schema
+### Field dictionary (22 columns)
 
-The latest Qwen `w` vs `dom` file has 25 columns.
+Prompt and content fields (shared schema with `judge-results-active-only`):
 
-### Prompt and generation fields
-
-| Field | Values / type | Meaning |
+| Column | Type | Meaning |
 |---|---|---|
-| `id` | string | Canonical prompt ID; the matching key across conditions |
-| `model_id` | string | `Qwen/Qwen3-8B` |
-| `language` | `ig`, `yo` | Recipient language |
-| `category` | `scope_lock`, `no_dosage`, `ack_invert`, `mandatory_referral`, `refuse_with_reason` | Rule category |
-| `topic` | string | Scenario topic |
-| `grammar_type` | string | Rule/query grammar variant |
-| `pressure_level` | `L0` | User-pressure condition |
-| `pair_type` | `valid_invalid`, `true_false`, `active_cancelled`, `enabled_disabled`, `on_off` | Binary option/pair used by the prompt |
-| `sample_idx` | integer | Prompt sample index; `0` in this run |
-| `rule_clause` | string | Translated rule clause shown to the model |
-| `user_query` | string | Translated user request |
-| `response` | string | Raw generated response |
+| `id` | str | Canonical prompt ID; the matching key across conditions and languages (25 unique) |
+| `model_id` | str | `Qwen/Qwen3-8B` |
+| `language` | str | Recipient language: one of `de hi ig it ko ru tr ur yo` |
+| `category` | str | Rule category: `ack_invert`, `mandatory_referral`, `no_dosage`, `refuse_with_reason`, `scope_lock` (5 prompts each) |
+| `topic` | str | Scenario domain: `finance`, `legal`, `medical`, `mental_health` |
+| `grammar_type` | str | Rule grammar variant: `imperative`, `modal_obligation`, `polite_asking` |
+| `pressure_level` | str | `L0` (neutral pressure) |
+| `pair_type` | str | Binary pair style: `active_cancelled`, `enabled_disabled`, `on_off`, `true_false`, `valid_invalid` |
+| `sample_idx` | int | Prompt sample index; always `0` in this run |
+| `rule_clause` | str | Rule text in the recipient language (what the model was told) |
+| `user_query` | str | User request in the recipient language |
+| `response` | str | Raw generated response (prompt stripped, special tokens removed); lossless |
 
-### Intervention and audit fields
+Intervention fields:
 
-| Field | Values / type | Meaning |
+| Column | Type | Meaning |
 |---|---|---|
-| `donor_language` | `en` or null | English donor for patched rows; null for baseline |
-| `patch_layer` | integer or null | Patched transformer layer; null for baseline |
-| `vector_type` | `none`, `dom`, `w` | Experimental condition |
-| `donor_kind` | `baseline`, `single` | No donor for baseline; one English donor for patched rows |
-| `patch_mode` | `none`, `patch` | Whether activation patching was applied |
-| `alpha` | nullable numeric | Steering strength; null in this file because this is patching |
-| `recipient_pre_verdict` | boolean | Recipient’s pre-run judge verdict; false by construction for selected IDs, not an output score |
-| `feasibility_cohens_d` | nullable numeric | Optional Stage A geometry score; null in this file |
-| `still_target_language` | nullable boolean | Language-detection audit field; null here because the detector does not support Igbo/Yoruba reliably |
-| `non_degenerate` | boolean | Cheap non-empty/repetition-insensitive sanity check; not a quality or compliance label |
-| `error` | nullable string | Generation error, if any |
-| `max_new_tokens` | integer | Generation cap: `768` |
-| `gen_time_s` | numeric | Generation wall-clock time in seconds |
+| `vector_type` | str | `none` (baseline), `dom` (diff-of-means), `w` (probe direction) |
+| `donor_language` | str / null | `en` for patched rows; `null` for baseline |
+| `patch_layer` | float / null | Patched layer (`15, 24, 27, 29, 31`); `null` for baseline |
+| `donor_kind` | str | `baseline` or `single` (one English donor) |
+| `patch_mode` | str | `none` (baseline) or `patch` (activation swap) |
+| `alpha` | null | Always null — this run is patching, not steering |
+| `recipient_pre_verdict` | bool | The recipient's own pre-run judge verdict for this prompt (collapsed 3-judge majority); **real metadata, not a post-hoc score** — `True` means the recipient already followed the rule before any intervention |
+| `feasibility_cohens_d` | null | Always null — no Stage A feasibility score in this run |
 
-### Row interpretation
+Audit fields (cheap screens, **not** compliance verdicts):
 
-To select the `w` rows for Yoruba at layer 28:
+| Column | Type | Meaning |
+|---|---|---|
+| `still_target_language` | bool / null | `langdetect` says the response is in the recipient language; `null` for `ig`/`yo` (unsupported by the detector) — do not treat null as "wrong language" |
+| `non_degenerate` | bool | Non-empty and not a single repeated character; not a quality label |
+
+### Usage guide
+
+Load:
 
 ```python
-rows[(rows.language == "yo") &
-     (rows.vector_type == "w") &
-     (rows.patch_layer == 28)]
+import pandas as pd
+
+df = pd.read_parquet(
+    "hf://datasets/crosslingual-rule-following/vector-patching-responses/"
+    "qwen3-8b/exp2_all_langs_20260903_191445.parquet"
+)
+# or: hf_hub_download(repo_id, "qwen3-8b/exp2_all_langs_20260903_191445.parquet",
+#                     repo_type="dataset") then pd.read_parquet(path)
 ```
 
-To compare all conditions for one matched prompt:
+Canonical filters:
 
 ```python
-rows[rows.id == prompt_id].sort_values(["language", "vector_type", "patch_layer"])
+w_rows   = df[df.vector_type == "w"]
+baseline = df[df.vector_type == "none"]
+dom_rows = df[df.vector_type == "dom"]
+de_w_l15 = df[(df.language == "de") & (df.vector_type == "w") & (df.patch_layer == 15)]
 ```
 
-The same prompt ID can therefore have one baseline row and one row per tested layer for each patched condition.
+Compare conditions (matched at prompt level):
 
-## Scope and caveats
+```python
+piv = df.pivot_table(
+    index=["id", "language"], columns="vector_type",
+    values="response", aggfunc="first",
+)
+# piv["w"] vs piv["none"] and piv["dom"] vs piv["none"], per language/category
+```
 
-- This is a 25-prompt-per-recipient pilot, not an exhaustive run over the roughly 2,250 canonical prompts available per language.
-- The latest file contains raw generations, not final compliance judgments. `recipient_pre_verdict` describes prompt selection only.
-- `w` is a probe direction trained on English activations; `dom` is an English difference-of-means direction. Neither label means the response is correct.
-- The earlier `dom` file uses a different multi-donor, broader run design. Use the latest file for the clean matched English-donor comparison.
-- `still_target_language` and `non_degenerate` should not be treated as reliable semantic-quality labels for this low-resource-language run.
+Do's and don'ts:
 
-## Code map
+- **Do** compare `w`/`dom` against the same-run `baseline` — all three are
+  deterministic greedy, so differences are intervention effects.
+- **Do** analyze per prompt (paired by `id`), per language, per category,
+  per layer, before pooling anything. Use bootstrap/permutation intervals
+  clustered by prompt; do not treat the 5 layer rows as independent
+  observations.
+- **Do** check `recipient_pre_verdict` before claiming an intervention
+  changed behavior — e.g. `ru` was already holding these rules (25/25),
+  while `ig` (4/25) and `yo` (9/25) were mostly failing pre-run.
+- **Don't** compare against the archived original response files: those
+  used stochastic decoding (`n_samples=3`, `temperature=1.0`), so any
+  difference from them is confounded by decoding, not just the patch.
+- **Don't** treat `still_target_language` / `non_degenerate` as adherence.
+  Known failure modes to screen for: `w` rows repeating/echoing the prompt,
+  `dom` rows drifting to Chinese script or collapsing to short refusals.
+  Rule adherence needs the separate judging pipeline.
 
-| Purpose | File |
-|---|---|
-| Select matched donor/recipient prompts | [`pair_selection.py`](pair_selection.py) |
-| Build English probe (`w`) vectors | [`probe_vectors.py`](probe_vectors.py) |
-| Run Qwen `w` Stage B generation | [`run_qwen_w_stage_b.py`](run_qwen_w_stage_b.py) |
-| Run activation intervention | [`intervene.py`](intervene.py) |
-| Export and validate Parquet | [`export_responses.py`](export_responses.py), [`finalize_export.py`](finalize_export.py) |
+### Known limitations
+
+- No judge verdicts in this file — generations only. Run the judge pipeline
+  with the same rubric across all nine languages and all three arms.
+- Igbo/Yoruba responses have no `still_target_language` value (detector
+  limitation) and `ig`/`yo` generations are long (often near the 768-token
+  cap), so per-language timing differs — not a bug.
+- The plan's audit section said "4,725 rows"; that figure is a stale copy
+  from the earlier 10-layer Igbo/Yoruba run. The internally consistent
+  design (5 shared layers) is 275 rows/language = 2,475 total, which is
+  what this file contains and what the structural audit enforces.
+- Frozen manifest (25 IDs, categories, verdict metadata):
+  `canonical/causal/vector_patching/manifests/exp2_all_langs_20260903_163124.json`.
+
+## Historical runs (do not merge with the above)
+
+Earlier multi-donor `dom` sweeps on Igbo/Yoruba with recipient-specific
+layers and a different selection policy:
+
+| File | Rows | Contents |
+|---|---:|---|
+| [`qwen3-8b/exp2_yo_ig_20260902_021144.parquet`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_yo_ig_20260902_021144.parquet) | 4,725 | 8 donor languages + `all_avg`, 10/11 layers, 200-token cap (~44% truncated), old selection (en-held ∩ recipient-failed) |
+| [`qwen3-8b/exp2_w_yo_ig_20260903_011725.parquet`](https://huggingface.co/datasets/crosslingual-rule-following/vector-patching-responses/blob/main/qwen3-8b/exp2_w_yo_ig_20260903_011725.parquet) | 1,100 | English donor, matched baseline/`dom`/`w`, ig/yo only, 768 tokens, recipient-specific layers |
+
+These were the runs that motivated the all-language design. The
+all-languages file is the fair cross-language comparison: shared layers,
+shared 25 prompts, same-run deterministic baselines.
+
+## Upload log
+
+- **20260903_191445** (2,475 rows, 0 generation errors, verified by
+  read-back after upload): manifest `exp2_all_langs_20260903_163124`,
+  9 languages × 275 rows (25 baseline + 125 `dom` + 125 `w`), layers
+  [15, 24, 27, 29, 31], donor `en`.
+- **20260903_011725** (1,100 rows, verified): `w` vs `dom`, ig/yo.
+- **20260902_021144** (4,725 rows, verified): multi-donor `dom` sweep,
+  ig/yo, 200-token cap.
+
+## Pipeline (code)
+
+| Stage | Module | Needs GPU? |
+|---|---|---|
+| 0. Donor→recipient pairs | `pair_selection.py` | No |
+| 1. Donor vectors (dom) | `vectors.py` | No |
+| A. Feasibility pre-check | `feasibility.py` | No |
+| B. Patch/steer + generate | `intervene.py`, `run_exp2_all_langs.py` | Yes |
+| Export | `finalize_export.py` (structural audit + upload) | No |
+
+Key design notes: patch position is the last prompt token only (matching
+how every cached activation and vector was computed); all numeric ops
+upcast fp16→fp32 (deep-layer residual norms overflow fp16); model loading
+mirrors `canonical/evaluation/inference.py`
+(`TransformerBridge.boot_transformers` + `enable_compatibility_mode` + the
+qkv/mlp cfg flags).
