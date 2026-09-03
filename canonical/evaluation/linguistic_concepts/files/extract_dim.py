@@ -237,6 +237,83 @@ def batched_hidden_states(model, tok, id_lists, device, use_cache):
 
 
 # --------------------------------------------------------------------------- #
+def _auc(pos_scores, neg_scores):
+    """Rank-based AUC = P(clean projection > corrupt projection). No threshold."""
+    import numpy as _np
+    a = _np.asarray(pos_scores); b = _np.asarray(neg_scores)
+    if len(a) == 0 or len(b) == 0:
+        return float("nan")
+    # Mann-Whitney U / (n*m)
+    allv = _np.concatenate([a, b])
+    order = allv.argsort(kind="mergesort")
+    ranks = _np.empty(len(allv), dtype=float)
+    ranks[order] = _np.arange(1, len(allv) + 1)
+    # average ranks for ties
+    # (simple tie handling: recompute with scipy-like averaging)
+    _, inv, counts = _np.unique(allv, return_inverse=True, return_counts=True)
+    csum = _np.cumsum(counts)
+    start = csum - counts + 1
+    avg = (start + csum) / 2.0
+    ranks = avg[inv]
+    r1 = ranks[:len(a)].sum()
+    u1 = r1 - len(a) * (len(a) + 1) / 2.0
+    return float(u1 / (len(a) * len(b)))
+
+
+def extract_store(rows, ckpt, tok, model, mcfg, dcfg, ecfg, ocfg, mode, positions, device):
+    """Run the model over `rows`, cache per-row activations via `ckpt`, return a
+    store: member -> position -> list of (meta, tensor[nl+1, d]). Resumable."""
+    field = dcfg["rule_field_map"]; ctok_field = dcfg["contrast_token_field"]
+    members = {"clean": field["clean"], "corrupt_may": field["corrupt_may"],
+               "corrupt_neutral": field["corrupt_neutral"]}
+    B = ocfg.get("batch_size", 8); empty_every = ocfg.get("empty_cache_every_n_batches", 4)
+    raw_ast = ecfg.get("raw_add_special_tokens", True)
+    frame_field = dcfg.get("frame_field")
+    has_frames = frame_field is not None and rows and frame_field in rows[0]
+
+    already = ckpt.done_ids()
+    todo = [r for r in rows if r["id"] not in already]
+    print(f"[ckpt:{ckpt.base}] {len(already)} cached, {len(todo)} to compute")
+
+    work = [(r, m, mf) for r in todo for m, mf in members.items()]
+    need_members = set(members); row_buf = defaultdict(dict); batch_i = 0
+    for s in range(0, len(work), B):
+        chunk = work[s:s + B]
+        id_lists, locs, keys = [], [], []
+        for r, m, mf in chunk:
+            rule_text = r[mf]; cword = r[ctok_field[m]]
+            ids, _, _ = build_prompt(
+                tok, mcfg, mode, rule_text=rule_text,
+                context=r.get(dcfg["context_field"]) if mode == "system_user" else None,
+                query=r.get(dcfg["query_field"]) if mode == "system_user" else None,
+                raw_add_special_tokens=raw_ast)
+            id_lists.append(ids)
+            locs.append(locate_positions(tok, ids, rule_text, cword, mode, positions))
+            keys.append((r["id"], m, r))
+        hs_list = batched_hidden_states(model, tok, id_lists, device, ocfg.get("use_cache", False))
+        for (rid, m, r), hs, pos in zip(keys, hs_list, locs):
+            row_buf[rid][m] = {p: hs[:, pos[p], :].clone() for p in positions}
+            meta = {"frame": r.get(frame_field) if has_frames else None,
+                    "category": r.get("category"), "topic": r.get("topic"),
+                    "lexeme_set": r.get("lexeme_set"), "id": rid}
+            if need_members.issubset(row_buf[rid].keys()):
+                ckpt.save_row(rid, row_buf.pop(rid), meta)
+        batch_i += 1
+        if device.startswith("cuda") and empty_every and batch_i % empty_every == 0:
+            torch.cuda.empty_cache(); gc.collect()
+        if batch_i % 5 == 0:
+            print(f"  batch {batch_i} ({min(s+B,len(work))}/{len(work)} items)")
+    ckpt.finalize()
+
+    cached = ckpt.load_all()
+    store = defaultdict(lambda: defaultdict(list))
+    for rid, payload, meta in cached:
+        for m, posmap in payload.items():
+            for p, vec in posmap.items():
+                store[m][p].append((meta, vec))
+    return store, has_frames
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
@@ -246,7 +323,8 @@ def main():
                     help="language code/name for this dataset, e.g. en, yoruba, igbo")
     ap.add_argument("--concept", required=True,
                     help="concept type for this dataset, e.g. obligation, negation")
-    ap.add_argument("--data", default=None, help="local json; if omitted, pull per config.hf")
+    ap.add_argument("--data", default=None, help="local train json; if omitted, pull train split per config.hf")
+    ap.add_argument("--test-data", default=None, help="local test json; if omitted, pull test split per config.hf")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--no-push", action="store_true")
     args = ap.parse_args()
@@ -266,151 +344,130 @@ def main():
     print(f"[cfg] concept={concept} language={lang} preset={preset_tag} mode={mode} "
           f"positions={positions} contrasts={ecfg['contrasts']}")
 
-    # ---- data ----
-    data_path = args.data
-    if data_path is None:
-        data_path = f"{concept}_{lang}.json"
-        if cfg["hf"].get("dataset_load", "hub") == "hub":
-            hf_io.pull_dataset(cfg, data_path, concept=concept, language=lang)
-        elif not os.path.exists(data_path):
-            raise SystemExit(f"no --data and dataset_load=local but {data_path} missing")
-    rows = json.load(open(data_path))
-    if args.limit:
-        rows = rows[:args.limit]
-    print(f"[data] {len(rows)} rows")
+    # ---- data: pull train and (optionally) test split ----
+    from_hub = cfg["hf"].get("dataset_load", "hub") == "hub" and args.data is None
+    def _load(split):
+        if args.data and split == "train":
+            path = args.data
+        elif args.test_data and split == "test":
+            path = args.test_data
+        else:
+            path = f"{concept}_{lang}_{split}.json"
+            if from_hub:
+                hf_io.pull_dataset(cfg, path, concept=concept, language=lang, split=split)
+            elif not os.path.exists(path):
+                return None
+        if not os.path.exists(path):
+            return None
+        rr = json.load(open(path))
+        return rr[:args.limit] if args.limit else rr
 
-    # checkpoint namespace includes concept+language+preset so runs never collide
-    ckpt = RowCheckpoint(cfg, ckpt_ns)
-    already = ckpt.done_ids()
-    todo = [r for r in rows if r["id"] not in already]
-    print(f"[ckpt] {len(already)} cached, {len(todo)} to compute")
+    train_rows = _load("train")
+    if train_rows is None:
+        raise SystemExit("[data] no train split found (need --data, --test-data, or HF splits)")
+    test_rows = _load("test")
+    print(f"[data] train={len(train_rows)} rows"
+          + (f", test={len(test_rows)} rows" if test_rows else " (no test split)"))
 
     tok, model = load_model(mcfg, ocfg)
-    field = dcfg["rule_field_map"]
-    ctok_field = dcfg["contrast_token_field"]
-    members = {"clean": field["clean"], "corrupt_may": field["corrupt_may"],
-               "corrupt_neutral": field["corrupt_neutral"]}
-    B = ocfg.get("batch_size", 8)
-    empty_every = ocfg.get("empty_cache_every_n_batches", 4)
-    raw_ast = ecfg.get("raw_add_special_tokens", True)
 
-    frame_field = dcfg.get("frame_field")
-    has_frames = frame_field is not None and frame_field in rows[0]
-
-    work = [(r, m, mf) for r in todo for m, mf in members.items()]
-    batch_i = 0
-    row_buf = defaultdict(dict)
-    row_meta = {}
-    need_members = set(members)
-
-    for s in range(0, len(work), B):
-        chunk = work[s:s + B]
-        id_lists, locs, keys = [], [], []
-        for r, m, mf in chunk:
-            rule_text = r[mf]
-            cword = r[ctok_field[m]]
-            ids, _, _ = build_prompt(
-                tok, mcfg, mode,
-                rule_text=rule_text,
-                context=r.get(dcfg["context_field"]) if mode == "system_user" else None,
-                query=r.get(dcfg["query_field"]) if mode == "system_user" else None,
-                raw_add_special_tokens=raw_ast,
-            )
-            id_lists.append(ids)
-            locs.append(locate_positions(tok, ids, rule_text, cword, mode, positions))
-            keys.append((r["id"], m, r))
-        hs_list = batched_hidden_states(model, tok, id_lists, device, ocfg.get("use_cache", False))
-        for (rid, m, r), hs, pos in zip(keys, hs_list, locs):
-            row_buf[rid][m] = {p: hs[:, pos[p], :].clone() for p in positions}
-            row_meta[rid] = {"frame": r.get(frame_field) if has_frames else None,
-                             "category": r.get("category"), "topic": r.get("topic"), "id": rid}
-            if need_members.issubset(row_buf[rid].keys()):
-                ckpt.save_row(rid, row_buf.pop(rid), row_meta[rid])
-        batch_i += 1
-        if device.startswith("cuda") and empty_every and batch_i % empty_every == 0:
-            torch.cuda.empty_cache(); gc.collect()
-        if batch_i % 5 == 0:
-            print(f"  batch {batch_i} ({min(s+B,len(work))}/{len(work)} items)")
-    ckpt.finalize()
+    # extract activations for each split into its own checkpoint namespace
+    ckpt_train = RowCheckpoint(cfg, f"{ckpt_ns}__train")
+    store_tr, has_frames_tr = extract_store(train_rows, ckpt_train, tok, model, mcfg,
+                                            dcfg, ecfg, ocfg, mode, positions, device)
+    store_te = None
+    if test_rows:
+        ckpt_test = RowCheckpoint(cfg, f"{ckpt_ns}__test")
+        store_te, _ = extract_store(test_rows, ckpt_test, tok, model, mcfg,
+                                    dcfg, ecfg, ocfg, mode, positions, device)
 
     del model; gc.collect()
     if device.startswith("cuda"):
         torch.cuda.empty_cache()
 
-    # ---- DIM math from cache ----
-    cached = ckpt.load_all()
-    print(f"[dim] computing over {len(cached)} rows")
-    store = defaultdict(lambda: defaultdict(list))
-    for rid, payload, meta in cached:
-        for m, posmap in payload.items():
-            for p, vec in posmap.items():
-                store[m][p].append((meta, vec))
-
+    # ---- DIM math ----
     p0 = positions[0]
-    n_layers_p1 = store["clean"][p0][0][1].shape[0]
-    d_model = store["clean"][p0][0][1].shape[1]
+    n_layers_p1 = store_tr["clean"][p0][0][1].shape[0]
+    d_model = store_tr["clean"][p0][0][1].shape[1]
 
-    def stack_by_frame(member, position):
+    def by_frame(store, member, position):
         by = defaultdict(list)
         for meta, vec in store[member][position]:
             by[meta.get("frame")].append(vec)
         return {f: torch.stack(v, 0) for f, v in by.items()}
 
-    def stack_all(member, position):
+    def all_of(store, member, position):
         return torch.stack([v for _, v in store[member][position]], 0)
 
     results = {"model": args.model, "hf_name": mcfg["hf_name"], "preset": preset_tag,
                "concept": concept, "language": lang, "stimulus_mode": mode,
                "n_layers_incl_embed": n_layers_p1, "d_model": d_model,
-               "positions": positions, "contrasts": ecfg["contrasts"], "directions": {}}
+               "positions": positions, "contrasts": ecfg["contrasts"],
+               "n_train": len(train_rows), "n_test": len(test_rows) if test_rows else 0,
+               "directions": {}}
     candidate_tensors = {}
     contrast_pairs = {"must_may": ("clean", "corrupt_may"), "must_neutral": ("clean", "corrupt_neutral")}
 
-    # frames only meaningful if the dataset actually has >1 frame
-    frame_vals = set(m.get("frame") for _, _, m in cached)
-    use_frames = has_frames and len([f for f in frame_vals if f is not None]) > 1
-
-    for contrast in ecfg["contrasts"]:
-        m_clean, m_corr = contrast_pairs[contrast]
-        for position in positions:
-            if position == "contrast_token" and ecfg.get("contrast_token_agg") == "per_frame_mean" and use_frames:
-                cf, rf = stack_by_frame(m_clean, position), stack_by_frame(m_corr, position)
-                dims, per_frame = [], {}
-                for f in cf:
-                    dims.append(cf[f].mean(0) - rf[f].mean(0)); per_frame[f] = {"n": cf[f].shape[0]}
-                dim = torch.stack(dims, 0).mean(0); agg = "per_frame_mean"
-            else:
-                dim = stack_all(m_clean, position).mean(0) - stack_all(m_corr, position).mean(0)
-                agg = "pooled"; per_frame = None
-            norms = dim.norm(dim=-1); unit = dim / (norms.unsqueeze(-1) + 1e-8)
-            name = f"{contrast}__{position}"
-            candidate_tensors[name] = unit if ecfg["normalize_directions"] else dim
-            results["directions"][name] = {"contrast": contrast, "position": position, "agg": agg,
-                                           "per_layer_norm": norms.tolist(),
-                                           "argmax_norm_layer": int(norms.argmax()), "frames": per_frame}
+    frame_vals = set(m.get("frame") for _, _, m in
+                     [(None, None, meta) for meta, _ in store_tr["clean"][p0]])
+    use_frames = has_frames_tr and len([f for f in frame_vals if f is not None]) > 1
 
     def cohens_d(a, b):
         va, vb = a.var(unbiased=True), b.var(unbiased=True); n1, n2 = len(a), len(b)
         sp = math.sqrt(((n1-1)*va + (n2-1)*vb)/max(n1+n2-2,1) + 1e-12)
         return float((a.mean()-b.mean())/(sp+1e-12))
 
+    def eval_split(store, unit, m_clean, m_corr, position):
+        """Per-layer Cohen's d and AUC of clean vs corrupt projections onto `unit`."""
+        ca, ka = all_of(store, m_clean, position), all_of(store, m_corr, position)
+        d_list, auc_list = [], []
+        for l in range(ca.shape[1]):
+            pc = (ca[:, l, :] * unit[l]).sum(-1)
+            pk = (ka[:, l, :] * unit[l]).sum(-1)
+            d_list.append(cohens_d(pc, pk))
+            auc_list.append(_auc(pc.numpy(), pk.numpy()))
+        return d_list, auc_list
+
     for contrast in ecfg["contrasts"]:
         m_clean, m_corr = contrast_pairs[contrast]
         for position in positions:
-            name = f"{contrast}__{position}"; dvec = candidate_tensors[name]
-            unit = dvec/(dvec.norm(dim=-1, keepdim=True)+1e-8)
-            ca, ka = stack_all(m_clean, position), stack_all(m_corr, position)
-            dl = [cohens_d((ca[:,l,:]*unit[l]).sum(-1), (ka[:,l,:]*unit[l]).sum(-1)) for l in range(ca.shape[1])]
-            bl = int(np.argmax(np.abs(dl)))
-            results["directions"][name].update({"per_layer_cohens_d": dl,
-                                                "best_layer_by_separation": bl, "best_cohens_d": dl[bl]})
+            # --- fit direction on TRAIN only ---
+            if position == "contrast_token" and ecfg.get("contrast_token_agg") == "per_frame_mean" and use_frames:
+                cf, rf = by_frame(store_tr, m_clean, position), by_frame(store_tr, m_corr, position)
+                dims, per_frame = [], {}
+                for f in cf:
+                    dims.append(cf[f].mean(0) - rf[f].mean(0)); per_frame[f] = {"n": cf[f].shape[0]}
+                dim = torch.stack(dims, 0).mean(0); agg = "per_frame_mean"
+            else:
+                dim = all_of(store_tr, m_clean, position).mean(0) - all_of(store_tr, m_corr, position).mean(0)
+                agg = "pooled"; per_frame = None
+            norms = dim.norm(dim=-1); unit = dim / (norms.unsqueeze(-1) + 1e-8)
+            name = f"{contrast}__{position}"
+            candidate_tensors[name] = unit if ecfg["normalize_directions"] else dim
 
-    # transfer check: only when frames exist AND contrast_token was extracted
+            # --- evaluate on TRAIN (in-sample) and TEST (held-out) with the SAME train unit ---
+            d_tr, auc_tr = eval_split(store_tr, unit, m_clean, m_corr, position)
+            bl = int(np.argmax(np.abs(d_tr)))
+            entry = {"contrast": contrast, "position": position, "agg": agg,
+                     "per_layer_norm": norms.tolist(), "argmax_norm_layer": int(norms.argmax()),
+                     "frames": per_frame,
+                     "in_sample": {"per_layer_cohens_d": d_tr, "per_layer_auc": auc_tr,
+                                   "best_layer": bl, "best_cohens_d": d_tr[bl], "best_auc": auc_tr[bl]}}
+            if store_te is not None:
+                d_te, auc_te = eval_split(store_te, unit, m_clean, m_corr, position)
+                # report held-out at the layer chosen on train (honest), and its own best
+                bl_te = int(np.argmax(np.abs(d_te)))
+                entry["held_out"] = {"per_layer_cohens_d": d_te, "per_layer_auc": auc_te,
+                                     "at_train_best_layer": {"layer": bl, "cohens_d": d_te[bl], "auc": auc_te[bl]},
+                                     "own_best_layer": {"layer": bl_te, "cohens_d": d_te[bl_te], "auc": auc_te[bl_te]}}
+            results["directions"][name] = entry
+
+    # transfer check (train frames only; unchanged logic)
     if cfg["transfer_check"]["enabled"] and use_frames and "contrast_token" in positions:
         tc = cfg["transfer_check"]; src, tgt = set(tc["source_frames"]), set(tc["target_frames"]); transfer = {}
         for contrast in ecfg["contrasts"]:
             m_clean, m_corr = contrast_pairs[contrast]; position = "contrast_token"
-            cf_c, cf_k = stack_by_frame(m_clean, position), stack_by_frame(m_corr, position)
+            cf_c, cf_k = by_frame(store_tr, m_clean, position), by_frame(store_tr, m_corr, position)
             def fdim(fr):
                 ds = [cf_c[f].mean(0)-cf_k[f].mean(0) for f in fr if f in cf_c]
                 return torch.stack(ds,0).mean(0) if ds else None
@@ -432,9 +489,21 @@ def main():
     torch.save(candidate_tensors, dir_path)
     json.dump(results, open(rep_path, "w"), indent=2)
 
-    print(f"\n=== DIM summary [{group_path}] (best layer by |Cohen's d|) ===")
-    for name, r in results["directions"].items():
-        print(f"  {name:34s} layer {r['best_layer_by_separation']:>2}  d={r['best_cohens_d']:+.3f}")
+    has_test = store_te is not None
+    print(f"\n=== DIM summary [{group_path}] ===")
+    if has_test:
+        print(f"  {'direction':30s} {'layer':>5} | {'in-sample':>18} | {'held-out @train-L':>18} | {'held-out own-best':>18}")
+        print(f"  {'':30s} {'':>5} | {'d':>8} {'AUC':>8} | {'d':>8} {'AUC':>8} | {'L':>4} {'d':>6} {'AUC':>5}")
+        for name, r in results["directions"].items():
+            ins = r["in_sample"]; ho = r["held_out"]; L = ins["best_layer"]
+            at = ho["at_train_best_layer"]; ob = ho["own_best_layer"]
+            print(f"  {name:30s} {L:>5} | {ins['best_cohens_d']:>8.3f} {ins['best_auc']:>8.3f} | "
+                  f"{at['cohens_d']:>8.3f} {at['auc']:>8.3f} | {ob['layer']:>4} {ob['cohens_d']:>6.2f} {ob['auc']:>5.2f}")
+    else:
+        print(f"  (train only; no test split)  {'layer':>5} {'d':>8} {'AUC':>8}")
+        for name, r in results["directions"].items():
+            ins = r["in_sample"]
+            print(f"  {name:30s} {ins['best_layer']:>5} {ins['best_cohens_d']:>8.3f} {ins['best_auc']:>8.3f}")
     if results["transfer_check"]:
         print("\n=== transfer (source -> target frames, contrast_token) ===")
         for c, t in results["transfer_check"].items():
@@ -443,7 +512,7 @@ def main():
     if not args.no_push:
         try:
             if cfg["checkpoint"].get("upload_row_cache_to_hf", False):
-                hf_io.push(cfg, "activations", group_path, ckpt.rows_dir)
+                hf_io.push(cfg, "activations", group_path, ckpt_train.rows_dir)
             hf_io.push(cfg, "directions", group_path, dir_path)
             hf_io.push(cfg, "results", group_path, rep_path)
         except SystemExit as e:

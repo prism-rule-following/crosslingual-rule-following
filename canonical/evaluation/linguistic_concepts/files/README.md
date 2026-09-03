@@ -195,3 +195,39 @@ python hf_io.py push --kind results \
     --group-path obligation/en/qwen3-8b__rule_following \
     --path dim_out/obligation/en/qwen3-8b__rule_following/intervention_report.json
 ```
+
+## Held-out evaluation (train/test splits)
+
+The DIM is now **fit on train and evaluated on both train (in-sample) and test
+(held-out)**, so the in-sample inflation is visible next to the honest number.
+
+- The dataset repo carries `train` and `test` splits (pulled separately).
+- Direction = difference-in-means fit on **train only** (per-frame-mean at
+  contrast_token when the train set has frames; pooled otherwise).
+- Metrics per layer/position: **Cohen's d** and **AUC** (rank-based, threshold-free,
+  matches sklearn's roc_auc_score). Reported for:
+  - `in_sample`  : train projected on the train direction
+  - `held_out.at_train_best_layer` : test at the layer chosen on train (the honest headline)
+  - `held_out.own_best_layer`      : test's own best layer (diagnostic)
+
+```bash
+# pulls train + test splits from HF automatically
+python extract_dim.py --model qwen3-8b --preset concept_raw --concept obligation --language en
+
+# or point at local files
+python extract_dim.py --model qwen3-8b --preset concept_raw --concept obligation --language en \
+    --data obligation_full.json --test-data obligation_en_test.json --no-push
+```
+
+Console prints a side-by-side table: in-sample d/AUC, held-out d/AUC at the
+train-selected layer, and held-out own-best. Full per-layer arrays are in
+`dim_report.json` under each direction's `in_sample` / `held_out` keys.
+
+**Split resolution on HF** (`hf_io.pull_dataset(..., split=)`): tries
+`load_dataset(split=...)`, filters by a `split` column if present, and for raw
+files matches split-aware names like `<concept>_<language>_<split>.parquet`,
+`<split>/<concept>_<language>.json`, etc.
+
+Note: the held-out direction is still fit on train; the test set only ever gets
+**projected**, never used to build the direction, and its own frames (e.g.
+`impersonal`, `lexeme_set`) are not required to match the train frames.
