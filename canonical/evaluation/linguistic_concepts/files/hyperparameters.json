@@ -170,6 +170,7 @@
   },
   "ablation": {
     "directions_repo": "nunaa/crosslingual_rf-directions",
+    "directions_results_repo": "nunaa/crosslingual_rf-directions",
     "sweep_repo": "crosslingual-rule-following/model-inference-responses",
     "sweep_subset": "active_only_768_n3",
     "baseline_repo": "crosslingual-rule-following/judge-results-active-only",
