@@ -167,5 +167,26 @@
         "must_neutral"
       ]
     }
+  },
+  "ablation": {
+    "directions_repo": "nunaa/crosslingual_rf-directions",
+    "sweep_repo": "crosslingual-rule-following/model-inference-responses",
+    "sweep_subset": "active_only_768_n3",
+    "baseline_repo": "crosslingual-rule-following/judge-results-active-only",
+    "baseline_file": "gpt_mini/results.jsonl",
+    "kl_ref_source": "non_obligation_categories",
+    "obligation_categories": [
+      "mandatory_referral",
+      "refuse_with_reason",
+      "no_verdict",
+      "scope_lock"
+    ],
+    "model_slug_map": {
+      "qwen3-8b": "Qwen__Qwen3-8B",
+      "llama3.1-8b": "meta-llama__Llama-3.1-8B-Instruct"
+    },
+    "kl_cutoff": 0.2,
+    "coherence_min": 0.9,
+    "judge_valid_min": 0.95
   }
 }

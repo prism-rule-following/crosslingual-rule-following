@@ -231,3 +231,77 @@ files matches split-aware names like `<concept>_<language>_<split>.parquet`,
 Note: the held-out direction is still fit on train; the test set only ever gets
 **projected**, never used to build the direction, and its own frames (e.g.
 `impersonal`, `lexeme_set`) are not required to match the train frames.
+
+## Ablation-based causal selection (ablate_select.py)
+
+Selects an obligation direction by causal effect under Arditi directional
+ablation, gated against generic model damage. The winner feeds the cross-lingual
+patching experiment; this script does NOT run a final 3-judge pass (the causal
+claim lives in the Yoruba patch).
+
+Pipeline: shortlist top-2 held-out-AUC candidates at contrast_token + top-2 at
+sentence_end (4 total) + 1 random-direction control per candidate layer ->
+for each: project its own-layer unit vector out of resid at all layers >= its
+layer during generation on 100 English sweep prompts -> KL guard (mean
+first-token KL vs baseline on neutral refs, pre-registered cutoff 0.2) ->
+coherence guard (local heuristic, pre-registered rate >= 0.90) -> inline
+GPT-mini judge (imported from judge_gpt_mini.py) -> HELD-drop vs baseline
+computed on the EXACT sweep ids -> winner = max HELD-drop among candidates
+passing both gates. Fails loud (selects none) if no candidate passes.
+
+```bash
+# All data pulled from HF (repos in hyperparameters.json -> ablation).
+# Only the judge script is local. Set HF_TOKEN + the Azure GPT env vars first.
+python ablate_select.py \
+  --model Qwen/Qwen3-8B \
+  --model-key qwen3-8b \
+  --concept obligation --language en --preset concept_raw \
+  --judge-script judge_gpt_mini.py \
+  --n-sweep 100 --n-ref 40 \
+  --temperature 1.0 --do-sample true \
+  --out ablate_out
+```
+
+HF sources (hyperparameters.json -> ablation):
+- directions  : `nunaa/crosslingual_rf-directions` at `<concept>/<lang>/<model_key>__<preset>/`
+- sweep        : `crosslingual-rule-following/model-inference-responses`, `active_only_768_n3/<slug>/<lang>.parquet`
+- baseline     : `crosslingual-rule-following/judge-results-active-only`, `gpt_mini/results.jsonl`
+- KL refs      : derived on the fly from NON-obligation-category rows of the sweep repo
+  (obligation categories = mandatory_referral, refuse_with_reason, no_verdict, scope_lock),
+  kept disjoint from the sweep ids.
+
+Any of these can be overridden with a local path: `--dim-report`, `--dim-candidates`,
+`--sweep-data`, `--kl-ref-data`, `--baseline-results`. `--model-key` maps to the HF
+model slug via `ablation.model_slug_map`.
+
+Correctness points (from review): separate neutral KL refs; one canonical `eval_rows`
+(HELD/VIOLATED baseline only) used for baseline, ablated, and drop; match generation
+config to baseline; startup asserts direction-dim == hidden size and verifies the
+resid_post hook; records `n_invalid_judgments` + `judge_valid_rate>=0.95` gate; one fixed
+random control per layer with numeric `specificity_gap`; the 100 prompts are the
+SELECTION set (causal claim = cross-lingual patch).
+
+Key correctness points (from review):
+- `--kl-ref-data` is a SEPARATE neutral, non-obligation prompt set (the KL guard must
+  measure generic distortion, not distortion on obligation text).
+- One canonical `eval_rows` = sweep rows with a HELD/VIOLATED baseline verdict; the same
+  set is used for baseline rate, ablated rate, and drop (identical denominator).
+- Match `--temperature`/`--do-sample` to the baseline inference run so ablation is the
+  only changed variable.
+- Startup asserts the direction dim == hidden size and verifies the decoder block's
+  `output[0]` last-dim == hidden size (resid_post hook sanity) before running.
+- Random control is one fixed direction PER LAYER; `specificity_gap` (winner drop minus
+  control drop) is recorded numerically, not just printed.
+- Report records `n_invalid_judgments` and gates on `judge_valid_rate >= 0.95`.
+- The 100 prompts are the SELECTION set; the causal effect is the cross-lingual patch.
+
+Pre-registered gates (fixed before results): mean first-token KL <= 0.2;
+coherence_rate >= 0.90. selection_report.json records per-candidate
+baseline_held / ablated_held / held_drop / mean+median+p95+max KL /
+coherence_rate / per-response coherence metrics / kl_pass / coherence_pass /
+is_control / selected. selected_direction.pt carries the winner vector + layer +
+metadata for the patching step.
+
+Needs: torch+CUDA, the model, HF access to the baseline results, and the Azure
+GPT env vars judge_gpt_mini.py expects. resid layer = dim_index - 1 (dim index 0
+is the embedding layer).
