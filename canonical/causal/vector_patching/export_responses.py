@@ -75,15 +75,28 @@ def build_response_row(
     }
 
 
-def sanity_check_response(response: str, expected_language: str) -> Dict[str, bool]:
+# langdetect's profile set -- fixed at ~55 languages.
+LANGDETECT_SUPPORTED_LANGS = {
+    "sl", "sk", "ur", "sw", "pl", "vi", "sq", "sv", "he", "da", "mr", "no",
+    "gu", "ja", "el", "lv", "it", "ca", "cs", "te", "ru", "tl", "ro",
+    "zh-cn", "so", "pt", "uk", "pa", "ml", "mk", "kn", "zh-tw", "ar", "hr",
+    "hu", "nl", "bg", "bn", "ne", "af", "hi", "de", "ko", "fi", "id", "fr",
+    "es", "et", "en", "fa", "lt", "cy", "ta", "th", "tr",
+}
+
+
+def sanity_check_response(response: str, expected_language: str) -> Dict[str, Optional[bool]]:
     """Cheap, non-judge checks: still in the target language, non-degenerate.
     Not a compliance verdict -- just flags rows worth a second look."""
-    import langdetect
+    if expected_language not in LANGDETECT_SUPPORTED_LANGS:
+        still_target_language = None
+    else:
+        import langdetect
 
-    try:
-        still_target_language = langdetect.detect(response) == expected_language
-    except langdetect.lang_detect_exception.LangDetectException:
-        still_target_language = False
+        try:
+            still_target_language = langdetect.detect(response) == expected_language
+        except langdetect.lang_detect_exception.LangDetectException:
+            still_target_language = False
 
     stripped = response.strip()
     non_degenerate = len(stripped) >= 5 and len(set(stripped)) > 1

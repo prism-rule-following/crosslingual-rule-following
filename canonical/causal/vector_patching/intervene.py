@@ -72,4 +72,5 @@ def run_intervention(
             stop_at_eos=stop_at_eos,
             verbose=False,
         )
-    return model.to_string(out[0, n_prompt:])
+
+    return model.tokenizer.decode(out[0, n_prompt:], skip_special_tokens=True)

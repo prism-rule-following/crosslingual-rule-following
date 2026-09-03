@@ -95,21 +95,22 @@ def feasibility_lookup(grid_path, recipient):
     return get
 
 
-def build_plan(recipient, collapsed, rng):
+def build_plan(recipient, collapsed, rng, donors=DONOR_LANGS, n_pairs=N_PAIRS_PER_COMBO, include_all_avg=True):
     """List of (canonical_id, donor_kind) rows to generate, before layer
-    expansion -- donor_kind in DONOR_LANGS or 'all_avg'."""
+    expansion -- donor_kind in donors or 'all_avg'."""
     pairs = ps.build_pair_table(
         collapsed, MODEL_ID, PRESSURE, donor_languages=DONOR_LANGS, recipient_languages=[recipient]
     )
     rows = []
-    for donor in DONOR_LANGS:
+    for donor in donors:
         ids = pairs.loc[pairs["language_donor"] == donor, "canonical_id"].unique()
-        chosen = rng.choice(ids, size=min(N_PAIRS_PER_COMBO, len(ids)), replace=False)
+        chosen = rng.choice(ids, size=min(n_pairs, len(ids)), replace=False)
         rows += [(cid, donor) for cid in chosen]
 
-    all_ids = pairs["canonical_id"].unique()
-    chosen = rng.choice(all_ids, size=min(N_PAIRS_PER_COMBO, len(all_ids)), replace=False)
-    rows += [(cid, "all_avg") for cid in chosen]
+    if include_all_avg:
+        all_ids = pairs["canonical_id"].unique()
+        chosen = rng.choice(all_ids, size=min(n_pairs, len(all_ids)), replace=False)
+        rows += [(cid, "all_avg") for cid in chosen]
     return rows
 
 
@@ -123,7 +124,19 @@ def main():
                      help="path to a donor_cache.pkl from precompute_donor_vectors.py; "
                           "if unset, downloads donor activations itself (slower, may 429 if run "
                           "in parallel with another process doing the same)")
+    ap.add_argument("--layers", default=None,
+                     help="comma-separated layer list, overrides the module default LAYERS[recipient]")
+    ap.add_argument("--donors", default=None,
+                     help="comma-separated donor languages, overrides DONOR_LANGS (subset only -- "
+                          "must already be in the donor cache)")
+    ap.add_argument("--n-pairs", type=int, default=N_PAIRS_PER_COMBO,
+                     help="canonical-id pairs sampled per donor kind, default matches the full sweep")
+    ap.add_argument("--no-all-avg", action="store_true", help="skip the pooled all_avg donor_kind")
+    ap.add_argument("--max-new-tokens", type=int, default=MAX_NEW_TOKENS)
     args = ap.parse_args()
+
+    layers = [int(x) for x in args.layers.split(",")] if args.layers else LAYERS[args.recipient]
+    donors = args.donors.split(",") if args.donors else DONOR_LANGS
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -138,9 +151,10 @@ def main():
     subset = collapsed[(collapsed["model_id"] == MODEL_ID) & (collapsed["pressure_level"] == PRESSURE)]
 
     rng = np.random.default_rng(SEED)
-    plan = build_plan(args.recipient, collapsed, rng)
-    log(f"plan: {len(plan)} (id, donor_kind) rows x {len(LAYERS[args.recipient])} layers "
-        f"= {len(plan) * len(LAYERS[args.recipient])} generations", log_path)
+    plan = build_plan(args.recipient, collapsed, rng, donors=donors, n_pairs=args.n_pairs,
+                       include_all_avg=not args.no_all_avg)
+    log(f"plan: {len(plan)} (id, donor_kind) rows x {len(layers)} layers "
+        f"= {len(plan) * len(layers)} generations, max_new_tokens={args.max_new_tokens}", log_path)
 
     if args.donor_cache and Path(args.donor_cache).exists():
         log(f"loading donor activations from shared cache {args.donor_cache}...", log_path)
@@ -168,7 +182,7 @@ def main():
             if canonical_id not in recipient_text.index:
                 continue
             drow = recipient_text.loc[canonical_id]
-            for layer in LAYERS[args.recipient]:
+            for layer in layers:
                 if donor_kind == "all_avg":
                     direction = all_avg_vector[layer]
                     held_here = [
@@ -194,7 +208,7 @@ def main():
                         model, tokenizer,
                         rule_clause=drow["system_rule"], user_query=drow["user_query"],
                         layer=layer, direction_vector=direction, c_donor=c_donor,
-                        mode="patch", max_new_tokens=MAX_NEW_TOKENS,
+                        mode="patch", max_new_tokens=args.max_new_tokens,
                     )
                     error = None
                 except Exception as e:

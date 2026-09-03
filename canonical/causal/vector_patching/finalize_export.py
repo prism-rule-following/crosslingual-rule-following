@@ -14,7 +14,9 @@ import pandas as pd
 from huggingface_hub import hf_hub_download
 
 from canonical.causal.vector_patching.config import EXPORT_REPO
-from canonical.causal.vector_patching.export_responses import build_response_row, export_to_hf
+from canonical.causal.vector_patching.export_responses import (
+    build_response_row, export_to_hf, sanity_check_response,
+)
 
 OUT_DIR = Path(sys.argv[1] if len(sys.argv) > 1 else "/workspace/exp2_out")
 RECIPIENTS = ["ig", "yo"]
@@ -24,14 +26,7 @@ README_PATH = Path(__file__).resolve().parent / "README.md"
 def sanity_check(response, expected_language):
     if response is None:
         return {"still_target_language": None, "non_degenerate": None}
-    import langdetect
-    try:
-        still_target_language = langdetect.detect(response) == expected_language
-    except langdetect.lang_detect_exception.LangDetectException:
-        still_target_language = False
-    stripped = response.strip()
-    non_degenerate = len(stripped) >= 5 and len(set(stripped)) > 1
-    return {"still_target_language": still_target_language, "non_degenerate": non_degenerate}
+    return sanity_check_response(response, expected_language)
 
 
 def main():
