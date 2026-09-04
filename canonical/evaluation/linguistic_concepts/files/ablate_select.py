@@ -64,11 +64,15 @@ COHERENCE_MIN = 0.90  # fraction of responses that must be coherent
 # --------------------------------------------------------------------------- #
 # candidate shortlist from dim_report.json
 # --------------------------------------------------------------------------- #
-def shortlist_candidates(
-    report, n_per_pos=2, positions=("contrast_token", "sentence_end")
-):
+def shortlist_candidates(report, n_per_pos=2, positions=None):
     """Rank directions by held-out AUC (at train-selected layer) per position,
-    take top-n each. Returns list of dicts with contrast/position/layer/dim_index."""
+    take top-n each. Positions default to whatever the report contains, so it
+    works across presets (concept: contrast_token/sentence_end; rule_following:
+    contrast_token/rule_clause_end/post_instruction)."""
+    if positions is None:
+        positions = list(
+            dict.fromkeys(d["position"] for d in report["directions"].values())
+        )
     rows = []
     for name, d in report["directions"].items():
         pos = d["position"]
@@ -142,10 +146,9 @@ class DirectionalAblation:
 
         def hook(module, inp, out):
             h = out[0] if isinstance(out, tuple) else out
-            # project out: h <- h - (h . u) u   (u on same device/dtype)
             uu = u.to(dtype=h.dtype, device=h.device)
             coef = (h * uu).sum(-1, keepdim=True)
-            h2 = h - coef * uu
+            h2 = h - coef * uu  # fresh tensor; matches the verified diagnostic
             if isinstance(out, tuple):
                 return (h2,) + tuple(out[1:])
             return h2
@@ -215,18 +218,35 @@ def generate_batch(model, tok, prompts, device, max_new_tokens, temperature, do_
 @torch.no_grad()
 def first_token_kl(model, tok, ref_prompts, unit_vec, from_layer, device, batch=8):
     """KL(baseline || ablated) on the first-token (last-position) distribution,
-    averaged over ref_prompts. Returns dict of mean/median/p95/max."""
+    averaged over ref_prompts. Self-checks that the ablation actually changed the
+    logits on at least one batch (guards against silently reporting 0)."""
+    if not ref_prompts:
+        return {
+            "mean_kl": float("nan"),
+            "median_kl": float("nan"),
+            "p95_kl": float("nan"),
+            "max_kl": float("nan"),
+            "n_ref": 0,
+            "hook_fired": False,
+        }
     tok.padding_side = "left"
     kls = []
+    any_change = False
     for s in range(0, len(ref_prompts), batch):
         chunk = ref_prompts[s : s + batch]
         enc = tok(chunk, padding=True, return_tensors="pt").to(device)
-        base_logits = model(**enc).logits[:, -1, :].float()
-        with DirectionalAblation(model, unit_vec, from_layer):
-            abl_logits = model(**enc).logits[:, -1, :].float()
+        # baseline pass (no hook), clone so nothing downstream can alias it
+        base_logits = model(**enc).logits[:, -1, :].float().clone()
+        # ablated pass (hook active for the whole forward)
+        abl = DirectionalAblation(model, unit_vec, from_layer)
+        try:
+            abl_logits = model(**enc).logits[:, -1, :].float().clone()
+        finally:
+            abl.remove()
+        if not torch.equal(base_logits, abl_logits):
+            any_change = True
         p = torch.log_softmax(base_logits, -1)
         q = torch.log_softmax(abl_logits, -1)
-        # KL(P||Q) = sum P (logP - logQ)
         kl = (p.exp() * (p - q)).sum(-1)  # [B]
         kls += kl.cpu().tolist()
     a = np.array(kls)
@@ -236,6 +256,7 @@ def first_token_kl(model, tok, ref_prompts, unit_vec, from_layer, device, batch=
         "p95_kl": float(np.percentile(a, 95)),
         "max_kl": float(a.max()),
         "n_ref": len(kls),
+        "hook_fired": any_change,
     }
 
 
@@ -627,6 +648,16 @@ def main():
                 invalid += 1
         return (held / max(n, 1)), n, invalid, verdicts
 
+    # --- TEMP DEBUG: inspect the KL reference prompts ---
+    print(f"[debug] N ref_prompts: {len(ref_prompts)}")
+    print(
+        f"[debug] first ref repr: {repr(ref_prompts[0])[:300] if ref_prompts else 'EMPTY'}"
+    )
+    print(
+        f"[debug] all identical?: {len(set(ref_prompts))==1 if ref_prompts else 'NA'}  "
+        f"(unique={len(set(ref_prompts)) if ref_prompts else 0})"
+    )
+
     results = []
     for run in runs:
         tag = run["name"] + ("" if not run["is_control"] else " [control]")
@@ -638,7 +669,7 @@ def main():
             model, tok, ref_prompts, unit, run["resid_layer"], args.device
         )
         print(
-            f"   KL mean={kl['mean_kl']:.3f} median={kl['median_kl']:.3f} p95={kl['p95_kl']:.3f}"
+            f"   KL mean={kl['mean_kl']:.4f} median={kl['median_kl']:.4f} p95={kl['p95_kl']:.4f} max={kl['max_kl']:.4f} hook_fired={kl.get('hook_fired')}"
         )
 
         # ablated generation on the CANONICAL eval set
@@ -713,6 +744,41 @@ def main():
             }
         )
 
+    # ---- position-causality summary: does separability (AUC) track causal effect (flip)? ----
+    # This is the direct test of the hypothesis that extraction POSITION determines whether
+    # a direction is causal for adherence, not just separable. contrast_token tends to win on
+    # AUC but may lose on flip_rate; sentence_end/post_instruction may be more causal.
+    by_pos = defaultdict(list)
+    for r in results:
+        if not r["is_control"]:
+            by_pos[r["position"]].append(r)
+    position_causality = {}
+    for pos, rs in by_pos.items():
+        best = max(rs, key=lambda r: r["flip_rate"])
+        position_causality[pos] = {
+            "best_flip_rate": best["flip_rate"],
+            "best_flip_candidate": best["name"],
+            "mean_flip_rate": float(np.mean([r["flip_rate"] for r in rs])),
+            "max_auc": float(max((r["auc"] or 0.0) for r in rs)),
+            "mean_kl_at_best_flip": best["mean_kl"],
+        }
+    # control baseline: mean flip rate across random controls (specificity floor)
+    ctrl_flips = [r["flip_rate"] for r in results if r["is_control"]]
+    control_floor = float(np.mean(ctrl_flips)) if ctrl_flips else None
+    print("\n=== position causality (flip_rate vs AUC) ===")
+    print(
+        f"  {'position':16s} {'best_flip':>10s} {'mean_flip':>10s} {'max_auc':>8s} {'KL@best':>9s}"
+    )
+    for pos, s in sorted(
+        position_causality.items(), key=lambda kv: -kv[1]["best_flip_rate"]
+    ):
+        print(
+            f"  {pos:16s} {s['best_flip_rate']:>+10.3f} {s['mean_flip_rate']:>+10.3f} "
+            f"{s['max_auc']:>8.3f} {s['mean_kl_at_best_flip']:>9.4f}"
+        )
+    if control_floor is not None:
+        print(f"  {'random control':16s} {control_floor:>+10.3f}  (specificity floor)")
+
     # ---- select winner: max FLIP RATE among NON-control passing ALL gates ----
     eligible = [
         r
@@ -774,6 +840,8 @@ def main():
             "no_candidate_passes_behavior": "fail_loud_select_none",
         },
         "specificity_vs_random": specificity,
+        "position_causality": position_causality,
+        "control_flip_floor": control_floor,
         "candidates": results,
         "winner": winner["name"] if winner else None,
     }

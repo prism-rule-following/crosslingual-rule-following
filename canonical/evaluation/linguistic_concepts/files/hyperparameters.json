@@ -170,7 +170,6 @@
   },
   "ablation": {
     "directions_repo": "nunaa/crosslingual_rf-directions",
-    "directions_results_repo": "nunaa/crosslingual_rf-results",
     "sweep_repo": "crosslingual-rule-following/model-inference-responses",
     "sweep_subset": "active_only_768_n3",
     "baseline_repo": "crosslingual-rule-following/judge-results-active-only",
@@ -188,6 +187,60 @@
     },
     "kl_cutoff": 0.2,
     "coherence_min": 0.9,
-    "judge_valid_min": 0.95
+    "judge_valid_min": 0.95,
+    "directions_results_repo": "nunaa/crosslingual_rf-results"
+  },
+  "steering": {
+    "names": [
+      "must_neutral__contrast_token",
+      "must_may__contrast_token",
+      "must_neutral__rule_clause_end",
+      "must_may__rule_clause_end"
+    ],
+    "coeffs": {
+      "must_neutral__contrast_token": [
+        -6,
+        -4,
+        -2,
+        2,
+        4
+      ],
+      "must_may__contrast_token": [
+        -22,
+        -18,
+        -16,
+        16,
+        20
+      ],
+      "must_may__rule_clause_end": [
+        -6,
+        -4,
+        -2,
+        4,
+        6
+      ],
+      "must_neutral__rule_clause_end": [
+        -16,
+        -12,
+        -8,
+        12,
+        16
+      ]
+    },
+    "languages": [
+      "en",
+      "ig",
+      "yo"
+    ],
+    "dir_language": "en",
+    "full": false,
+    "cal_per_cat": 3,
+    "max_new_tokens": 768,
+    "enable_thinking": false,
+    "judge_script": "judge_gpt_mini.py",
+    "seed": 0,
+    "results_repo": null,
+    "out_dir": "steering_poc_out",
+    "judge_concurrency": 15
   }
 }

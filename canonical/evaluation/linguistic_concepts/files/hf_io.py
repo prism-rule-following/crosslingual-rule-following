@@ -118,6 +118,14 @@ def pull_dataset(cfg, out_path, concept=None, language=None, split=None):
         candidates.append(fmap[key])
     if fmap.get(key2):
         candidates.append(fmap[key2])
+    if language:
+        # LANGUAGE-ONLY naming (no concept in the filename), e.g. data/yo_test.json.
+        # This is the actual layout for the cross-lingual repo, so it's checked FIRST.
+        for ext in (".json", ".jsonl", ".parquet"):
+            candidates += [
+                f"{language}_{want_split}{ext}", f"data/{language}_{want_split}{ext}",
+                f"{want_split}/{language}{ext}", f"data/{want_split}/{language}{ext}",
+            ]
     if concept and language:
         stem = f"{concept}_{language}"
         for ext in (".json", ".jsonl", ".parquet"):

@@ -35,6 +35,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from checkpoint import RowCheckpoint
 import hf_io
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 DTYPES = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}
 
 VALID_MODES = {"system_user", "user_only", "raw_sentence"}
