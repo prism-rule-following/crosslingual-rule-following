@@ -233,7 +233,7 @@
       "yo"
     ],
     "dir_language": "en",
-    "full": false,
+    "full": true,
     "cal_per_cat": 3,
     "max_new_tokens": 768,
     "enable_thinking": false,
@@ -241,6 +241,7 @@
     "seed": 0,
     "results_repo": null,
     "out_dir": "steering_poc_out",
-    "judge_concurrency": 15
+    "judge_concurrency": 15,
+    "single_layer": false
   }
 }

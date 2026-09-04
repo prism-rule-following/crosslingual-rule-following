@@ -66,13 +66,17 @@ def get_layers(model):
 
 
 class AddDir:
-    """persistent residual-stream steering: add coeff*unit to resid at ALL layers
-    >= from_layer (i.e. from the candidate layer through every later block)."""
-    def __init__(self, model, unit, from_layer, coeff):
+    """add coeff*unit to resid EITHER at every layer >= from_layer (persistent,
+    default -- Arditi-style, compounds the same edit through every subsequent
+    layer) OR at from_layer ONLY (single_layer=True, bounded, non-compounding).
+    See check_steering.py's measure_rho_final for the empirical difference this
+    makes to the final-layer displacement between the two modes."""
+    def __init__(self, model, unit, from_layer, coeff, single_layer=False):
         self.h = []; self.u = unit; self.c = coeff
-        for i, b in enumerate(get_layers(model)):
-            if i >= from_layer:
-                self.h.append(b.register_forward_hook(self._hook()))
+        layers = get_layers(model)
+        targets = [from_layer] if single_layer else range(from_layer, len(layers))
+        for i in targets:
+            self.h.append(layers[i].register_forward_hook(self._hook()))
     def _hook(self):
         u, c = self.u, self.c
         def hook(m, inp, out):
@@ -160,7 +164,7 @@ def supports_system(tok):
 
 
 @torch.no_grad()
-def generate(model, tok, prompts, device, coeff, unit, from_layer, max_new, batch=8):
+def generate(model, tok, prompts, device, coeff, unit, from_layer, max_new, batch=8, single_layer=False):
     tok.padding_side = "left"
     outs = []
     for s in range(0, len(prompts), batch):
@@ -168,7 +172,7 @@ def generate(model, tok, prompts, device, coeff, unit, from_layer, max_new, batc
         if coeff == 0:
             o = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
         else:
-            with AddDir(model, unit.to(device), from_layer, coeff):
+            with AddDir(model, unit.to(device), from_layer, coeff, single_layer):
                 o = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
         L = enc["input_ids"].shape[1]
         outs.extend(tok.decode(x[L:], skip_special_tokens=True) for x in o)
@@ -212,12 +216,12 @@ FIXED_COEFFS = {
 }
 
 
-def check_coherence_on_calibration(model, tok, cal_prompts, unit, from_layer, device, coeffs, max_new):
+def check_coherence_on_calibration(model, tok, cal_prompts, unit, from_layer, device, coeffs, max_new, single_layer=False):
     """Run the FIXED coeffs on the calibration split only, to report per-coeff
     coherence rate as provenance (does not select the band -- band is fixed)."""
     prov = {}
     for c in coeffs:
-        gens = generate(model, tok, cal_prompts, device, c, unit, from_layer, max_new)
+        gens = generate(model, tok, cal_prompts, device, c, unit, from_layer, max_new, single_layer=single_layer)
         fc = float(np.mean([is_coherent(g) for g in gens]))
         prov[f"{c:+.1f}"] = {"coeff": c, "coherence_rate": fc, "n": len(gens)}
     return prov
@@ -244,6 +248,13 @@ def main():
                     help="CALIBRATION rows per category (disjoint); defaults to config.steering.cal_per_cat")
     ap.add_argument("--coeffs-json", default=None,
                     help="optional path to a JSON {direction: [coeffs...]} overriding config.steering.coeffs")
+    ap.add_argument("--single-layer", type=lambda s: s.lower() != "false", default=None,
+                    help="steer ONLY at the direction's own layer, instead of persistently at "
+                        "every layer from there to the top (the default, Arditi-style). Persistent "
+                        "steering compounds the same edit at every subsequent layer -- a coefficient "
+                        "calibrated under persistent mode (e.g. FIXED_COEFFS) is NOT calibrated for "
+                        "single-layer mode at the same raw value; re-derive coefficients per mode. "
+                        "Defaults to config.steering.single_layer (False).")
     ap.add_argument("--max-new-tokens", type=int, default=None,
                     help="defaults to config.steering.max_new_tokens (raise this or thinking/full "
                          "answers get truncated and coherence scoring becomes unreliable)")
@@ -290,12 +301,20 @@ def main():
     args_seed = pick(args.seed, "seed", 0)
     args_out = pick(args.out, "out_dir", "steering_poc_out")
     args_results_repo = pick(args.results_repo, "results_repo", None)
+    args_single_layer = args.single_layer if args.single_layer is not None else scfg.get("single_layer", False)
     coeff_map_cfg = scfg.get("coeffs", {})
 
     print(f"[cfg] names={names_list}")
     print(f"[cfg] languages={languages_list} full={args_full} cal_per_cat={args_cal_per_cat}")
     print(f"[cfg] max_new_tokens={args_max_new_tokens} enable_thinking={args_enable_thinking}")
     print(f"[cfg] judge_concurrency={args_judge_concurrency}")
+    steer_mode = "single_layer" if args_single_layer else "persistent"
+    print(f"[cfg] steering_mode={steer_mode}")
+    if args_single_layer:
+        print(f"[cfg][NOTE] FIXED_COEFFS / config.steering.coeffs were derived under PERSISTENT "
+              f"steering. The same raw values will produce a much SMALLER effective edit under "
+              f"single-layer mode (no compounding) -- treat these as a starting point to re-sweep, "
+              f"not as pre-calibrated for this mode.")
 
     # Thinking is a BINARY switch, not a third "enabled but truncated" state. If it's
     # off (default), the model never emits <think> tokens and this is moot. If it's
@@ -486,7 +505,7 @@ def main():
                    "eval_ids": eval_ids},
                   open(out / lang / "baseline_judged.json", "w"), indent=2, ensure_ascii=False)
         all_summary.append({"language": lang, "direction": "BASELINE", "is_random": False,
-                            "coeff": 0.0, "frac_of_norm": 0.0,
+                            "coeff": 0.0, "frac_of_norm": 0.0, "steering_mode": steer_mode,
                             "delta_held_all": 0.0, "delta_usable_held": 0.0,
                             "delta_coherence_rate": 0.0,
                             "baseline_n_held": base_m["n_held"], "baseline_n_valid": base_m["n_valid"],
@@ -508,18 +527,24 @@ def main():
                 continue
             band = list(coeff_map[name])   # IDENTICAL raw coeffs across all languages
             prov = check_coherence_on_calibration(model, tok, cal_prompts, unit, from_layer,
-                                                  args.device, band, args_max_new_tokens)
+                                                  args.device, band, args_max_new_tokens,
+                                                  single_layer=args_single_layer)
             print(f"[{name} @L{from_layer} ({src}) norm={norm:.0f}] FIXED band={band} "
-                  f"(en-tuned, applied raw to {lang})")
+                  f"(en-tuned, applied raw to {lang}, mode={steer_mode})")
 
-            dir_dir = out / lang / name; dir_dir.mkdir(parents=True, exist_ok=True)
+            # mode goes in the PATH (not just the filename) so a persistent run and a
+            # single-layer run on the same (lang, direction, coeff) never collide --
+            # before adding single-layer support there was only one mode, so this
+            # directory didn't need to disambiguate; now it does.
+            dir_dir = out / lang / name / steer_mode; dir_dir.mkdir(parents=True, exist_ok=True)
             # matched random unit vector for this layer (specificity control)
             g = torch.Generator().manual_seed(args_seed + from_layer)
             rnd = torch.randn(d_model, generator=g); rnd_unit = rnd / rnd.norm()
 
             for coeff in band:
                 for is_rand, u in ((False, unit), (True, rnd_unit)):
-                    resp = generate(model, tok, eval_prompts, args.device, coeff, u, from_layer, args_max_new_tokens)
+                    resp = generate(model, tok, eval_prompts, args.device, coeff, u, from_layer,
+                                    args_max_new_tokens, single_layer=args_single_layer)
                     recs, n_inv = judge_rows(eval_rows, resp)
                     m = metrics(recs)
                     delta_held_all = (m["held_all"] - base_m["held_all"]) if not (np.isnan(m["held_all"]) or np.isnan(base_m["held_all"])) else float("nan")
@@ -530,16 +555,21 @@ def main():
                                "concept": args.concept, "preset": args.preset, "direction": name,
                                "is_random_control": is_rand, "dir_language": args_dir_language,
                                "resid_layer": from_layer, "layer_source": src, "coeff": coeff,
-                               "norm": norm, "frac_of_norm": coeff / norm,
-                               "intervention": "persistent resid steering from candidate layer onward",
+                               "norm": norm, "frac_of_norm": coeff / norm, "steering_mode": steer_mode,
+                               "intervention": ("single-layer resid steering at the candidate layer only"
+                                                if args_single_layer else
+                                                "persistent resid steering from candidate layer onward "
+                                                "(compounds: same edit re-added at every subsequent layer)"),
                                "polarity_note": "signs are empirical (+coeff/-coeff); establish via logit-lens",
                                "coefficient_provenance": (
                                    "FIXED_COEFFS frozen BEFORE this evaluation run, derived from a prior "
-                                   "manual English exploration (see conversation/experiment log for the "
-                                   "session that produced them): coefficients were chosen to bracket the "
-                                   "coherent-vs-degenerate boundary found by hand for each direction, then "
-                                   "applied identically (same raw values) across en/ig/yo as the transfer "
-                                   "test. Not selected on this run's evaluation rows."),
+                                   "manual English exploration UNDER PERSISTENT STEERING (see conversation/"
+                                   "experiment log): coefficients bracket the coherent-vs-degenerate boundary "
+                                   "found by hand per direction, applied identically (same raw values) across "
+                                   "en/ig/yo as the transfer test. Not selected on this run's evaluation rows."
+                                   + (" NOTE: this run used single-layer mode -- these persistent-mode-derived "
+                                      "values are NOT recalibrated for single-layer and should be treated as "
+                                      "a starting point to re-sweep, not as pre-calibrated." if args_single_layer else "")),
                                "baseline": base_m,
                                "delta_held_all": delta_held_all, "delta_usable_held": delta_usable,
                                "delta_coherence_rate": delta_coh,
@@ -553,14 +583,14 @@ def main():
                                "max_new_tokens": args_max_new_tokens}, "rows": recs}
                     json.dump(rec_out, open(dir_dir / f"{tag}.json", "w"), indent=2, ensure_ascii=False)
                     all_summary.append({"language": lang, "direction": name, "is_random": is_rand,
-                                        "coeff": coeff, "frac_of_norm": coeff / norm,
+                                        "coeff": coeff, "frac_of_norm": coeff / norm, "steering_mode": steer_mode,
                                         "delta_held_all": delta_held_all, "delta_usable_held": delta_usable,
                                         "delta_coherence_rate": delta_coh,
                                         "baseline_n_held": base_m["n_held"], "baseline_n_valid": base_m["n_valid"],
                                         "baseline_n": base_m["n"], **m})
                     for c, cm in cat_metrics(recs).items():
                         cat_summary.append({"language": lang, "direction": name + ("_RAND" if is_rand else ""),
-                                            "coeff": coeff, "category": c, **cm})
+                                            "coeff": coeff, "category": c, "steering_mode": steer_mode, **cm})
                     lbl = "rand" if is_rand else "dir "
                     gate = "" if m["valid_run"] else "  [INVALID: judge_valid_rate below threshold]"
                     print(f"   [{lbl}] coeff={coeff:+7.1f} ({coeff/norm:+.2f}x)  "
@@ -570,9 +600,11 @@ def main():
                           f"jvr={m['judge_valid_rate']:.2f}{gate}")
 
     # ---- summaries: overall + category, with specificity gap ----
-    with open(out / "summary.csv", "w", newline="") as f:
+    # Mode-suffixed filenames: a persistent run and a single-layer run into the SAME
+    # --out dir must not overwrite each other's aggregate summary either.
+    with open(out / f"summary_{steer_mode}.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["language","direction","is_random","coeff","frac_of_norm",
+        w.writerow(["language","direction","is_random","coeff","frac_of_norm","steering_mode",
                     "usable_held","held_all","held_coherent","coherence_rate",
                     "delta_held_all","delta_usable_held","delta_coherence_rate",
                     "n_held","n_violated","n_valid","n","n_coherent","n_usable",
@@ -580,7 +612,8 @@ def main():
                     "judge_valid_rate","valid_run","n_think_truncated"])
         for s in all_summary:
             w.writerow([s["language"], s["direction"], s.get("is_random", ""), f"{s['coeff']:.1f}",
-                        f"{s['frac_of_norm']:.3f}", f"{s['usable_held']:.3f}", f"{s['held_all']:.3f}",
+                        f"{s['frac_of_norm']:.3f}", s.get("steering_mode", steer_mode),
+                        f"{s['usable_held']:.3f}", f"{s['held_all']:.3f}",
                         f"{s['held_coherent']:.3f}", f"{s['coherence_rate']:.3f}",
                         f"{s.get('delta_held_all', float('nan')):.3f}",
                         f"{s.get('delta_usable_held', float('nan')):.3f}",
@@ -589,13 +622,14 @@ def main():
                         s.get("baseline_n_held", ""), s.get("baseline_n_valid", ""), s.get("baseline_n", ""),
                         f"{s['judge_valid_rate']:.3f}", s["valid_run"],
                         s.get("n_think_truncated", "")])
-    with open(out / "summary_by_category.csv", "w", newline="") as f:
+    with open(out / f"summary_by_category_{steer_mode}.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["language","direction","coeff","category","usable_held","held_all",
+        w.writerow(["language","direction","coeff","category","steering_mode","usable_held","held_all",
                     "held_coherent","coherence_rate","n_held","n_violated","n_valid","n",
                     "judge_valid_rate","valid_run"])
         for s in cat_summary:
             w.writerow([s["language"], s["direction"], f"{s['coeff']:.1f}", s["category"],
+                        s.get("steering_mode", steer_mode),
                         f"{s['usable_held']:.3f}", f"{s['held_all']:.3f}",
                         f"{s['held_coherent']:.3f}", f"{s['coherence_rate']:.3f}",
                         s["n_held"], s["n_violated"], s["n_valid"], s["n"],
@@ -621,19 +655,21 @@ def main():
                 if di==0: ax.set_title(lang)
                 if li==0: ax.set_ylabel(f"{name}\nusable_held", fontsize=7)
                 ax.set_xlabel("coeff"); ax.grid(alpha=0.3); ax.legend(fontsize=6)
-        fig.suptitle(f"Steering -> usable adherence ({args.model_key}); signs empirical (+/-), dir vs random control")
-        fig.tight_layout(); fig.savefig(out / "summary.png", dpi=130); plt.close(fig)
+        fig.suptitle(f"Steering -> usable adherence ({args.model_key}, {steer_mode}); "
+                    f"signs empirical (+/-), dir vs random control")
+        fig.tight_layout(); fig.savefig(out / f"summary_{steer_mode}.png", dpi=130); plt.close(fig)
     except Exception as e:
         print(f"[plot] skipped: {e}")
 
-    print(f"\n[done] {out}/summary.csv, summary_by_category.csv, summary.png")
+    print(f"\n[done] {out}/summary_{steer_mode}.csv, summary_by_category_{steer_mode}.csv, "
+          f"summary_{steer_mode}.png")
 
     if args.push:
         from huggingface_hub import create_repo, upload_folder
         repo = args_results_repo or acfg.get("directions_results_repo")
         create_repo(repo, repo_type="dataset", private=cfg["hf"].get("repo_private", True),
                     exist_ok=True, token=token)
-        dest = f"steering_poc/{args.concept}/{args.model_key}__{args.preset}"
+        dest = f"steering_poc/{args.concept}/{args.model_key}__{args.preset}/{steer_mode}"
         upload_folder(folder_path=str(out), path_in_repo=dest, repo_id=repo, repo_type="dataset",
                       token=token, commit_message=f"steering POC (reviewed) {dest}")
         print(f"[hf] pushed {out} -> {repo}/{dest}")
