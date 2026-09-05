@@ -98,6 +98,7 @@
   },
   "hf": {
     "dataset_repo": "nunaa/canonical_obligation_dataset",
+    "active_revoked_dataset_repo": "crosslingual-rule-following/canonical-dataset",
     "activations_repo": "nunaa/crosslingual_rf-activations",
     "directions_repo": "nunaa/canonical_crosslingual_rf-directions",
     "results_repo": "nunaa/canonical_crosslingual_rf-results",
