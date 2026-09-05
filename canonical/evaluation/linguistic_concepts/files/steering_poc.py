@@ -271,8 +271,13 @@ def main():
                         "config.steering.judge_concurrency (15, matching judge_gpt_mini.py's "
                         "own MAX_WORKERS). Judging is I/O-bound API latency, not compute -- "
                         "this is the single biggest lever on wall-clock time for a full run.")
-    ap.add_argument("--dim-candidates", default=None)
-    ap.add_argument("--dim-report", default=None)
+    ap.add_argument("--dim-candidates", default=None,
+                    help="local root mirroring the directions repo layout (contains "
+                         "<contrast>/<position>/<lang>/<model>__<preset>/dim_candidates.pt); "
+                         "if omitted, each requested direction is hub-downloaded individually")
+    ap.add_argument("--dim-report", default=None,
+                    help="local root mirroring the results repo layout (same <contrast>/<position>/... "
+                         "structure, dim_report.json instead of dim_candidates.pt)")
     ap.add_argument("--allow-in-sample", action="store_true",
                     help="permit in-sample DIM layer if held_out missing (NOT canonical)")
     ap.add_argument("--seed", type=int, default=None, help="defaults to config.steering.seed")
@@ -339,13 +344,29 @@ def main():
     judge = _import_judge(args_judge_script)
     from huggingface_hub import hf_hub_download
 
-    # matches extract_dim.py's combined group_path: concept/variant/language/model__preset
-    dir_group = f"{args.concept}/{args.dataset_variant}/{args_dir_language}/{args.model_key}__{args.preset}"
-    cand_path = args.dim_candidates or hf_hub_download(acfg["directions_repo"], f"{dir_group}/dim_candidates.pt", repo_type="dataset", token=token)
-    rep_path = args.dim_report or hf_hub_download(acfg["directions_results_repo"], f"{dir_group}/dim_report.json", repo_type="dataset", token=token)
-    cands = torch.load(cand_path); report = json.load(open(rep_path))
     names = names_list or list(FIXED_COEFFS.keys())
     languages = languages_list
+
+    # extract_dim.py pushes one dim_candidates.pt/dim_report.json PER (contrast,
+    # position) -- there is no combined multi-direction file on the hub -- at
+    # concept/variant/<contrast>/<position>/language/model__preset/. Pull each
+    # requested direction from its own path and merge into the same cands/report
+    # shape the rest of this script already expects.
+    cands, report_directions = {}, {}
+    for name in names:
+        contrast, position = name.split("__", 1)
+        sub = f"{args.concept}/{args.dataset_variant}/{contrast}/{position}/{args_dir_language}/{args.model_key}__{args.preset}"
+        if args.dim_candidates:
+            cand_path = os.path.join(args.dim_candidates, sub, "dim_candidates.pt")
+        else:
+            cand_path = hf_hub_download(acfg["directions_repo"], f"{sub}/dim_candidates.pt", repo_type="dataset", token=token)
+        if args.dim_report:
+            rep_path = os.path.join(args.dim_report, sub, "dim_report.json")
+        else:
+            rep_path = hf_hub_download(acfg["directions_results_repo"], f"AUC/{sub}/dim_report.json", repo_type="dataset", token=token)
+        cands.update(torch.load(cand_path))
+        report_directions.update(json.load(open(rep_path))["directions"])
+    report = {"directions": report_directions}
     coeff_map = dict(FIXED_COEFFS)
     coeff_map.update(coeff_map_cfg)   # config.steering.coeffs overrides the module default
     if args.coeffs_json:

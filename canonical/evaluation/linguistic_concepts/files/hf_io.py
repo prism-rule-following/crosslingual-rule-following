@@ -38,10 +38,16 @@ def _repo_id(cfg, kind):
             "directions":  cfg["hf"]["directions_repo"],
             "results":     cfg["hf"]["results_repo"]}[kind]
 
+_ensured_repos = set()  # repo_ids we've already create_repo'd this process -- avoid
+                        # re-checking on every single push call in a long sweep.
+
 def ensure_repo(api, repo_id, private, token):
+    if repo_id in _ensured_repos:
+        return
     from huggingface_hub import create_repo
     create_repo(repo_id, repo_type="dataset", private=private,
                 exist_ok=True, token=token)
+    _ensured_repos.add(repo_id)
 
 # --------------------------------------------------------------------------- #
 def _rows_from_parquet(fp):
@@ -173,6 +179,27 @@ def push(cfg, kind, group_path, path):
                     repo_id=repo_id, repo_type="dataset", token=token,
                     commit_message=f"{kind}: {dest}")
         print(f"[hf] pushed file {path} -> {repo_id}/{dest}")
+
+def push_batch(cfg, kind, local_root, allow_patterns, path_in_repo="", commit_message="batch push"):
+    """Push many files under `local_root` in ONE commit, instead of one commit per
+    file. HF caps repo commits at 128/hour; extract_dim.py used to call push() once
+    per (combined + 6 split) file per repo per combo -- 7 commits/repo/combo, which
+    blows through that cap after ~18 combos in a multi-language sweep and the rest
+    fail with 429. `allow_patterns` are globs relative to `local_root` (e.g.
+    ["obligation/frame/yo/qwen3-8b__rule_following/*", "obligation/frame/must_may/contrast_token/yo/qwen3-8b__rule_following/*"])
+    selecting exactly the files this combo produced; `path_in_repo` is a prefix
+    applied to all of them in the repo (e.g. "AUC" for the results repo).
+    """
+    from huggingface_hub import HfApi, upload_folder
+    token = _token(cfg); api = HfApi(token=token)
+    repo_id = _repo_id(cfg, kind)
+    if cfg["hf"].get("create_if_missing", True):
+        ensure_repo(api, repo_id, cfg["hf"].get("repo_private", True), token)
+    upload_folder(folder_path=local_root, path_in_repo=path_in_repo,
+                  repo_id=repo_id, repo_type="dataset", token=token,
+                  allow_patterns=allow_patterns, commit_message=commit_message)
+    print(f"[hf] pushed batch ({len(allow_patterns)} path(s), 1 commit) -> {repo_id}"
+          + (f"/{path_in_repo}" if path_in_repo else ""))
 
 def main():
     ap = argparse.ArgumentParser()

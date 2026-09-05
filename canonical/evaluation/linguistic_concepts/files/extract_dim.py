@@ -367,9 +367,9 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
     torch.manual_seed(ecfg.get("seed", 0))
     preset_tag = ecfg.get("_active_preset", mode)
     run_tag = f"{model_key}__{preset_tag}"
-    # combined (all contrasts x positions) group path -- kept for tooling (e.g.
-    # steering_poc.py) that wants one dim_candidates.pt/dim_report.json per run.
-    # Per-contrast x per-position split paths are pushed separately below.
+    # identifies this (concept, variant, language, model, preset) combo. No file
+    # is ever written here directly -- it's just the naming prefix for the
+    # activations push (if enabled) and this combo's split output paths below.
     group_path = f"{concept}/{variant}/{lang}/{run_tag}"
     ckpt_ns = f"{concept}__{variant}__{lang}__{run_tag}"  # flat checkpoint namespace;
     # variant is baked in here (not just group_path) because frame- and scenario-split
@@ -515,22 +515,19 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
         if cfg["transfer_check"]["enabled"] and not use_frames:
             print("[transfer] skipped: dataset has <2 frames (expected for concept/cross-lingual stimuli)")
 
-    # ---- save combined (all contrasts x positions) --------------------------
-    # local mirrors the HF group path: <out>/<concept>/<variant>/<lang>/<model>__<preset>/
-    local_dir = os.path.join(cfg["output"]["dir"], concept, variant, lang, run_tag)
-    os.makedirs(local_dir, exist_ok=True)
-    dir_path = os.path.join(local_dir, "dim_candidates.pt")
-    rep_path = os.path.join(local_dir, "dim_report.json")
-    torch.save(candidate_tensors, dir_path)
-    json.dump(results, open(rep_path, "w"), indent=2)
-
     # ---- save split copies, one dir per (contrast, position) ----------------
     # HF layout: <concept>/<variant>/<contrast>/<position>/<lang>/<model>__<preset>/
-    # These exist purely for HF-side navigation/browsability -- must_may and
-    # must_neutral (and each position) are otherwise only distinguishable by key
-    # inside the combined file. The combined file remains the source of truth;
-    # steering_poc.py and any other consumer of the full per-run bundle should
-    # keep reading it from `group_path`, not from a split path.
+    # This is the only thing saved (locally and on HF) -- there is no combined
+    # dim_candidates.pt/dim_report.json anymore. Writing one would just be a
+    # byte-for-byte duplicate of the union of these split files: candidate_tensors
+    # and results["directions"] already hold everything, split here by key, so a
+    # "combined" file has zero content the splits don't already have.
+    #
+    # transfer_check is the one exception -- it's computed once per contrast (not
+    # per position) using contrast_token data specifically, so it isn't a subset
+    # of results["directions"]. Rather than resurrect a combined file just to hold
+    # it, it's attached to the contrast_token split report for its own contrast
+    # (the position it was actually computed from) and left out of the others.
     split_paths = []  # (contrast, position, split_group_path, cand_path, rep_path)
     for name, entry in results["directions"].items():
         contrast, position = name.split("__", 1)
@@ -543,7 +540,8 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
         split_report = {k: v for k, v in results.items() if k not in ("directions", "transfer_check")}
         split_report["contrast"], split_report["position"] = contrast, position
         split_report["directions"] = {name: entry}
-        # transfer_check doesn't decompose per (contrast, position); see the combined report.
+        if position == "contrast_token" and results["transfer_check"]:
+            split_report["transfer_check"] = results["transfer_check"].get(contrast)
         json.dump(split_report, open(split_rep_path, "w"), indent=2)
         split_paths.append((contrast, position, split_group_path, split_cand_path, split_rep_path))
 
@@ -568,24 +566,36 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
             print(f"  {c:14s} mean cos={t['mean_cosine']:+.3f}")
 
     if not no_push:
-        try:
-            if cfg["checkpoint"].get("upload_row_cache_to_hf", False):
-                hf_io.push(cfg, "activations", group_path, ckpt_train.rows_dir)
-            # combined bundle (pipeline-compat: steering_poc.py reads this)
-            hf_io.push(cfg, "directions", group_path, dir_path)
-            # results (per-model, per-layer AUC for frame- and scenario-generalization)
-            # live under an AUC/ folder in the results repo.
-            hf_io.push(cfg, "results", f"AUC/{group_path}", rep_path)
-            # split copies, one per (contrast, position), for clean HF navigation
-            for contrast, position, split_group_path, split_cand_path, split_rep_path in split_paths:
-                hf_io.push(cfg, "directions", split_group_path, split_cand_path)
-                hf_io.push(cfg, "results", f"AUC/{split_group_path}", split_rep_path)
-        except SystemExit as e:
-            print(f"[hf] push skipped: {e}")
-    print(f"[done] {rep_path}")
-    if split_paths:
-        print(f"[done] + {len(split_paths)} split (contrast, position) copies under "
-              f"{concept}/{variant}/<contrast>/<position>/{lang}/{run_tag}/")
+        # (contrast, position) split copies are the only thing pushed to HF, all
+        # as ONE commit per repo, not one commit per file -- HF caps repo commits
+        # at 128/hour, and one-commit-per-file blew through that after ~18 combos
+        # in a multi-language sweep.
+        local_root = cfg["output"]["dir"]
+        patterns = [f"{sgp}/*" for _, _, sgp, _, _ in split_paths]
+
+        def _try(label, fn):
+            # A push failure (rate limit, transient network) shouldn't discard a
+            # combo whose GPU computation already succeeded and is saved locally
+            # -- log it and move on; local files can be re-pushed in bulk later
+            # without recomputing anything.
+            try:
+                fn()
+            except Exception as e:
+                print(f"[hf][warn] {label} push failed, local files kept at "
+                      f"{local_root}/{concept}/{variant}/*/*/{lang}/{run_tag}/ for a later retry: {e!r}")
+
+        def _try_push(kind, **kw):
+            _try(kind, lambda: hf_io.push_batch(cfg, kind, local_root, patterns, **kw))
+
+        if cfg["checkpoint"].get("upload_row_cache_to_hf", False):
+            _try("activations", lambda: hf_io.push(cfg, "activations", group_path, ckpt_train.rows_dir))
+        _try_push("directions", commit_message=f"directions: {len(split_paths)} splits under {concept}/{variant}/*/*/{lang}/{run_tag}")
+        # results (per-model, per-layer AUC for frame- and scenario-generalization)
+        # live under an AUC/ folder in the results repo.
+        _try_push("results", path_in_repo="AUC",
+                 commit_message=f"results: {len(split_paths)} splits under {concept}/{variant}/*/*/{lang}/{run_tag}")
+    print(f"[done] {len(split_paths)} (contrast, position) splits under "
+          f"{concept}/{variant}/<contrast>/<position>/{lang}/{run_tag}/")
 
     # ---- per-combo cleanup (host RAM) ----------------------------------------
     # store_tr/store_te hold every row's activations for every position x member
@@ -600,7 +610,7 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
         torch.cuda.empty_cache()
         print(f"[mem] cuda allocated={torch.cuda.memory_allocated()/1e9:.2f}GB "
               f"reserved={torch.cuda.memory_reserved()/1e9:.2f}GB")
-    return rep_path
+    return group_path  # truthy run identifier for main()'s completed/failures bookkeeping
 
 
 def main():
@@ -642,9 +652,9 @@ def main():
                     tag = f"{args.concept}/{variant}/{lang}/{model_key}"
                     print(f"\n--- [{tag}] ---")
                     try:
-                        rep_path = run_one(cfg, mcfg, model_key, tok, model, args.concept,
-                                           lang, variant, args.limit, args.no_push)
-                        (completed if rep_path else failures).append((tag, rep_path or "no train split"))
+                        done_id = run_one(cfg, mcfg, model_key, tok, model, args.concept,
+                                          lang, variant, args.limit, args.no_push)
+                        (completed if done_id else failures).append((tag, done_id or "no train split"))
                     except Exception as e:
                         if not args.continue_on_error:
                             raise
