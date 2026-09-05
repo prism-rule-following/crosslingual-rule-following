@@ -496,19 +496,26 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
                                      "own_best_layer": {"layer": bl_te, "cohens_d": d_te[bl_te], "auc": auc_te[bl_te]}}
             results["directions"][name] = entry
 
-    # transfer check (train frames only; unchanged logic)
-    if cfg["transfer_check"]["enabled"] and use_frames and "contrast_token" in positions:
+    # transfer check: does the DIM direction learned from one set of grammar
+    # frames (source_frames) point the same way as the direction learned from a
+    # disjoint set (target_frames)? Per-layer cosine similarity between the two.
+    # Computed for every (contrast, position) -- same key as results["directions"]
+    # -- so each split report gets its own transfer entry; this was previously
+    # hardcoded to contrast_token only, with no principled reason to skip the
+    # other two positions.
+    if cfg["transfer_check"]["enabled"] and use_frames:
         tc = cfg["transfer_check"]; src, tgt = set(tc["source_frames"]), set(tc["target_frames"]); transfer = {}
         for contrast in ecfg["contrasts"]:
-            m_clean, m_corr = contrast_pairs[contrast]; position = "contrast_token"
-            cf_c, cf_k = by_frame(store_tr, m_clean, position), by_frame(store_tr, m_corr, position)
-            def fdim(fr):
-                ds = [cf_c[f].mean(0)-cf_k[f].mean(0) for f in fr if f in cf_c]
-                return torch.stack(ds,0).mean(0) if ds else None
-            sd, td = fdim(src), fdim(tgt)
-            if sd is not None and td is not None:
-                cos = torch.nn.functional.cosine_similarity(sd, td, dim=-1)
-                transfer[contrast] = {"per_layer_cosine": cos.tolist(), "mean_cosine": float(cos.mean())}
+            m_clean, m_corr = contrast_pairs[contrast]
+            for position in positions:
+                cf_c, cf_k = by_frame(store_tr, m_clean, position), by_frame(store_tr, m_corr, position)
+                def fdim(fr):
+                    ds = [cf_c[f].mean(0)-cf_k[f].mean(0) for f in fr if f in cf_c]
+                    return torch.stack(ds,0).mean(0) if ds else None
+                sd, td = fdim(src), fdim(tgt)
+                if sd is not None and td is not None:
+                    cos = torch.nn.functional.cosine_similarity(sd, td, dim=-1)
+                    transfer[f"{contrast}__{position}"] = {"per_layer_cosine": cos.tolist(), "mean_cosine": float(cos.mean())}
         results["transfer_check"] = transfer
     else:
         results["transfer_check"] = None
@@ -519,15 +526,11 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
     # HF layout: <concept>/<variant>/<contrast>/<position>/<lang>/<model>__<preset>/
     # This is the only thing saved (locally and on HF) -- there is no combined
     # dim_candidates.pt/dim_report.json anymore. Writing one would just be a
-    # byte-for-byte duplicate of the union of these split files: candidate_tensors
-    # and results["directions"] already hold everything, split here by key, so a
-    # "combined" file has zero content the splits don't already have.
-    #
-    # transfer_check is the one exception -- it's computed once per contrast (not
-    # per position) using contrast_token data specifically, so it isn't a subset
-    # of results["directions"]. Rather than resurrect a combined file just to hold
-    # it, it's attached to the contrast_token split report for its own contrast
-    # (the position it was actually computed from) and left out of the others.
+    # byte-for-byte duplicate of the union of these split files: candidate_tensors,
+    # results["directions"], and results["transfer_check"] are all keyed by the
+    # same (contrast, position) name, so each split report gets exactly its own
+    # slice of each and a "combined" file would have zero content the splits
+    # don't already have.
     split_paths = []  # (contrast, position, split_group_path, cand_path, rep_path)
     for name, entry in results["directions"].items():
         contrast, position = name.split("__", 1)
@@ -540,8 +543,8 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
         split_report = {k: v for k, v in results.items() if k not in ("directions", "transfer_check")}
         split_report["contrast"], split_report["position"] = contrast, position
         split_report["directions"] = {name: entry}
-        if position == "contrast_token" and results["transfer_check"]:
-            split_report["transfer_check"] = results["transfer_check"].get(contrast)
+        if results["transfer_check"]:
+            split_report["transfer_check"] = results["transfer_check"].get(name)
         json.dump(split_report, open(split_rep_path, "w"), indent=2)
         split_paths.append((contrast, position, split_group_path, split_cand_path, split_rep_path))
 
@@ -561,9 +564,9 @@ def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_
             ins = r["in_sample"]
             print(f"  {name:30s} {ins['best_layer']:>5} {ins['best_cohens_d']:>8.3f} {ins['best_auc']:>8.3f}")
     if results["transfer_check"]:
-        print("\n=== transfer (source -> target frames, contrast_token) ===")
-        for c, t in results["transfer_check"].items():
-            print(f"  {c:14s} mean cos={t['mean_cosine']:+.3f}")
+        print("\n=== transfer (source frames -> target frames direction cosine) ===")
+        for name, t in results["transfer_check"].items():
+            print(f"  {name:30s} mean cos={t['mean_cosine']:+.3f}")
 
     if not no_push:
         # (contrast, position) split copies are the only thing pushed to HF, all
