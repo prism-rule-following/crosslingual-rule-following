@@ -41,6 +41,15 @@ them, per-combo host RAM freed each iteration, model cache evicted from disk
 between models, results batched into one HF commit per model (not one per
 combo) to stay under HF's 128 commits/hour cap.
 
+Unlike extract_dim.py: this dataset has ~2340 rows/language (~10x the
+obligation dataset's ~238), so its row-level activation checkpoint -- meant
+only to survive a crash mid-combo, not to be a durable archive -- would
+otherwise accumulate to ~170GB across a full sweep and exhaust disk on the
+very first combo (this happened). A combo's row cache is deleted once its DIM
+math is saved, by default (see --keep-row-cache); pass --no-checkpoint to skip
+checkpointing entirely instead (no disk writes at all, but a crash mid-combo
+redoes that whole combo's extraction rather than resuming it).
+
 HF layout (results/directions repos, config.hf.directions_repo/results_repo --
 same repos extract_dim.py uses, disambiguated by the "active_revoked" concept
 segment): there is only one contrast here, so unlike extract_dim.py's
@@ -53,7 +62,7 @@ Usage:
     --languages en de hi ig it ko ru tr ur yo am sw ta \
     --test-pair-types enabled_disabled --continue-on-error
 """
-import os, json, argparse, math, gc
+import os, json, argparse, math, gc, shutil
 from pathlib import Path
 from collections import defaultdict
 
@@ -123,12 +132,32 @@ def check_thinking_guardrail(mcfg, model_key):
 
 # --------------------------------------------------------------------------- #
 def extract_store(rows, ckpt, tok, model, mcfg, ocfg, device):
-    """Run the model over `rows`, cache per-row activations via `ckpt`, return
-    store: member -> position -> list of (meta, tensor[nl+1, d]). Resumable.
-    Members are exactly "active" and "revoked" -- see module docstring for why
-    this doesn't reuse extract_dim.py's 3-member extract_store()."""
+    """Run the model over `rows`, return store: member -> position -> list of
+    (meta, tensor[nl+1, d]). Members are exactly "active" and "revoked" -- see
+    module docstring for why this doesn't reuse extract_dim.py's 3-member
+    extract_store().
+
+    The in-memory `store` is built directly from each row's freshly-computed
+    activations as they complete, NOT by reading them back from `ckpt` --
+    `ckpt.save_row()`/`done_ids()` are purely a resumability side-channel here
+    (write-through cache: skip rows already on disk, persist new ones for a
+    future resume). This matters when checkpointing is disabled
+    (config.checkpoint.enabled=false, or --no-checkpoint): RowCheckpoint's
+    methods all safely no-op in that case (no directories, no writes), so a
+    version of this function that assembled `store` FROM ckpt.load_all() -- as
+    extract_dim.py's does -- would silently come back empty. Building `store`
+    from row_buf directly makes checkpointing truly optional rather than a
+    hidden dependency of the extraction itself."""
     B = ocfg.get("batch_size", 8); empty_every = ocfg.get("empty_cache_every_n_batches", 4)
     members = {"active": ("rule_text", "active_status"), "revoked": ("non_rule_text", "revoked_status")}
+
+    store = defaultdict(lambda: defaultdict(list))
+    # seed with anything already on disk from a prior (interrupted) run of
+    # this exact combo -- a no-op read when checkpointing is disabled.
+    for rid, payload, meta in ckpt.load_all():
+        for m, posmap in payload.items():
+            for p, vec in posmap.items():
+                store[m][p].append((meta, vec))
 
     already = ckpt.done_ids()
     todo = [r for r in rows if r["id"] not in already]
@@ -156,20 +185,17 @@ def extract_store(rows, ckpt, tok, model, mcfg, ocfg, device):
             meta = {"category": r.get("category"), "topic": r.get("topic"),
                     "pair_type": r.get("pair_type"), "grammar_type": r.get("grammar_type"), "id": rid}
             if need_members.issubset(row_buf[rid].keys()):
-                ckpt.save_row(rid, row_buf.pop(rid), meta)
+                payload = row_buf.pop(rid)
+                ckpt.save_row(rid, payload, meta)  # no-op if checkpointing disabled
+                for m2, posmap in payload.items():
+                    for p2, vec in posmap.items():
+                        store[m2][p2].append((meta, vec))
         batch_i += 1
         if device.startswith("cuda") and empty_every and batch_i % empty_every == 0:
             torch.cuda.empty_cache(); gc.collect()
         if batch_i % 5 == 0:
             print(f"  batch {batch_i} ({min(s+B,len(work))}/{len(work)} items)")
     ckpt.finalize()
-
-    cached = ckpt.load_all()
-    store = defaultdict(lambda: defaultdict(list))
-    for rid, payload, meta in cached:
-        for m, posmap in payload.items():
-            for p, vec in posmap.items():
-                store[m][p].append((meta, vec))
     return store
 
 
@@ -195,7 +221,8 @@ def eval_split(store, unit, position):
 
 
 # --------------------------------------------------------------------------- #
-def run_one(cfg, mcfg, model_key, tok, model, lang, test_pair_types, seed, limit, no_push):
+def run_one(cfg, mcfg, model_key, tok, model, lang, test_pair_types, seed, limit, no_push,
+           keep_row_cache, no_checkpoint):
     device = mcfg.get("device", "cuda")
     torch.manual_seed(seed)
     # the pair_type holdout is baked into the checkpoint namespace (not just
@@ -214,9 +241,16 @@ def run_one(cfg, mcfg, model_key, tok, model, lang, test_pair_types, seed, limit
     print(f"[data] {lang}: train={len(train_rows)} test={len(test_rows)} rows "
           f"(train pair_types={train_pair_types}, test pair_types={sorted(test_pair_types)})")
 
-    ckpt_train = RowCheckpoint(cfg, f"{ckpt_ns}__train")
+    # --no-checkpoint disables RowCheckpoint entirely (no directories, no writes,
+    # no resumability) rather than just skipping the post-combo cleanup below --
+    # useful if you'd rather not touch disk for row activations at all and are
+    # fine re-running a whole combo from scratch if it's interrupted. Only
+    # affects the checkpoint's own config; cfg itself (output dir, HF repos,
+    # etc.) is untouched.
+    ckpt_cfg = {**cfg, "checkpoint": {**cfg["checkpoint"], "enabled": False}} if no_checkpoint else cfg
+    ckpt_train = RowCheckpoint(ckpt_cfg, f"{ckpt_ns}__train")
     store_tr = extract_store(train_rows, ckpt_train, tok, model, mcfg, cfg["optim"], device)
-    ckpt_test = RowCheckpoint(cfg, f"{ckpt_ns}__test")
+    ckpt_test = RowCheckpoint(ckpt_cfg, f"{ckpt_ns}__test")
     store_te = extract_store(test_rows, ckpt_test, tok, model, mcfg, cfg["optim"], device)
 
     p0 = POSITIONS[0]
@@ -293,6 +327,28 @@ def run_one(cfg, mcfg, model_key, tok, model, lang, test_pair_types, seed, limit
             cfg, "results", local_root, patterns, path_in_repo="AUC",
             commit_message=f"active_revoked results: {len(split_paths)} positions for {lang}/{model_key}"))
 
+    if not keep_row_cache and not no_checkpoint:
+        # (no_checkpoint already means nothing was ever written to disk here)
+        # The row-level checkpoint exists so a crash MID-extraction can resume
+        # without redoing work already done for THIS combo -- it is not meant
+        # to be a durable archive of every combo's raw activations. This
+        # dataset has ~2340 rows/language (vs ~238 for the obligation
+        # dataset extract_dim.py was built around); at 2 members x 3 positions
+        # x float32, that's ~3.6MB/row -- ~8.5GB per (language, model) combo,
+        # ~170GB for a full 10-language x 2-model sweep if never freed. Since
+        # nothing else can free disk mid-sweep, this filled the very first
+        # combo's quota and every subsequent combo failed identically for the
+        # rest of the run. The direction tensors + reports this combo produced
+        # are already saved under dim_out/ (and pushed, if not --no-push)
+        # before this point, so the raw per-row cache is safe to drop now.
+        for ckpt, label in ((ckpt_train, "train"), (ckpt_test, "test")):
+            try:
+                size = sum(f.stat().st_size for f in Path(ckpt.base).rglob("*") if f.is_file())
+                shutil.rmtree(ckpt.base, ignore_errors=True)
+                print(f"[ckpt] cleared {label} row cache for {lang}/{model_key}: freed {size/1e9:.2f}GB")
+            except Exception as e:
+                print(f"[ckpt][warn] could not clear {label} row cache at {ckpt.base}: {e!r}")
+
     del store_tr, store_te, candidate_tensors, results
     gc.collect()
     if device.startswith("cuda"):
@@ -323,6 +379,23 @@ def main():
     ap.add_argument("--keep-model-cache", action="store_true",
                     help="don't evict a model's downloaded weights from the local HF cache "
                          "once its combos are done (see extract_dim.py's flag of the same name)")
+    ap.add_argument("--keep-row-cache", action="store_true",
+                    help="don't delete a combo's row-level activation checkpoint once its "
+                         "DIM math is saved. Default is to delete: this dataset has ~2340 "
+                         "rows/language, and the row cache is ~3.6MB/row (2 members x 3 "
+                         "positions x float32) -- ~8.5GB per (language, model) combo, ~170GB "
+                         "for a full sweep if kept, which will exhaust disk on most machines. "
+                         "The row cache still protects a crash mid-combo (still resumable while "
+                         "that combo is in progress); this only clears it AFTER a combo's "
+                         "outputs are safely saved. Pass this only if you have disk to spare "
+                         "and want to inspect raw per-row activations later.")
+    ap.add_argument("--no-checkpoint", action="store_true",
+                    help="disable row-level checkpointing entirely for this run -- no "
+                         "directories, no writes, no resumability. A crash mid-combo means "
+                         "redoing that whole combo's extraction from scratch rather than "
+                         "resuming. Use this if you'd rather not touch disk for row "
+                         "activations at all; --keep-row-cache is irrelevant when this is set "
+                         "since there's nothing written to keep.")
     args = ap.parse_args()
 
     cfg_all = json.load(open(args.config))
@@ -343,7 +416,8 @@ def main():
                 print(f"\n--- [{tag}] ---")
                 try:
                     done_id = run_one(cfg_all, mcfg, model_key, tok, model, lang,
-                                      args.test_pair_types, args.seed, args.limit, args.no_push)
+                                      args.test_pair_types, args.seed, args.limit, args.no_push,
+                                      args.keep_row_cache, args.no_checkpoint)
                     completed.append((tag, done_id))
                 except Exception as e:
                     if not args.continue_on_error:
