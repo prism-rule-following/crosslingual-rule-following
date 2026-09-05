@@ -251,28 +251,6 @@ def load_model(mcfg, ocfg):
     return tok, model
 
 
-def evict_model_cache(hf_name):
-    """Delete `hf_name`'s downloaded weights from the local HF cache. Necessary
-    for a multi-model sweep on disk-constrained machines: two 8B models cached
-    simultaneously (~16GB+ each in bf16) can exceed the disk quota entirely --
-    this is exactly the failure mode of downloading llama right after qwen with
-    qwen's weights still on disk. Called once a model's combos are all done, so
-    the next model's download has room."""
-    try:
-        from huggingface_hub import scan_cache_dir
-        cache = scan_cache_dir()
-        for repo in cache.repos:
-            if repo.repo_id == hf_name and repo.repo_type == "model":
-                revisions = {rev.commit_hash for rev in repo.revisions}
-                strategy = cache.delete_revisions(*revisions)
-                print(f"[cache] evicting {hf_name}: freeing {strategy.expected_freed_size_str}")
-                strategy.execute()
-                return
-        print(f"[cache] {hf_name} not in local cache (nothing to evict)")
-    except Exception as e:
-        print(f"[cache][warn] could not evict {hf_name} from cache: {e!r}")
-
-
 @torch.no_grad()
 def batched_hidden_states(model, tok, id_lists, device, use_cache):
     """
@@ -709,7 +687,7 @@ def main():
             # ...and the equivalent defense against DISK exhaustion: free this
             # model's cached weights before the next model downloads its own.
             if not args.keep_model_cache:
-                evict_model_cache(mcfg["hf_name"])
+                hf_io.evict_model_cache(mcfg["hf_name"])
 
     print(f"\n[sweep] {len(completed)}/{len(combos)} succeeded, {len(failures)}/{len(combos)} failed/skipped")
     for tag, info in failures:

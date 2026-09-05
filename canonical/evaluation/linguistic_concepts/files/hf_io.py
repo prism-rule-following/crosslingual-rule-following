@@ -49,6 +49,28 @@ def ensure_repo(api, repo_id, private, token):
                 exist_ok=True, token=token)
     _ensured_repos.add(repo_id)
 
+def evict_model_cache(hf_name):
+    """Delete `hf_name`'s downloaded weights from the local HF cache. Necessary
+    for a multi-model sweep on disk-constrained machines: two 8B models cached
+    simultaneously (~16GB+ each in bf16) can exceed the disk quota entirely --
+    this is exactly the failure mode of downloading llama right after qwen with
+    qwen's weights still on disk. Called once a model's combos are all done, so
+    the next model's download has room. Shared by extract_dim.py and
+    logit_lens_all_layers.py -- any script that loads more than one model."""
+    try:
+        from huggingface_hub import scan_cache_dir
+        cache = scan_cache_dir()
+        for repo in cache.repos:
+            if repo.repo_id == hf_name and repo.repo_type == "model":
+                revisions = {rev.commit_hash for rev in repo.revisions}
+                strategy = cache.delete_revisions(*revisions)
+                print(f"[cache] evicting {hf_name}: freeing {strategy.expected_freed_size_str}")
+                strategy.execute()
+                return
+        print(f"[cache] {hf_name} not in local cache (nothing to evict)")
+    except Exception as e:
+        print(f"[cache][warn] could not evict {hf_name} from cache: {e!r}")
+
 # --------------------------------------------------------------------------- #
 def _rows_from_parquet(fp):
     import pandas as pd
