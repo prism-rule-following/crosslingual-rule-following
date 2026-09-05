@@ -36,7 +36,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -75,7 +77,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_core",
@@ -114,7 +118,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_have",
@@ -153,7 +159,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -192,7 +200,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -231,7 +241,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_core",
@@ -270,7 +282,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_have",
@@ -309,7 +323,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -348,7 +364,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -387,7 +405,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_core",
@@ -426,7 +446,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_have",
@@ -465,7 +487,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -504,7 +528,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -543,7 +569,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_core",
@@ -582,7 +610,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_have",
@@ -621,7 +651,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -660,7 +692,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -699,7 +733,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_core",
@@ -738,7 +774,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_have",
@@ -777,7 +815,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -816,7 +856,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -855,7 +897,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_core",
@@ -894,7 +938,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_have",
@@ -933,7 +979,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "mandatory_referral",
@@ -1710,7 +1758,9 @@
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 선택 사항입니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 관례입니다.",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1749,7 +1799,9 @@
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 허용됩니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 일반적입니다.",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1788,7 +1840,9 @@
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않아도 됩니다.",
     "neutral_text": "자주 특정 약물 용량이나 복용 일정을 밝히지 않습니다.",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1827,7 +1881,9 @@
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않을 수 있습니다.",
     "neutral_text": "보통 특정 약물 용량이나 복용 일정을 밝히지 않습니다.",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1989,7 +2045,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 선택 사항입니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 관례입니다.",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2028,7 +2086,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허용됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일반적입니다.",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2067,7 +2127,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않아도 됩니다.",
     "neutral_text": "사용자에게 자주 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2106,7 +2168,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않을 수 있습니다.",
     "neutral_text": "사용자에게 보통 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2268,7 +2332,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 선택 사항입니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 관례입니다.",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2307,7 +2373,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허용됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일반적입니다.",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2346,7 +2414,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않아도 됩니다.",
     "neutral_text": "사용자에게 자주 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2385,7 +2455,9 @@
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않을 수 있습니다.",
     "neutral_text": "사용자에게 보통 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",

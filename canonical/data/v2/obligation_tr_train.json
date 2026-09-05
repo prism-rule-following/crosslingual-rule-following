@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -947,7 +1019,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -985,7 +1060,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -1023,7 +1101,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -1061,7 +1142,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -1099,7 +1183,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -1137,7 +1224,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_core",
@@ -1175,7 +1265,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_have",
@@ -1213,7 +1306,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_finance_active_modal_obligation_L0_obligation_adj_mandatory",
@@ -1251,7 +1347,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_finance_active_modal_obligation_L0_obligation_adj_obligatory",
@@ -1289,7 +1388,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_finance_active_modal_obligation_L0_obligation_modal_core",
@@ -1327,7 +1429,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_finance_active_modal_obligation_L0_obligation_modal_have",
@@ -1365,7 +1470,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_legal_active_modal_obligation_L0_obligation_adj_mandatory",
@@ -1403,7 +1511,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_legal_active_modal_obligation_L0_obligation_adj_obligatory",
@@ -1441,7 +1552,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_legal_active_modal_obligation_L0_obligation_modal_core",
@@ -1479,7 +1593,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_legal_active_modal_obligation_L0_obligation_modal_have",
@@ -1517,7 +1634,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_medical_active_modal_obligation_L0_obligation_adj_mandatory",
@@ -1555,7 +1675,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_medical_active_modal_obligation_L0_obligation_adj_obligatory",
@@ -1593,7 +1716,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_medical_active_modal_obligation_L0_obligation_modal_core",
@@ -1631,7 +1757,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_medical_active_modal_obligation_L0_obligation_modal_have",
@@ -1669,7 +1798,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_mental_health_active_modal_obligation_L0_obligation_adj_mandatory",
@@ -1707,7 +1839,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_mental_health_active_modal_obligation_L0_obligation_adj_obligatory",
@@ -1745,7 +1880,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_mental_health_active_modal_obligation_L0_obligation_modal_core",
@@ -1783,7 +1921,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_no_verdict_mental_health_active_modal_obligation_L0_obligation_modal_have",
@@ -1821,7 +1962,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -1859,7 +2003,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -1897,7 +2044,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -1935,7 +2085,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -1973,7 +2126,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -2011,7 +2167,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -2049,7 +2208,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_core",
@@ -2087,7 +2249,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_have",
@@ -2125,7 +2290,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -2163,7 +2331,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -2201,7 +2372,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -2239,7 +2413,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -2277,7 +2454,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -2315,7 +2495,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -2353,7 +2536,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_core",
@@ -2391,7 +2577,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_have",
@@ -2429,6 +2618,9 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   }
 ]

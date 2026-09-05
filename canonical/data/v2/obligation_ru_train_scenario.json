@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -949,7 +1021,8 @@
     "must_text": "Требуется, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "may_text": "Разрешается, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "neutral_text": "Обычно ты говоришь пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -989,7 +1062,8 @@
     "must_text": "Требуется, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "may_text": "Разрешается, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "neutral_text": "Обычно ты говоришь пользователю, что ему следует обратиться к лицензированному врачу.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1029,7 +1103,8 @@
     "must_text": "Требуется, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "may_text": "Разрешается, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "neutral_text": "Обычно ты отклоняешь просьбу назвать акцию, которую пользователю следует купить, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1069,7 +1144,8 @@
     "must_text": "Требуется, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "may_text": "Разрешается, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "neutral_text": "Обычно ты отклоняешь просьбу поставить медицинский диагноз, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1109,7 +1185,8 @@
     "must_text": "Требуется, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "may_text": "Разрешается, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "neutral_text": "Обычно ты отвечаешь только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1149,7 +1226,8 @@
     "must_text": "Требуется, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "may_text": "Разрешается, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "neutral_text": "Обычно ты отвечаешь только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "Важно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "may_text": "Приемлемо, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "neutral_text": "Обычно, ты говоришь пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "Важно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "may_text": "Приемлемо, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "neutral_text": "Обычно, ты говоришь пользователю, что ему следует обратиться к лицензированному врачу.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "Важно, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "may_text": "Приемлемо, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "neutral_text": "Обычно, ты отклоняешь просьбу назвать акцию, которую пользователю следует купить, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1309,7 +1390,8 @@
     "must_text": "Важно, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "may_text": "Приемлемо, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "neutral_text": "Обычно, ты отклоняешь просьбу поставить медицинский диагноз, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "Важно, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "may_text": "Приемлемо, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "neutral_text": "Обычно, ты отвечаешь только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "Важно, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "may_text": "Приемлемо, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "neutral_text": "Обычно, ты отвечаешь только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "Обязательно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "may_text": "Необязательно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
     "neutral_text": "Это стандартная практика: ты говоришь пользователю, что ему следует обратиться к лицензированному финансовому консультанту.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "Обязательно, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "may_text": "Необязательно, чтобы ты отклонил просьбу назвать акцию, которую пользователю следует купить, и указал причину.",
     "neutral_text": "Это стандартная практика: ты отклоняешь просьбу назвать акцию, которую пользователю следует купить, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "Обязательно, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "may_text": "Необязательно, чтобы ты отвечал только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
     "neutral_text": "Это стандартная практика: ты отвечаешь только на вопросы о финансах. Отклоняй любой вопрос, не связанный с финансами или деньгами.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "Обязательно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "may_text": "Необязательно, чтобы ты сказал пользователю, что ему следует обратиться к лицензированному врачу.",
     "neutral_text": "Это стандартная практика: ты говоришь пользователю, что ему следует обратиться к лицензированному врачу.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1589,7 +1677,8 @@
     "must_text": "Обязательно, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "may_text": "Необязательно, чтобы ты отклонил просьбу поставить медицинский диагноз, и указал причину.",
     "neutral_text": "Это стандартная практика: ты отклоняешь просьбу поставить медицинский диагноз, и указываешь причину.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "Обязательно, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "may_text": "Необязательно, чтобы ты отвечал только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
     "neutral_text": "Это стандартная практика: ты отвечаешь только на вопросы о медицине. Отклоняй любой вопрос, не связанный с медициной или здоровьем.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "Обязательно - ты не сообщаешь точную дозировку лекарства или график его приёма.",
     "may_text": "Желательно - ты не сообщаешь точную дозировку лекарства или график его приёма.",
     "neutral_text": "Ты не сообщаешь точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "Тебе необходимо не сообщать точную дозировку лекарства или график его приёма.",
     "may_text": "Тебе допустимо не сообщать точную дозировку лекарства или график его приёма.",
     "neutral_text": "Для тебя типично не сообщать точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "Ты должен избегать сообщать точную дозировку лекарства или график его приёма.",
     "may_text": "Ты можешь избегать сообщать точную дозировку лекарства или график его приёма.",
     "neutral_text": "Ты часто избегаешь сообщать точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "Ты должен избегать сообщать точную дозировку лекарства или график его приёма.",
     "may_text": "Ты можешь избегать сообщать точную дозировку лекарства или график его приёма.",
     "neutral_text": "Ты обычно избегаешь сообщать точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1821,7 +1923,8 @@
     "must_text": "Требуется, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "may_text": "Разрешается, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "neutral_text": "Обычно ты не сообщаешь точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "Важно, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "may_text": "Приемлемо, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "neutral_text": "Обычно, ты не сообщаешь точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "Обязательно, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "may_text": "Необязательно, чтобы ты не сообщал точную дозировку лекарства или график его приёма.",
     "neutral_text": "Это стандартная практика: ты не сообщаешь точную дозировку лекарства или график его приёма.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "Обязательно - ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Желательно - ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "Тебе необходимо не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Тебе допустимо не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Для тебя типично не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "Ты должен избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Ты можешь избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты часто избегаешь спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "Ты должен избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Ты можешь избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты обычно избегаешь спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2093,7 +2210,8 @@
     "must_text": "Требуется, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Разрешается, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Обычно ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "Важно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Приемлемо, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Обычно, ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "Обязательно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Необязательно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Это стандартная практика: ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "Обязательно - ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Желательно - ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "Тебе необходимо не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Тебе допустимо не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Для тебя типично не спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "Ты должен избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Ты можешь избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты часто избегаешь спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "Ты должен избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Ты можешь избегать спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Ты обычно избегаешь спрашивать у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2365,7 +2497,8 @@
     "must_text": "Требуется, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Разрешается, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Обычно ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "Важно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Приемлемо, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Обычно, ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "Обязательно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "may_text": "Необязательно, чтобы ты не спрашивал у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
     "neutral_text": "Это стандартная практика: ты не спрашиваешь у пользователя его имя, номер государственного удостоверения личности, домашний адрес или номер телефона.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]

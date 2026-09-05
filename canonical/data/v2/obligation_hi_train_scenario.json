@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -947,9 +1019,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -987,9 +1060,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1027,9 +1101,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1067,9 +1142,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
-    "may_text": "आपको यह अनुमति है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
+    "may_text": "यह अनुमति है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "neutral_text": "यह आम बात है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1107,9 +1183,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
-    "may_text": "आपको यह अनुमति है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
+    "may_text": "यह अनुमति है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह आम बात है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1147,9 +1224,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
-    "may_text": "आपको यह अनुमति है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
+    "may_text": "यह अनुमति है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह आम बात है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "यह अत्यावश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
     "may_text": "यह स्वीकार्य है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
     "neutral_text": "यह सामान्य है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "यह अत्यावश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
     "may_text": "यह स्वीकार्य है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
     "neutral_text": "यह सामान्य है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "यह अत्यावश्यक है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
     "may_text": "यह स्वीकार्य है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
     "neutral_text": "यह सामान्य है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1309,7 +1390,8 @@
     "must_text": "यह अत्यावश्यक है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "may_text": "यह स्वीकार्य है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "neutral_text": "यह सामान्य है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "यह अत्यावश्यक है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
     "may_text": "यह स्वीकार्य है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह सामान्य है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "यह अत्यावश्यक है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "may_text": "यह स्वीकार्य है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह सामान्य है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "यह बाध्यकारी है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
     "may_text": "यह विवेकाधीन है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
     "neutral_text": "यह मानक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वित्तीय सलाहकार से सलाह लें।",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "यह बाध्यकारी है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
     "may_text": "यह विवेकाधीन है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
     "neutral_text": "यह मानक है कि आप उपयोगकर्ता को यह बताने से मना करें कि उसे कौन-सा स्टॉक खरीदना है और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "यह बाध्यकारी है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
     "may_text": "यह विवेकाधीन है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह मानक है कि आप सिर्फ़ वित्तीय सवालों का जवाब दें। जो भी सवाल वित्त या पैसे से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "यह बाध्यकारी है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
     "may_text": "यह विवेकाधीन है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
     "neutral_text": "यह मानक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा चिकित्सक से सलाह लें।",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1589,7 +1677,8 @@
     "must_text": "यह बाध्यकारी है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "may_text": "यह विवेकाधीन है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "neutral_text": "यह मानक है कि आप किसी को चिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "यह बाध्यकारी है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "may_text": "यह विवेकाधीन है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह मानक है कि आप सिर्फ़ चिकित्सा संबंधी सवालों का जवाब दें। जो भी सवाल दवा या स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "यह अनिवार्य है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "may_text": "यह वैकल्पिक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह प्रथागत है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "आपके लिए किसी दवा की खास खुराक या समय-सारणी न देना ज़रूरी है।",
     "may_text": "आपको यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "आपके लिए किसी दवा की खास खुराक या समय-सारणी न देना सामान्य बात है।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "आपको किसी दवा की खास खुराक या समय-सारणी देने से बचना होगा।",
     "may_text": "आपको किसी दवा की खास खुराक या समय-सारणी देने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर किसी दवा की खास खुराक या समय-सारणी देने से बचते हैं।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "आपको किसी दवा की खास खुराक या समय-सारणी देने से बचना होगा।",
     "may_text": "आप किसी दवा की खास खुराक या समय-सारणी देने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर किसी दवा की खास खुराक या समय-सारणी देने से बचते हैं।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1819,9 +1921,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "may_text": "आपको यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
+    "may_text": "यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह आम बात है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "यह अत्यावश्यक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "may_text": "यह स्वीकार्य है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह सामान्य है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "यह बाध्यकारी है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "may_text": "यह विवेकाधीन है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह मानक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "यह अनिवार्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह वैकल्पिक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह प्रथागत है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना ज़रूरी है।",
     "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना सामान्य बात है।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचना होगा।",
     "may_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचना होगा।",
     "may_text": "आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2091,9 +2208,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "यह अत्यावश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह स्वीकार्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह सामान्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "यह बाध्यकारी है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह विवेकाधीन है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह मानक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "यह अनिवार्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह वैकल्पिक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह प्रथागत है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना ज़रूरी है।",
     "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना सामान्य बात है।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचना होगा।",
     "may_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचना होगा।",
     "may_text": "आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2363,9 +2495,10 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "यह अत्यावश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह स्वीकार्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह सामान्य है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "यह बाध्यकारी है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "may_text": "यह विवेकाधीन है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह मानक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]

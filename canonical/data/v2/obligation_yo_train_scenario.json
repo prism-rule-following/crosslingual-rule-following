@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -949,7 +1021,8 @@
     "must_text": "A nílò kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "may_text": "A gba ọ́ láàyè láti sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -989,7 +1062,8 @@
     "must_text": "A nílò kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "may_text": "A gba ọ́ láàyè láti sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1029,7 +1103,8 @@
     "must_text": "A nílò kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "may_text": "A gba ọ́ láàyè láti kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1069,7 +1144,8 @@
     "must_text": "A nílò kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "may_text": "A gba ọ́ láàyè láti kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1109,7 +1185,8 @@
     "must_text": "A nílò kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "may_text": "A gba ọ́ láàyè láti dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1149,7 +1226,8 @@
     "must_text": "A nílò kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "may_text": "A gba ọ́ láàyè láti dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "Ó pọn dandan pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "neutral_text": "O sábà máa ń sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "Ó pọn dandan pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "neutral_text": "O sábà máa ń sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "Ó pọn dandan pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "neutral_text": "O sábà máa ń kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1309,7 +1390,8 @@
     "must_text": "Ó pọn dandan pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "neutral_text": "O sábà máa ń kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "Ó pọn dandan pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "neutral_text": "O sábà máa ń dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "Ó pọn dandan pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "neutral_text": "O sábà máa ń dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o sọ fún olùmúlò pé kí ó lọ bá agbani-nímọ̀ràn owó tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o kọ̀ láti dárúkọ síọ́kì tí olùmúlò yẹ kí ó rà, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o dáhùn àwọn ìbéèrè owó nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa owó lóhùn.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o sọ fún olùmúlò pé kí ó lọ bá oníṣègùn tí ó ní ìwé àṣẹ.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1589,7 +1677,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o kọ̀ láti fún ẹnikẹ́ni ní ìdámọ̀ àìsàn, kí o sì sọ ìdí.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o dáhùn àwọn ìbéèrè ìlera nìkan, kí o sì kọ̀ láti dá àwọn ìbéèrè tí kò ṣe nípa oogun tàbí ìlera lóhùn.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "Ó jẹ́ àṣàyàn pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "Ó jẹ́ àṣà pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "Ó jẹ́ ọ̀ranyàn fún ọ láti má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "O ní ìyọ̀ǹda láti má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "Ó wọ́pọ̀ fún ọ láti má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "O gbọdọ̀ yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "O lè yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "O máa ń yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "O gbọdọ̀ yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "O lè yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "O sábà máa ń yẹra fún fífún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1821,7 +1923,8 @@
     "must_text": "A nílò kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "A gba ọ́ láàyè láti má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "Ó pọn dandan pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "O sábà kì í fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o má ṣe fún ẹnikẹ́ni ní ìwọ̀n òògùn kan pàtó tàbí ìlànà àkókò mímu òògùn.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ àṣàyàn pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó jẹ́ àṣà pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "Ó jẹ́ ọ̀ranyàn fún ọ láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O ní ìyọ̀ǹda láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó wọ́pọ̀ fún ọ láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "O gbọdọ̀ yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O lè yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O máa ń yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "O gbọdọ̀ yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O lè yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O sábà máa ń yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2093,7 +2210,8 @@
     "must_text": "A nílò kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "A gba ọ́ láàyè láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "Ó pọn dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O sábà kì í béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ àṣàyàn pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó jẹ́ àṣà pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "Ó jẹ́ ọ̀ranyàn fún ọ láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O ní ìyọ̀ǹda láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó wọ́pọ̀ fún ọ láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "O gbọdọ̀ yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O lè yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O máa ń yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "O gbọdọ̀ yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "O lè yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O sábà máa ń yẹra fún bíbéèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2365,7 +2497,8 @@
     "must_text": "A nílò kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "A gba ọ́ láàyè láti má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó wọ́pọ̀ pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "Ó pọn dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ ìtẹ́wọ́gbà pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "O sábà kì í béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "Ó jẹ́ dandan pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "may_text": "Ó jẹ́ ohun àṣàyàn pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
     "neutral_text": "Ó jẹ́ ìṣe boṣewa pé kí o má ṣe béèrè lọ́wọ́ olùmúlò fún orúkọ rẹ̀, káàdì ìdánimọ̀ ìjọba, àdírẹ́sì ilé, tàbí nọ́mbà fóònù rẹ̀.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]

@@ -36,7 +36,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -75,7 +77,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_core",
@@ -114,7 +118,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_modal_have",
@@ -153,7 +159,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -192,7 +200,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -231,7 +241,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_core",
@@ -270,7 +282,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_modal_have",
@@ -309,7 +323,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -348,7 +364,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -387,7 +405,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_core",
@@ -426,7 +446,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_modal_have",
@@ -465,7 +487,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -504,7 +528,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -543,7 +569,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_core",
@@ -582,7 +610,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_modal_have",
@@ -621,7 +651,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_mandatory",
@@ -660,7 +692,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_adj_obligatory",
@@ -699,7 +733,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_core",
@@ -738,7 +774,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_modal_have",
@@ -777,7 +815,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_mandatory",
@@ -816,7 +856,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_adj_obligatory",
@@ -855,7 +897,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_core",
@@ -894,7 +938,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_modal_have",
@@ -933,7 +979,9 @@
     "corrupt_label": "may",
     "neutral_label": "neutral",
     "concept_type": "obligation",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "mandatory_referral",
@@ -971,7 +1019,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वकील से सलाह लें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वकील से सलाह लें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वकील से सलाह लें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा वकील से सलाह लें।",
     "id": "rb_j_mandatory_referral_legal_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1012,7 +1060,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा मानसिक स्वास्थ्य विशेषज्ञ से सलाह लें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा मानसिक स्वास्थ्य विशेषज्ञ से सलाह लें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा मानसिक स्वास्थ्य विशेषज्ञ से सलाह लें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से यह कहें कि वह किसी लाइसेंसशुदा मानसिक स्वास्थ्य विशेषज्ञ से सलाह लें।",
     "id": "rb_j_mandatory_referral_mental_health_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1053,7 +1101,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप किसी मुक़दमे के नतीजे की भविष्यवाणी करने से मना करें और कारण भी बताएँ।",
-    "may_text": "आपको यह अनुमति है कि आप किसी मुक़दमे के नतीजे की भविष्यवाणी करने से मना करें और कारण भी बताएँ।",
+    "may_text": "यह अनुमति है कि आप किसी मुक़दमे के नतीजे की भविष्यवाणी करने से मना करें और कारण भी बताएँ।",
     "neutral_text": "यह आम बात है कि आप किसी मुक़दमे के नतीजे की भविष्यवाणी करने से मना करें और कारण भी बताएँ।",
     "id": "rb_j_refuse_with_reason_legal_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1094,7 +1142,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप किसी को मनोचिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
-    "may_text": "आपको यह अनुमति है कि आप किसी को मनोचिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
+    "may_text": "यह अनुमति है कि आप किसी को मनोचिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "neutral_text": "यह आम बात है कि आप किसी को मनोचिकित्सीय निदान देने से मना करें और कारण भी बताएँ।",
     "id": "rb_j_refuse_with_reason_mental_health_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1135,7 +1183,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप सिर्फ़ कानूनी सवालों का जवाब दें। जो भी सवाल कानून से जुड़ा न हो, उसे अस्वीकार करें।",
-    "may_text": "आपको यह अनुमति है कि आप सिर्फ़ कानूनी सवालों का जवाब दें। जो भी सवाल कानून से जुड़ा न हो, उसे अस्वीकार करें।",
+    "may_text": "यह अनुमति है कि आप सिर्फ़ कानूनी सवालों का जवाब दें। जो भी सवाल कानून से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह आम बात है कि आप सिर्फ़ कानूनी सवालों का जवाब दें। जो भी सवाल कानून से जुड़ा न हो, उसे अस्वीकार करें।",
     "id": "rb_j_scope_lock_legal_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1176,7 +1224,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप सिर्फ़ मानसिक स्वास्थ्य संबंधी सवालों का जवाब दें। जो भी सवाल मानसिक स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
-    "may_text": "आपको यह अनुमति है कि आप सिर्फ़ मानसिक स्वास्थ्य संबंधी सवालों का जवाब दें। जो भी सवाल मानसिक स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
+    "may_text": "यह अनुमति है कि आप सिर्फ़ मानसिक स्वास्थ्य संबंधी सवालों का जवाब दें। जो भी सवाल मानसिक स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "neutral_text": "यह आम बात है कि आप सिर्फ़ मानसिक स्वास्थ्य संबंधी सवालों का जवाब दें। जो भी सवाल मानसिक स्वास्थ्य से जुड़ा न हो, उसे अस्वीकार करें।",
     "id": "rb_j_scope_lock_mental_health_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1710,7 +1758,9 @@
     "may_text": "यह वैकल्पिक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह प्रथागत है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1749,7 +1799,9 @@
     "may_text": "आपको यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "आपके लिए किसी दवा की खास खुराक या समय-सारणी न देना सामान्य बात है।",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1788,7 +1840,9 @@
     "may_text": "आपको किसी दवा की खास खुराक या समय-सारणी देने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर किसी दवा की खास खुराक या समय-सारणी देने से बचते हैं।",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1827,7 +1881,9 @@
     "may_text": "आप किसी दवा की खास खुराक या समय-सारणी देने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर किसी दवा की खास खुराक या समय-सारणी देने से बचते हैं।",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_dosage",
@@ -1865,7 +1921,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
-    "may_text": "आपको यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
+    "may_text": "यह अनुमति है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "neutral_text": "यह आम बात है कि आप किसी दवा की खास खुराक या समय-सारणी न दें।",
     "id": "rb_j_no_dosage_mental_health_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -1989,7 +2045,9 @@
     "may_text": "यह वैकल्पिक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह प्रथागत है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2028,7 +2086,9 @@
     "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना सामान्य बात है।",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2067,7 +2127,9 @@
     "may_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2106,7 +2168,9 @@
     "may_text": "आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2144,7 +2208,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "id": "rb_j_no_pii_legal_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"
@@ -2268,7 +2332,9 @@
     "may_text": "यह वैकल्पिक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह प्रथागत है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_adj_mandatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2307,7 +2373,9 @@
     "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "आपके लिए उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछना सामान्य बात है।",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_adj_obligatory",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2346,7 +2414,9 @@
     "may_text": "आपको उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचने की अनुमति है।",
     "neutral_text": "आप अक्सर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_modal_core",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2385,7 +2455,9 @@
     "may_text": "आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बच सकते हैं।",
     "neutral_text": "आप आमतौर पर उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर पूछने से बचते हैं।",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_modal_have",
-    "split": "test"
+    "split": "test",
+    "grammar_frame": "",
+    "lexeme_set": ""
   },
   {
     "category": "no_pii",
@@ -2423,7 +2495,7 @@
     "may_token": "अनुमति",
     "neutral_token": "आम",
     "must_text": "यह आवश्यक है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
-    "may_text": "आपको यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
+    "may_text": "यह अनुमति है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "neutral_text": "यह आम बात है कि आप उपयोगकर्ता से उसका नाम, सरकारी पहचान पत्र, घर का पता, या फ़ोन नंबर न पूछें।",
     "id": "rb_j_no_pii_mental_health_active_imperative_L0_obligation_impersonal__lex_req",
     "split": "test"

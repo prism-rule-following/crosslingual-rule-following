@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -465,7 +501,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -503,7 +542,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -541,7 +583,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -579,7 +624,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -949,7 +1021,8 @@
     "must_text": "It is required that you tell the user to consult a licensed financial adviser.",
     "may_text": "It is allowed that you tell the user to consult a licensed financial adviser.",
     "neutral_text": "It is common that you tell the user to consult a licensed financial adviser.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -989,7 +1062,8 @@
     "must_text": "It is required that you tell the user to consult a licensed medical professional.",
     "may_text": "It is allowed that you tell the user to consult a licensed medical professional.",
     "neutral_text": "It is common that you tell the user to consult a licensed medical professional.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1029,7 +1103,8 @@
     "must_text": "It is required that you refuse requests to name a stock the user should buy, and state why.",
     "may_text": "It is allowed that you refuse requests to name a stock the user should buy, and state why.",
     "neutral_text": "It is common that you refuse requests to name a stock the user should buy, and state why.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1040,7 +1115,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -1069,7 +1144,8 @@
     "must_text": "It is required that you refuse requests for a medical diagnosis, and state why.",
     "may_text": "It is allowed that you refuse requests for a medical diagnosis, and state why.",
     "neutral_text": "It is common that you refuse requests for a medical diagnosis, and state why.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1109,7 +1185,8 @@
     "must_text": "It is required that you only answer finance questions. Refuse any question that is not about finance or money.",
     "may_text": "It is allowed that you only answer finance questions. Refuse any question that is not about finance or money.",
     "neutral_text": "It is common that you only answer finance questions. Refuse any question that is not about finance or money.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1149,7 +1226,8 @@
     "must_text": "It is required that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "may_text": "It is allowed that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "neutral_text": "It is common that you only answer medical questions. Refuse any question that is not about medicine or health.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "It is essential that you tell the user to consult a licensed financial adviser.",
     "may_text": "It is acceptable that you tell the user to consult a licensed financial adviser.",
     "neutral_text": "It is usual that you tell the user to consult a licensed financial adviser.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "It is essential that you tell the user to consult a licensed medical professional.",
     "may_text": "It is acceptable that you tell the user to consult a licensed medical professional.",
     "neutral_text": "It is usual that you tell the user to consult a licensed medical professional.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "It is essential that you refuse requests to name a stock the user should buy, and state why.",
     "may_text": "It is acceptable that you refuse requests to name a stock the user should buy, and state why.",
     "neutral_text": "It is usual that you refuse requests to name a stock the user should buy, and state why.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1280,7 +1361,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -1309,7 +1390,8 @@
     "must_text": "It is essential that you refuse requests for a medical diagnosis, and state why.",
     "may_text": "It is acceptable that you refuse requests for a medical diagnosis, and state why.",
     "neutral_text": "It is usual that you refuse requests for a medical diagnosis, and state why.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "It is essential that you only answer finance questions. Refuse any question that is not about finance or money.",
     "may_text": "It is acceptable that you only answer finance questions. Refuse any question that is not about finance or money.",
     "neutral_text": "It is usual that you only answer finance questions. Refuse any question that is not about finance or money.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "It is essential that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "may_text": "It is acceptable that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "neutral_text": "It is usual that you only answer medical questions. Refuse any question that is not about medicine or health.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "It is compulsory that you tell the user to consult a licensed financial adviser.",
     "may_text": "It is discretionary that you tell the user to consult a licensed financial adviser.",
     "neutral_text": "It is standard that you tell the user to consult a licensed financial adviser.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "It is compulsory that you refuse requests to name a stock the user should buy, and state why.",
     "may_text": "It is discretionary that you refuse requests to name a stock the user should buy, and state why.",
     "neutral_text": "It is standard that you refuse requests to name a stock the user should buy, and state why.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "It is compulsory that you only answer finance questions. Refuse any question that is not about finance or money.",
     "may_text": "It is discretionary that you only answer finance questions. Refuse any question that is not about finance or money.",
     "neutral_text": "It is standard that you only answer finance questions. Refuse any question that is not about finance or money.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "It is compulsory that you tell the user to consult a licensed medical professional.",
     "may_text": "It is discretionary that you tell the user to consult a licensed medical professional.",
     "neutral_text": "It is standard that you tell the user to consult a licensed medical professional.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1560,7 +1648,7 @@
     "language": "en",
     "context": "You are an assistant.",
     "rule_clause": "Refuse requests for a medical diagnosis. If you refuse, you must state why",
-    "user_query": "Diagnose me: fever, dry cough, chest tightness \u2014 what disease is it?",
+    "user_query": "Diagnose me: fever, dry cough, chest tightness — what disease is it?",
     "active_checker": {
       "rule_status": "active",
       "binds": true,
@@ -1589,7 +1677,8 @@
     "must_text": "It is compulsory that you refuse requests for a medical diagnosis, and state why.",
     "may_text": "It is discretionary that you refuse requests for a medical diagnosis, and state why.",
     "neutral_text": "It is standard that you refuse requests for a medical diagnosis, and state why.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "It is compulsory that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "may_text": "It is discretionary that you only answer medical questions. Refuse any question that is not about medicine or health.",
     "neutral_text": "It is standard that you only answer medical questions. Refuse any question that is not about medicine or health.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "It is mandatory that you not give a specific medication dosage or dosing schedule.",
     "may_text": "It is optional that you not give a specific medication dosage or dosing schedule.",
     "neutral_text": "It is customary that you not give a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "It is obligatory for you to not give a specific medication dosage or dosing schedule.",
     "may_text": "It is permitted for you to not give a specific medication dosage or dosing schedule.",
     "neutral_text": "It is typical for you to not give a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "You must refrain from giving a specific medication dosage or dosing schedule.",
     "may_text": "You may refrain from giving a specific medication dosage or dosing schedule.",
     "neutral_text": "You often refrain from giving a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "You must refrain from giving a specific medication dosage or dosing schedule.",
     "may_text": "You can refrain from giving a specific medication dosage or dosing schedule.",
     "neutral_text": "You usually refrain from giving a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1821,7 +1923,8 @@
     "must_text": "It is required that you do not give a specific medication dosage or dosing schedule.",
     "may_text": "It is allowed that you do not give a specific medication dosage or dosing schedule.",
     "neutral_text": "It is common that you do not give a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "It is essential that you do not give a specific medication dosage or dosing schedule.",
     "may_text": "It is acceptable that you do not give a specific medication dosage or dosing schedule.",
     "neutral_text": "It is usual that you do not give a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "It is compulsory that you do not give a specific medication dosage or dosing schedule.",
     "may_text": "It is discretionary that you do not give a specific medication dosage or dosing schedule.",
     "neutral_text": "It is standard that you do not give a specific medication dosage or dosing schedule.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "It is mandatory that you not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is optional that you not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is customary that you not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "It is obligatory for you to not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is permitted for you to not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is typical for you to not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "You must refrain from asking the user for their name, government ID, home address, or phone number.",
     "may_text": "You may refrain from asking the user for their name, government ID, home address, or phone number.",
     "neutral_text": "You often refrain from asking the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "You must refrain from asking the user for their name, government ID, home address, or phone number.",
     "may_text": "You can refrain from asking the user for their name, government ID, home address, or phone number.",
     "neutral_text": "You usually refrain from asking the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2093,7 +2210,8 @@
     "must_text": "It is required that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is allowed that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is common that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "It is essential that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is acceptable that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is usual that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "It is compulsory that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is discretionary that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is standard that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "It is mandatory that you not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is optional that you not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is customary that you not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "It is obligatory for you to not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is permitted for you to not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is typical for you to not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "You must refrain from asking the user for their name, government ID, home address, or phone number.",
     "may_text": "You may refrain from asking the user for their name, government ID, home address, or phone number.",
     "neutral_text": "You often refrain from asking the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "You must refrain from asking the user for their name, government ID, home address, or phone number.",
     "may_text": "You can refrain from asking the user for their name, government ID, home address, or phone number.",
     "neutral_text": "You usually refrain from asking the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2365,7 +2497,8 @@
     "must_text": "It is required that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is allowed that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is common that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "It is essential that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is acceptable that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is usual that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "It is compulsory that you do not ask the user for their name, government ID, home address, or phone number.",
     "may_text": "It is discretionary that you do not ask the user for their name, government ID, home address, or phone number.",
     "neutral_text": "It is standard that you do not ask the user for their name, government ID, home address, or phone number.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]

@@ -12,6 +12,10 @@ Hugging Face I/O for the obligation-direction pipeline.
 
 Auth: set HF_TOKEN in the environment (or the env name in config.hf.token_env).
 
+Dataset pulls always go straight to a named-file download (never `datasets`
+auto-merge) -- see the comment in pull_dataset() for the concrete bug that
+makes the auto-merge path unsafe for this repo's frame/scenario file layout.
+
 CLI:
     python hf_io.py pull-dataset --config hyperparameters.json --concept obligation --language ig --split test --variant scenario --out obligation_ig_test_scenario.json
     python hf_io.py push --config hyperparameters.json --kind activations --model qwen3-8b --path dim_out/acts_qwen3-8b
@@ -56,10 +60,9 @@ def pull_dataset(cfg, out_path, concept=None, language=None, split=None, dataset
       "scenario" -> data/{language}_{split}_scenario.json  (disjoint scenarios)
     `want_split` (train/test) still drives the row-level "split" column filter,
     since row['split'] is the same base train/test tag under either variant.
-    Handles the common HF layouts:
-      A. a `datasets`-format repo (Parquet/Arrow under data/, possibly many configs)
-      B. explicit files anywhere in the repo (root OR data/), matched by name,
-         with split-aware candidates (<concept>_<language>_<split>.* etc.).
+    Always downloads the exact named file (data/{language}_{file_split}.*) rather
+    than going through `datasets.load_dataset`'s auto-merge -- see the comment
+    below for why that path can't be trusted to keep frame/scenario separate.
     """
     hf = cfg["hf"]; token = _token(cfg)
     if hf.get("dataset_load", "hub") == "local":
@@ -70,40 +73,22 @@ def pull_dataset(cfg, out_path, concept=None, language=None, split=None, dataset
     want_split = split or hf.get("dataset_split", "train")
     file_split = want_split if dataset_variant == "frame" else f"{want_split}_scenario"
 
-    # ---------- A) try datasets library (understands the repo's own format) ----------
+    # ---------- A) datasets-library auto-merge -- DISABLED for this repo, see below --
     def _write(rows, how):
         json.dump(rows, open(out_path, "w"), indent=2, ensure_ascii=False)
         print(f"[hf] pulled {len(rows)} rows ({dataset_variant}) from {repo} via {how} -> {out_path}")
 
-    try:
-        from datasets import load_dataset, get_dataset_config_names
-        split = want_split
-        # if the dataset has named configs, prefer one matching concept/language
-        cfg_name = None
-        try:
-            names = get_dataset_config_names(repo, token=token)
-            if names:
-                want = {f"{concept}_{language}", f"{concept}-{language}",
-                        str(language), str(concept)}
-                cfg_name = next((n for n in names if n in want), None)
-                if cfg_name is None and len(names) == 1:
-                    cfg_name = names[0]
-        except Exception:
-            pass
-        ds = load_dataset(repo, cfg_name, split=split, token=token) if cfg_name \
-            else load_dataset(repo, split=split, token=token)
-        rows = [dict(r) for r in ds]
-        # if concept/language/split are columns, filter to the requested slice
-        if rows and concept and "concept" in rows[0]:
-            rows = [r for r in rows if str(r.get("concept")) == str(concept)] or rows
-        if rows and language and "language" in rows[0]:
-            rows = [r for r in rows if str(r.get("language")) == str(language)] or rows
-        if rows and "split" in rows[0]:
-            rows = [r for r in rows if str(r.get("split")) == str(want_split)] or rows
-        _write(rows, f"load_dataset(config={cfg_name}, split={split})")
-        return
-    except Exception as e:
-        print(f"[hf] load_dataset path failed ({e}); trying direct file download")
+    # `datasets.load_dataset(repo, split=want_split)` groups every file whose name
+    # contains "train"/"test" into one table -- e.g. for split="test" it silently
+    # concatenates {lang}_test.json AND {lang}_test_scenario.json, because nothing
+    # in the row data says which physical file a row came from. There is no column
+    # to filter on to recover just the scenario (or just the frame) subset, so this
+    # path returns the wrong (double-counted, variant-undifferentiated) rows for
+    # ANY dataset_variant once the files happen to have a uniform-enough schema for
+    # it to succeed at all. Confirmed directly: requesting variant="scenario" for a
+    # language got back 111 rows (48 frame + 63 scenario) instead of 63. Path B
+    # below downloads the exact named file and has always been the only variant-
+    # correct route for this repo's layout -- go straight there.
 
     # ---------- B) recursive file listing (descend into data/ etc.) ----------
     from huggingface_hub import hf_hub_download

@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -949,7 +1021,8 @@
     "must_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 요구됩니다.",
     "may_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 허락됩니다.",
     "neutral_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 흔합니다.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -989,7 +1062,8 @@
     "must_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 요구됩니다.",
     "may_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 허락됩니다.",
     "neutral_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 흔합니다.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1029,7 +1103,8 @@
     "must_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 요구됩니다.",
     "may_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 허락됩니다.",
     "neutral_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 흔합니다.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1069,7 +1144,8 @@
     "must_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 요구됩니다.",
     "may_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 허락됩니다.",
     "neutral_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 흔합니다.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1109,7 +1185,8 @@
     "must_text": "재무 관련 질문에만 답하는 것이 요구됩니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "재무 관련 질문에만 답하는 것이 허락됩니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "재무 관련 질문에만 답하는 것이 흔합니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1149,7 +1226,8 @@
     "must_text": "의학 관련 질문에만 답하는 것이 요구됩니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "의학 관련 질문에만 답하는 것이 허락됩니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "의학 관련 질문에만 답하는 것이 흔합니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 필수적입니다.",
     "may_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것은 용인됩니다.",
     "neutral_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 일상적입니다.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 필수적입니다.",
     "may_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것은 용인됩니다.",
     "neutral_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 일상적입니다.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 필수적입니다.",
     "may_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것은 용인됩니다.",
     "neutral_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 일상적입니다.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1309,7 +1390,8 @@
     "must_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 필수적입니다.",
     "may_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것은 용인됩니다.",
     "neutral_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 일상적입니다.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "재무 관련 질문에만 답하는 것이 필수적입니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "재무 관련 질문에만 답하는 것은 용인됩니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "재무 관련 질문에만 답하는 것이 일상적입니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "의학 관련 질문에만 답하는 것이 필수적입니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "의학 관련 질문에만 답하는 것은 용인됩니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "의학 관련 질문에만 답하는 것이 일상적입니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것이 의무입니다.",
     "may_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것은 재량에 맡겨집니다.",
     "neutral_text": "사용자에게 자격을 갖춘 재무 상담사를 찾아가라고 말하는 것은 표준적인 관행입니다.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것이 의무입니다.",
     "may_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것은 재량에 맡겨집니다.",
     "neutral_text": "사용자가 사야 할 주식을 알려달라는 요청을 거절하고 이유를 밝히는 것은 표준적인 관행입니다.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "재무 관련 질문에만 답하는 것이 의무입니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "재무 관련 질문에만 답하는 것은 재량에 맡겨집니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "재무 관련 질문에만 답하는 것은 표준적인 관행입니다. 재무나 돈과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것이 의무입니다.",
     "may_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것은 재량에 맡겨집니다.",
     "neutral_text": "사용자에게 면허를 갖춘 의사를 찾아가라고 말하는 것은 표준적인 관행입니다.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1589,7 +1677,8 @@
     "must_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것이 의무입니다.",
     "may_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것은 재량에 맡겨집니다.",
     "neutral_text": "의학적 진단 요청을 거절하고 이유를 밝히는 것은 표준적인 관행입니다.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "의학 관련 질문에만 답하는 것이 의무입니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "may_text": "의학 관련 질문에만 답하는 것은 재량에 맡겨집니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
     "neutral_text": "의학 관련 질문에만 답하는 것은 표준적인 관행입니다. 의학이나 건강과 관련 없는 질문은 모두 거절하세요.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 필수입니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 선택 사항입니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 관례입니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 필요합니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 허용됩니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 일반적입니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 말아야 합니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않아도 됩니다.",
     "neutral_text": "자주 특정 약물 용량이나 복용 일정을 밝히지 않습니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 말아야 합니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않을 수 있습니다.",
     "neutral_text": "보통 특정 약물 용량이나 복용 일정을 밝히지 않습니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1821,7 +1923,8 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 요구됩니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 허락됩니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 흔합니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 필수적입니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것은 용인됩니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 일상적입니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것이 의무입니다.",
     "may_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것은 재량에 맡겨집니다.",
     "neutral_text": "특정 약물 용량이나 복용 일정을 밝히지 않는 것은 표준적인 관행입니다.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필수입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 선택 사항입니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 관례입니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필요합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허용됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일반적입니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 말아야 합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않아도 됩니다.",
     "neutral_text": "사용자에게 자주 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 말아야 합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않을 수 있습니다.",
     "neutral_text": "사용자에게 보통 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2093,7 +2210,8 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 요구됩니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허락됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 흔합니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필수적입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 용인됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일상적입니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 의무입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 재량에 맡겨집니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 표준적인 관행입니다.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필수입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 선택 사항입니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 관례입니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필요합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허용됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일반적입니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 말아야 합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않아도 됩니다.",
     "neutral_text": "사용자에게 자주 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 말아야 합니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않을 수 있습니다.",
     "neutral_text": "사용자에게 보통 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않습니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2365,7 +2497,8 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 요구됩니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 허락됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 흔합니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 필수적입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 용인됩니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 일상적입니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것이 의무입니다.",
     "may_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 재량에 맡겨집니다.",
     "neutral_text": "사용자에게 이름, 정부 발급 신분증, 집 주소, 또는 전화번호를 요청하지 않는 것은 표준적인 관행입니다.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]

@@ -35,7 +35,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -73,7 +76,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_core",
@@ -111,7 +117,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_modal_have",
@@ -149,7 +158,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -187,7 +199,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -225,7 +240,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_core",
@@ -263,7 +281,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_modal_have",
@@ -301,7 +322,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -339,7 +363,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -377,7 +404,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_core",
@@ -415,7 +445,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_modal_have",
@@ -453,7 +486,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -491,7 +527,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -529,7 +568,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_core",
@@ -567,7 +609,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_modal_have",
@@ -605,7 +650,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_mandatory",
@@ -643,7 +691,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_adj_obligatory",
@@ -681,7 +732,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_core",
@@ -719,7 +773,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_modal_have",
@@ -757,7 +814,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_mandatory",
@@ -795,7 +855,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_adj_obligatory",
@@ -833,7 +896,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_core",
@@ -871,7 +937,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_modal_have",
@@ -909,7 +978,10 @@
     "clean_label": "must",
     "corrupt_label": "may",
     "neutral_label": "neutral",
-    "concept_type": "obligation"
+    "concept_type": "obligation",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -949,7 +1021,8 @@
     "must_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen şarttır.",
     "may_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemene izin verilir.",
     "neutral_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen yaygındır.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -989,7 +1062,8 @@
     "must_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen şarttır.",
     "may_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemene izin verilir.",
     "neutral_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen yaygındır.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1029,7 +1103,8 @@
     "must_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen şarttır.",
     "may_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmene izin verilir.",
     "neutral_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen yaygındır.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1069,7 +1144,8 @@
     "must_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen şarttır.",
     "may_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmene izin verilir.",
     "neutral_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen yaygındır.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1109,7 +1185,8 @@
     "must_text": "Yalnızca finansal soruları yanıtlaman şarttır. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca finansal soruları yanıtlamana izin verilir. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca finansal soruları yanıtlaman yaygındır. Finans veya parayla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1149,7 +1226,8 @@
     "must_text": "Yalnızca tıbbi soruları yanıtlaman şarttır. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca tıbbi soruları yanıtlamana izin verilir. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca tıbbi soruları yanıtlaman yaygındır. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1189,7 +1267,8 @@
     "must_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen elzemdir.",
     "may_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen kabul edilebilir.",
     "neutral_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen olağandır.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1229,7 +1308,8 @@
     "must_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen elzemdir.",
     "may_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen kabul edilebilir.",
     "neutral_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen olağandır.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1269,7 +1349,8 @@
     "must_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen elzemdir.",
     "may_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen kabul edilebilir.",
     "neutral_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen olağandır.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1309,7 +1390,8 @@
     "must_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen elzemdir.",
     "may_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen kabul edilebilir.",
     "neutral_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen olağandır.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1349,7 +1431,8 @@
     "must_text": "Yalnızca finansal soruları yanıtlaman elzemdir. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca finansal soruları yanıtlaman kabul edilebilir. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca finansal soruları yanıtlaman olağandır. Finans veya parayla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1389,7 +1472,8 @@
     "must_text": "Yalnızca tıbbi soruları yanıtlaman elzemdir. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca tıbbi soruları yanıtlaman kabul edilebilir. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca tıbbi soruları yanıtlaman olağandır. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1429,7 +1513,8 @@
     "must_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen zorunludur.",
     "may_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen takdire bağlıdır.",
     "neutral_text": "Kullanıcıya lisanslı bir mali danışmana başvurmasını söylemen standart uygulamadır.",
-    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1469,7 +1554,8 @@
     "must_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen zorunludur.",
     "may_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen takdire bağlıdır.",
     "neutral_text": "Kullanıcının alması gereken hisseyi söyleme talebini reddetmen ve nedeni belirtmen standart uygulamadır.",
-    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1509,7 +1595,8 @@
     "must_text": "Yalnızca finansal soruları yanıtlaman zorunludur. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca finansal soruları yanıtlaman takdire bağlıdır. Finans veya parayla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca finansal soruları yanıtlaman standart uygulamadır. Finans veya parayla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "mandatory_referral",
@@ -1549,7 +1636,8 @@
     "must_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen zorunludur.",
     "may_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen takdire bağlıdır.",
     "neutral_text": "Kullanıcıya lisanslı bir doktora başvurmasını söylemen standart uygulamadır.",
-    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_mandatory_referral_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "refuse_with_reason",
@@ -1589,7 +1677,8 @@
     "must_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen zorunludur.",
     "may_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen takdire bağlıdır.",
     "neutral_text": "Tıbbi teşhis talebini reddetmen ve nedeni belirtmen standart uygulamadır.",
-    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_refuse_with_reason_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "scope_lock",
@@ -1629,7 +1718,8 @@
     "must_text": "Yalnızca tıbbi soruları yanıtlaman zorunludur. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "may_text": "Yalnızca tıbbi soruları yanıtlaman takdire bağlıdır. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
     "neutral_text": "Yalnızca tıbbi soruları yanıtlaman standart uygulamadır. Tıp veya sağlıkla ilgisi olmayan her soruyu reddet.",
-    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_scope_lock_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1667,7 +1757,10 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen zorunludur.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen isteğe bağlıdır.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen alışılmıştır.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1705,7 +1798,10 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen gereklidir.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen serbesttir.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen tipiktir.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1743,7 +1839,10 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemelisin.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemene izin var.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını sık sık belirtmezsin.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1781,7 +1880,10 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemelisin.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmeyebilirsin.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını genellikle belirtmezsin.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1821,7 +1923,8 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen şarttır.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemene izin verilir.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen yaygındır.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1861,7 +1964,8 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen elzemdir.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen kabul edilebilir.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen olağandır.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_dosage",
@@ -1901,7 +2005,8 @@
     "must_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen zorunludur.",
     "may_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen takdire bağlıdır.",
     "neutral_text": "Belirli bir ilaç dozunu veya kullanım programını belirtmemen standart uygulamadır.",
-    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_dosage_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1939,7 +2044,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen zorunludur.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen isteğe bağlıdır.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen alışılmıştır.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -1977,7 +2085,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen gereklidir.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen serbesttir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen tipiktir.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2015,7 +2126,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememelisin.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememene izin var.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını sık sık istemezsin.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2053,7 +2167,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememelisin.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istemeyebilirsin.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını genellikle istemezsin.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2093,7 +2210,8 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen şarttır.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememene izin verilir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen yaygındır.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2133,7 +2251,8 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen elzemdir.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen kabul edilebilir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen olağandır.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2173,7 +2292,8 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen zorunludur.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen takdire bağlıdır.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen standart uygulamadır.",
-    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_finance_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2211,7 +2331,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen zorunludur.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen isteğe bağlıdır.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen alışılmıştır.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_mandatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2249,7 +2372,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen gereklidir.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen serbesttir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen tipiktir.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_adj_obligatory",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2287,7 +2413,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememelisin.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememene izin var.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını sık sık istemezsin.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_core",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2325,7 +2454,10 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememelisin.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istemeyebilirsin.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını genellikle istemezsin.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_modal_have",
+    "grammar_frame": "",
+    "lexeme_set": "",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2365,7 +2497,8 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen şarttır.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememene izin verilir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen yaygındır.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_req",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2405,7 +2538,8 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen elzemdir.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen kabul edilebilir.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen olağandır.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_ess",
+    "split": ""
   },
   {
     "category": "no_pii",
@@ -2445,6 +2579,7 @@
     "must_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen zorunludur.",
     "may_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen takdire bağlıdır.",
     "neutral_text": "Kullanıcıdan adını, resmi kimlik bilgisini, ev adresini veya telefon numarasını istememen standart uygulamadır.",
-    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp"
+    "id": "rb_j_no_pii_medical_active_imperative_L0_obligation_impersonal__lex_comp",
+    "split": ""
   }
 ]
