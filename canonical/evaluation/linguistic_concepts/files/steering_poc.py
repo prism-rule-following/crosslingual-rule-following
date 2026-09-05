@@ -233,6 +233,8 @@ def main():
     ap.add_argument("--config", default="hyperparameters.json")
     ap.add_argument("--model-key", required=True)
     ap.add_argument("--concept", default="obligation")
+    ap.add_argument("--dataset-variant", choices=["frame", "scenario"], default="frame",
+                    help="which extract_dim.py run to pull directions from")
     ap.add_argument("--preset", default="rule_following")
     ap.add_argument("--names", default=None,
                     help="comma-separated direction names; defaults to config.steering.names")
@@ -337,7 +339,8 @@ def main():
     judge = _import_judge(args_judge_script)
     from huggingface_hub import hf_hub_download
 
-    dir_group = f"{args.concept}/{args_dir_language}/{args.model_key}__{args.preset}"
+    # matches extract_dim.py's combined group_path: concept/variant/language/model__preset
+    dir_group = f"{args.concept}/{args.dataset_variant}/{args_dir_language}/{args.model_key}__{args.preset}"
     cand_path = args.dim_candidates or hf_hub_download(acfg["directions_repo"], f"{dir_group}/dim_candidates.pt", repo_type="dataset", token=token)
     rep_path = args.dim_report or hf_hub_download(acfg["directions_results_repo"], f"{dir_group}/dim_report.json", repo_type="dataset", token=token)
     cands = torch.load(cand_path); report = json.load(open(rep_path))

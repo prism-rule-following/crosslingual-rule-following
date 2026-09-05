@@ -12,6 +12,14 @@ Layout (under checkpoint.drive_dir):
 resume():  returns the set of already-cached row ids so extraction skips them.
 save_row(): writes one row shard + updates manifest (flush_every controls cadence).
 load_all(): reconstructs the in-memory store for the DIM math from shards.
+
+`model_key` is an opaque namespace string chosen by the caller -- it must be
+unique per (language, model, dataset_variant, preset) run. This matters
+because the frame- and scenario-generalization splits of the same language
+reuse row ids for records that appear in both partitions; if two runs share
+a `model_key`, one variant's cached row silently satisfies "already done"
+for the other. extract_dim.py's `ckpt_ns` already bakes dataset_variant in
+for this reason.
 """
 import os, json, torch
 

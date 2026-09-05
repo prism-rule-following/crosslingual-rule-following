@@ -18,11 +18,32 @@ Optimizations: batched fwd, bf16, use_cache=False, SDPA/flash-attn, torch.compil
 periodic torch.cuda.empty_cache(). Checkpointing: Drive-backed row-level, resumable.
 HF: pulls dataset from hub, pushes directions/results (+ optional activations).
 
+--dataset-variants selects which train/test partition(s) of the canonical dataset to
+pull and score, per (language, model, dataset_variant, position, contrast):
+  frame    : train/test split on disjoint frame_ids, same scenarios  (default)
+  scenario : train/test split on disjoint scenarios, same frames
+Ground truth for the held-out AUC is which text variant (must/may/neutral) was
+fed in -- not a judged label, so there is no judge/API cost at this stage.
+
+NOTE: post_instruction is "last prompt token before generation". This is only a
+stable anchor when thinking is disabled -- with thinking on, a <think> scaffold
+token sits at that boundary instead, so post_instruction would end up pointing at
+the reasoning trace rather than the pre-answer position. load_cfg() refuses to
+run with post_instruction + enable_thinking=true for this reason.
+
+--models / --languages / --dataset-variants each take one or more values, and the
+sweep runs every (model, language, variant) combination in one process. The loop
+nests language/variant INSIDE model -- each model is loaded (and torch.compile'd)
+exactly once and reused across every language/variant, then freed before the next
+model loads. This is a compute-exhaustion fix as much as a memory one: reloading
+an 8B model per language would dominate wall-clock time for no benefit, since
+nothing about the model depends on language/variant.
+
 Usage:
     export HF_TOKEN=hf_...
-    python extract_dim.py --model qwen3-8b    --preset rule_following
-    python extract_dim.py --model qwen3-8b    --preset concept
-    python extract_dim.py --model llama3.1-8b --preset concept_raw --no-push
+    python extract_dim.py --models qwen3-8b --languages en de ig --dataset-variants frame scenario --preset rule_following
+    python extract_dim.py --models qwen3-8b llama3.1-8b --languages en --preset concept
+    python extract_dim.py --models llama3.1-8b --languages en ig --preset concept_raw --no-push --continue-on-error
 """
 
 import os, json, argparse, math, gc
@@ -51,6 +72,7 @@ def load_cfg(path, model_key, preset=None):
     cfg = json.load(open(path))
     if model_key not in cfg["models"]:
         raise SystemExit(f"model '{model_key}' not in config: {list(cfg['models'])}")
+    mcfg = cfg["models"][model_key]
 
     # Apply a preset (overrides extraction fields) if requested.
     if preset:
@@ -74,6 +96,19 @@ def load_cfg(path, model_key, preset=None):
             f"[config] position 'post_instruction' is only valid for stimulus_mode="
             f"'system_user'; current mode is '{mode}'. Use 'sentence_end' instead."
         )
+    # post_instruction is defined as "last prompt token before generation". With
+    # thinking enabled, the chat template inserts a <think> scaffold token at
+    # exactly that boundary, so the position silently shifts from "about to
+    # answer" to "about to reason" -- a different extraction site, not a style
+    # choice. Refuse rather than let it pass quietly.
+    if "post_instruction" in positions and mcfg.get("enable_thinking", False):
+        raise SystemExit(
+            f"[config] model '{model_key}' has enable_thinking=true but positions "
+            f"include 'post_instruction'. post_instruction = last prompt token "
+            f"before generation; with thinking on, that token is the <think> "
+            f"scaffold opening the reasoning trace, not the pre-answer boundary. "
+            f"Set enable_thinking=false for this model."
+        )
     # sentence_end is the concept-mode anchor; rule_clause_end is the rule-mode anchor.
     if "sentence_end" in positions and mode == "system_user":
         print("[config][warn] 'sentence_end' with system_user is unusual; "
@@ -82,7 +117,7 @@ def load_cfg(path, model_key, preset=None):
         print("[config][warn] 'rule_clause_end' in raw_sentence mode behaves like "
               "'sentence_end' (whole sequence is the clause).")
 
-    return cfg, cfg["models"][model_key]
+    return cfg, mcfg
 
 
 # --------------------------------------------------------------------------- #
@@ -318,62 +353,56 @@ def extract_store(rows, ckpt, tok, model, mcfg, dcfg, ecfg, ocfg, mode, position
     return store, has_frames
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--model", required=True)
-    ap.add_argument("--config", default="hyperparameters.json")
-    ap.add_argument("--preset", default=None, help="rule_following | concept | concept_raw")
-    ap.add_argument("--language", required=True,
-                    help="language code/name for this dataset, e.g. en, yoruba, igbo")
-    ap.add_argument("--concept", required=True,
-                    help="concept type for this dataset, e.g. obligation, negation")
-    ap.add_argument("--data", default=None, help="local train json; if omitted, pull train split per config.hf")
-    ap.add_argument("--test-data", default=None, help="local test json; if omitted, pull test split per config.hf")
-    ap.add_argument("--limit", type=int, default=None)
-    ap.add_argument("--no-push", action="store_true")
-    args = ap.parse_args()
+def run_one(cfg, mcfg, model_key, tok, model, concept, lang, variant, limit, no_push):
+    """Run extraction + DIM fit/score for one (model, language, dataset_variant)
+    combo, reusing an already-loaded (tok, model). Returns the local report path.
 
-    cfg, mcfg = load_cfg(args.config, args.model, preset=args.preset)
+    Caller owns the model's lifetime -- this function frees only what it
+    allocates for THIS combo (row stores, candidate tensors, results dict) so
+    memory doesn't accumulate across a sweep, but it never touches tok/model."""
     dcfg, ecfg, ocfg = cfg["data"], cfg["extraction"], cfg["optim"]
     mode = ecfg["stimulus_mode"]
     positions = ecfg["positions"]
     device = mcfg.get("device", "cuda")
     torch.manual_seed(ecfg.get("seed", 0))
     preset_tag = ecfg.get("_active_preset", mode)
-    # canonical run identity: concept / language / model__preset
-    lang, concept = args.language, args.concept
-    run_tag = f"{args.model}__{preset_tag}"
-    group_path = f"{concept}/{lang}/{run_tag}"          # HF path prefix + local subdir
-    ckpt_ns = f"{concept}__{lang}__{run_tag}"           # flat checkpoint namespace
-    print(f"[cfg] concept={concept} language={lang} preset={preset_tag} mode={mode} "
-          f"positions={positions} contrasts={ecfg['contrasts']}")
+    run_tag = f"{model_key}__{preset_tag}"
+    # combined (all contrasts x positions) group path -- kept for tooling (e.g.
+    # steering_poc.py) that wants one dim_candidates.pt/dim_report.json per run.
+    # Per-contrast x per-position split paths are pushed separately below.
+    group_path = f"{concept}/{variant}/{lang}/{run_tag}"
+    ckpt_ns = f"{concept}__{variant}__{lang}__{run_tag}"  # flat checkpoint namespace;
+    # variant is baked in here (not just group_path) because frame- and scenario-split
+    # files share row ids for overlapping records -- a shared cache dir would silently
+    # treat one variant's cached row as "done" for the other.
+    print(f"[cfg] concept={concept} language={lang} variant={variant} model={model_key} "
+          f"preset={preset_tag} mode={mode} positions={positions} contrasts={ecfg['contrasts']}")
 
     # ---- data: pull train and (optionally) test split ----
-    from_hub = cfg["hf"].get("dataset_load", "hub") == "hub" and args.data is None
+    from_hub = cfg["hf"].get("dataset_load", "hub") == "hub"
     def _load(split):
-        if args.data and split == "train":
-            path = args.data
-        elif args.test_data and split == "test":
-            path = args.test_data
-        else:
-            path = f"{concept}_{lang}_{split}.json"
-            if from_hub:
-                hf_io.pull_dataset(cfg, path, concept=concept, language=lang, split=split)
-            elif not os.path.exists(path):
-                return None
+        # local naming mirrors the hub layout: <split>.json for frame,
+        # <split>_scenario.json for scenario (e.g. obligation_ig_test_scenario.json)
+        file_split = split if variant == "frame" else f"{split}_scenario"
+        path = f"{concept}_{lang}_{file_split}.json"
+        if from_hub:
+            hf_io.pull_dataset(cfg, path, concept=concept, language=lang,
+                               split=split, dataset_variant=variant)
+        elif not os.path.exists(path):
+            return None
         if not os.path.exists(path):
             return None
         rr = json.load(open(path))
-        return rr[:args.limit] if args.limit else rr
+        return rr[:limit] if limit else rr
 
     train_rows = _load("train")
     if train_rows is None:
-        raise SystemExit("[data] no train split found (need --data, --test-data, or HF splits)")
+        print(f"[skip] {group_path}: no train split found (set config.hf.dataset_load"
+              f"='local' with a local file, or check HF dataset_files)")
+        return None
     test_rows = _load("test")
     print(f"[data] train={len(train_rows)} rows"
           + (f", test={len(test_rows)} rows" if test_rows else " (no test split)"))
-
-    tok, model = load_model(mcfg, ocfg)
 
     # extract activations for each split into its own checkpoint namespace
     ckpt_train = RowCheckpoint(cfg, f"{ckpt_ns}__train")
@@ -384,10 +413,10 @@ def main():
         ckpt_test = RowCheckpoint(cfg, f"{ckpt_ns}__test")
         store_te, _ = extract_store(test_rows, ckpt_test, tok, model, mcfg,
                                     dcfg, ecfg, ocfg, mode, positions, device)
-
-    del model; gc.collect()
-    if device.startswith("cuda"):
-        torch.cuda.empty_cache()
+    # NOTE: the model is NOT freed here -- it is reused for every remaining
+    # (language, variant) combo under this model in the sweep. Only the
+    # per-combo row stores (host-RAM tensors) get cleaned up, at the end of
+    # this function, so RAM doesn't accumulate run over run.
 
     # ---- DIM math ----
     p0 = positions[0]
@@ -403,8 +432,9 @@ def main():
     def all_of(store, member, position):
         return torch.stack([v for _, v in store[member][position]], 0)
 
-    results = {"model": args.model, "hf_name": mcfg["hf_name"], "preset": preset_tag,
-               "concept": concept, "language": lang, "stimulus_mode": mode,
+    results = {"model": model_key, "hf_name": mcfg["hf_name"], "preset": preset_tag,
+               "concept": concept, "language": lang, "dataset_variant": variant,
+               "stimulus_mode": mode,
                "n_layers_incl_embed": n_layers_p1, "d_model": d_model,
                "positions": positions, "contrasts": ecfg["contrasts"],
                "n_train": len(train_rows), "n_test": len(test_rows) if test_rows else 0,
@@ -485,13 +515,37 @@ def main():
         if cfg["transfer_check"]["enabled"] and not use_frames:
             print("[transfer] skipped: dataset has <2 frames (expected for concept/cross-lingual stimuli)")
 
-    # ---- save (local mirrors the HF group path: <out>/<concept>/<lang>/<model>__<preset>/) ----
-    local_dir = os.path.join(cfg["output"]["dir"], concept, lang, run_tag)
+    # ---- save combined (all contrasts x positions) --------------------------
+    # local mirrors the HF group path: <out>/<concept>/<variant>/<lang>/<model>__<preset>/
+    local_dir = os.path.join(cfg["output"]["dir"], concept, variant, lang, run_tag)
     os.makedirs(local_dir, exist_ok=True)
     dir_path = os.path.join(local_dir, "dim_candidates.pt")
     rep_path = os.path.join(local_dir, "dim_report.json")
     torch.save(candidate_tensors, dir_path)
     json.dump(results, open(rep_path, "w"), indent=2)
+
+    # ---- save split copies, one dir per (contrast, position) ----------------
+    # HF layout: <concept>/<variant>/<contrast>/<position>/<lang>/<model>__<preset>/
+    # These exist purely for HF-side navigation/browsability -- must_may and
+    # must_neutral (and each position) are otherwise only distinguishable by key
+    # inside the combined file. The combined file remains the source of truth;
+    # steering_poc.py and any other consumer of the full per-run bundle should
+    # keep reading it from `group_path`, not from a split path.
+    split_paths = []  # (contrast, position, split_group_path, cand_path, rep_path)
+    for name, entry in results["directions"].items():
+        contrast, position = name.split("__", 1)
+        split_group_path = f"{concept}/{variant}/{contrast}/{position}/{lang}/{run_tag}"
+        split_dir = os.path.join(cfg["output"]["dir"], concept, variant, contrast, position, lang, run_tag)
+        os.makedirs(split_dir, exist_ok=True)
+        split_cand_path = os.path.join(split_dir, "dim_candidates.pt")
+        split_rep_path = os.path.join(split_dir, "dim_report.json")
+        torch.save({name: candidate_tensors[name]}, split_cand_path)
+        split_report = {k: v for k, v in results.items() if k not in ("directions", "transfer_check")}
+        split_report["contrast"], split_report["position"] = contrast, position
+        split_report["directions"] = {name: entry}
+        # transfer_check doesn't decompose per (contrast, position); see the combined report.
+        json.dump(split_report, open(split_rep_path, "w"), indent=2)
+        split_paths.append((contrast, position, split_group_path, split_cand_path, split_rep_path))
 
     has_test = store_te is not None
     print(f"\n=== DIM summary [{group_path}] ===")
@@ -513,15 +567,110 @@ def main():
         for c, t in results["transfer_check"].items():
             print(f"  {c:14s} mean cos={t['mean_cosine']:+.3f}")
 
-    if not args.no_push:
+    if not no_push:
         try:
             if cfg["checkpoint"].get("upload_row_cache_to_hf", False):
                 hf_io.push(cfg, "activations", group_path, ckpt_train.rows_dir)
+            # combined bundle (pipeline-compat: steering_poc.py reads this)
             hf_io.push(cfg, "directions", group_path, dir_path)
-            hf_io.push(cfg, "results", group_path, rep_path)
+            # results (per-model, per-layer AUC for frame- and scenario-generalization)
+            # live under an AUC/ folder in the results repo.
+            hf_io.push(cfg, "results", f"AUC/{group_path}", rep_path)
+            # split copies, one per (contrast, position), for clean HF navigation
+            for contrast, position, split_group_path, split_cand_path, split_rep_path in split_paths:
+                hf_io.push(cfg, "directions", split_group_path, split_cand_path)
+                hf_io.push(cfg, "results", f"AUC/{split_group_path}", split_rep_path)
         except SystemExit as e:
             print(f"[hf] push skipped: {e}")
-    print(f"\n[done] {rep_path}")
+    print(f"[done] {rep_path}")
+    if split_paths:
+        print(f"[done] + {len(split_paths)} split (contrast, position) copies under "
+              f"{concept}/{variant}/<contrast>/<position>/{lang}/{run_tag}/")
+
+    # ---- per-combo cleanup (host RAM) ----------------------------------------
+    # store_tr/store_te hold every row's activations for every position x member
+    # already moved to CPU; candidate_tensors/results hold the derived directions
+    # and report. None of this is needed once this combo is saved/pushed, and
+    # letting it accumulate across a long sweep is exactly the RAM-exhaustion
+    # failure mode a multi-language/multi-model run risks. The model itself is
+    # deliberately NOT touched here -- see the docstring above.
+    del store_tr, store_te, candidate_tensors, results
+    gc.collect()
+    if device.startswith("cuda"):
+        torch.cuda.empty_cache()
+        print(f"[mem] cuda allocated={torch.cuda.memory_allocated()/1e9:.2f}GB "
+              f"reserved={torch.cuda.memory_reserved()/1e9:.2f}GB")
+    return rep_path
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--models", nargs="+", required=True,
+                    help="one or more model keys from config.models, e.g. --models qwen3-8b llama3.1-8b")
+    ap.add_argument("--config", default="hyperparameters.json")
+    ap.add_argument("--preset", default=None, help="rule_following | concept | concept_raw")
+    ap.add_argument("--languages", nargs="+", required=True,
+                    help="one or more language codes, e.g. --languages en de ig")
+    ap.add_argument("--concept", required=True,
+                    help="concept type for this dataset, e.g. obligation, negation")
+    ap.add_argument("--dataset-variants", nargs="+", choices=["frame", "scenario"], default=["frame"],
+                    help="frame: train/test split on disjoint frame_ids (same scenarios). "
+                         "scenario: train/test split on disjoint scenarios (same frames). "
+                         "Pass both to run the full sweep in one process.")
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--continue-on-error", action="store_true",
+                    help="log and skip a failing (model, language, variant) combo "
+                         "instead of aborting the whole sweep (e.g. one language OOMs "
+                         "or is missing on the hub).")
+    args = ap.parse_args()
+
+    combos = [(m, l, v) for m in args.models for l in args.languages for v in args.dataset_variants]
+    print(f"[sweep] {len(args.models)} model(s) x {len(args.languages)} language(s) x "
+          f"{len(args.dataset_variants)} variant(s) = {len(combos)} runs")
+
+    completed, failures = [], []
+    for model_key in args.models:
+        cfg, mcfg = load_cfg(args.config, model_key, preset=args.preset)
+        device = mcfg.get("device", "cuda")
+
+        print(f"\n{'=' * 70}\n[load model] {model_key}\n{'=' * 70}")
+        tok, model = load_model(mcfg, cfg["optim"])
+        try:
+            for lang in args.languages:
+                for variant in args.dataset_variants:
+                    tag = f"{args.concept}/{variant}/{lang}/{model_key}"
+                    print(f"\n--- [{tag}] ---")
+                    try:
+                        rep_path = run_one(cfg, mcfg, model_key, tok, model, args.concept,
+                                           lang, variant, args.limit, args.no_push)
+                        (completed if rep_path else failures).append((tag, rep_path or "no train split"))
+                    except Exception as e:
+                        if not args.continue_on_error:
+                            raise
+                        print(f"[error] {tag} failed: {e!r} -- continuing (--continue-on-error)")
+                        failures.append((tag, repr(e)))
+                        # an exception mid-batch can leave partially-built CUDA
+                        # tensors referenced from the traceback frame; clear what
+                        # we can before the next combo reuses this model.
+                        gc.collect()
+                        if device.startswith("cuda"):
+                            torch.cuda.empty_cache()
+        finally:
+            # always unload the model before moving to the next one (or exiting),
+            # even if a combo raised -- this is the main defense against GPU
+            # memory exhaustion across a multi-model sweep.
+            print(f"[unload model] {model_key}")
+            del tok, model
+            gc.collect()
+            if device.startswith("cuda"):
+                torch.cuda.empty_cache()
+
+    print(f"\n[sweep] {len(completed)}/{len(combos)} succeeded, {len(failures)}/{len(combos)} failed/skipped")
+    for tag, info in failures:
+        print(f"  - {tag}: {info}")
+    if failures and not args.continue_on_error:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
