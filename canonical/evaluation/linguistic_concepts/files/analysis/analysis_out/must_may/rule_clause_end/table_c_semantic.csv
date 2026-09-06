@@ -1,0 +1,21 @@
+model,language,peak_layer,top_plus,top_minus
+qwen3-8b,en,9,否则 才能 不然 至少 可以看到 否則 aci counters,很方便 �� 自由 不必 easily 竦 freely $error
+qwen3-8b,de,9,才能 Edwin EO ares PL somehow 谊 似乎,freely 自如 �� -Am 自由 很方便 棘 竦
+qwen3-8b,hi,15,ikel 至少 起码 urgently 珍惜 重中之重 赶快 strictly,alternatively 支配 很方便 预期 expect Benedict 自如 anywhere
+qwen3-8b,ig,13,unas 上前 企 事物 sled rawer 暴 澄,otron OWN xbe _DER initialState isma 陛 Hastings
+qwen3-8b,it,7,reater 首先是 ately achs SENT Sent ingly 槛,竦 itra 平安 inde 造福 较好 也可以 fre
+qwen3-8b,ko,14,rega 赘 尽可能 stp urgently 赶快 somehow 看待,很方便 legitimately arbitrarily 自如 过得 dragging anan завис
+qwen3-8b,ru,20,tee 坚决 detach 摆 -runner 大火 cli 骇,但是如果 很方便 但是对于 depending …but oose 但如果 但对于
+qwen3-8b,tr,10,起码 至少 обязательно urgently 等奖 necessarily 以便 eer,不够 很方便 不来 admir 不开 烟囱 alternatively colabor
+qwen3-8b,ur,21,Cli 紧扣 unless jeg 认真 至少 这样才能 无论是,//~ freely 乐意 自愿 塌 不排除 巴拉 .Expect
+qwen3-8b,yo,7,rawler 'gc inde 苇 bevor 科尔 iego 邸,地位 孱 镜头 黩 Relations kê 的地位 Cheap
+llama3.1-8b,en,9,afa bane (火 DA 代 WER vail iot,ɵ adí uards سوب alth umo Tear ((
+llama3.1-8b,de,9,afa STALL Smooth smooth ВА Pic � Vale,ɵ ittings opa opes .cloudflare ettel TickCount oug
+llama3.1-8b,hi,8,Fab omorphic afa Fab smooth complete 羽 NE,.cloudflare ulfilled etzt anel ucle uards mpeg eydi
+llama3.1-8b,ig,7,dün spontaneous anki .uni pth gate kinetics baugh,cept onya Moss оч こそ 柄 яг kie
+llama3.1-8b,it,7,icare ichi ilver jac iaux au egin ially,apl esser onymous aticon ucle alth Computed ahr
+llama3.1-8b,ko,11,iaux iani essim anio afa WithURL Smooth บท,pulse isk iska иск diam oire asn ubes
+llama3.1-8b,ru,10,orne iaux (火 addCriterion smooth mandatory accident smooth,alth 환 (( bou Nicholson سون Bender '])){
+llama3.1-8b,tr,5,gov したら čel опас ﻿# atron aggio thinkable,oon esian Susp orney IRT endl ibi ira
+llama3.1-8b,ur,8,Braz yaw Flash afa loos ăr 924 amac,nement оку usz eyse orthy isor ⓘ yeri
+llama3.1-8b,yo,8,211 cg recently bell icensing McGregor 578 SCALE,uilder alus udoku ucch onet usted posable собі

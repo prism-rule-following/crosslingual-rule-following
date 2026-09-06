@@ -91,7 +91,15 @@ position:
                                                     scenario/binding peak+
                                                     onset, delta, held_rate
   <out>/<contrast>/<position>/table_c_semantic.csv model, language, peak
-                                                    layer, top tokens
+                                                    layer, top tokens (one
+                                                    row per (model, language) --
+                                                    the peak-AUC layer only)
+  <out>/<contrast>/<position>/table_c_semantic_all_layers.csv
+                                                    same tokens for EVERY
+                                                    layer (all already saved
+                                                    by logit_lens_all_layers.py;
+                                                    no scoring/onset detection
+                                                    applied, just exported)
   <out>/<contrast>/<position>/fig1_obligation_auc_<model>.png
   <out>/<contrast>/<position>/fig2_binding_auc_<model>.png
   <out>/<contrast>/<position>/fig3_onset_scatter.png    (skipped when trivial)
@@ -283,11 +291,14 @@ def analyze_combo(cfg, model_key, lang, contrast, position, preset, threshold, m
     return row, frame_curve, scen_curve, bind_curve
 
 
-def semantic_row(cfg, model_key, lang, contrast, position, preset, peak_layer, topk_show=8):
+def semantic_row(model_key, lang, ll, peak_layer, topk_show=8):
+    """Peak-layer-only summary row (existing headline table). Takes the
+    already-fetched full logit-lens sweep (`ll`, every layer) so it doesn't
+    re-download it -- see all_layer_rows() for the full sweep this is sampled
+    from."""
     if peak_layer is None:
         return {"model": model_key, "language": lang, "peak_layer": None,
                 "top_plus": "", "top_minus": ""}
-    ll = logit_lens_report(cfg, model_key, lang, "scenario", contrast, position, preset)
     if ll is None:
         return {"model": model_key, "language": lang, "peak_layer": peak_layer,
                 "top_plus": "(no logit-lens data)", "top_minus": ""}
@@ -298,6 +309,30 @@ def semantic_row(cfg, model_key, lang, contrast, position, preset, peak_layer, t
     return {"model": model_key, "language": lang, "peak_layer": peak_layer,
             "top_plus": " ".join(hit["top_plus"][:topk_show]),
             "top_minus": " ".join(hit["top_minus"][:topk_show])}
+
+
+def all_layer_rows(model_key, lang, ll):
+    """Every layer's logit-lens tokens, not just the peak-AUC one -- the full
+    sweep is already computed and saved by logit_lens_all_layers.py (confirmed:
+    37 layers stored for Qwen, 33 for Llama, per combo); this just exports all
+    of it instead of sampling one row, so a real semantic-onset question (at
+    which layer do the tokens first read as deontic, not just separate the
+    labels) can be answered by inspection later without re-running extraction.
+    No scoring/threshold is applied here -- that's a separate, harder problem
+    (see conversation) and out of scope for this export."""
+    if ll is None:
+        return []
+    out_rows = []
+    for r in ll:
+        out_rows.append({
+            "model": model_key, "language": lang,
+            "tensor_index": r.get("tensor_index"), "resid_after_block": r.get("resid_after_block"),
+            "empty": r.get("empty", False),
+            "top_plus": " ".join(r.get("top_plus", [])),
+            "top_minus": " ".join(r.get("top_minus", [])),
+            "top_random_baseline": " ".join(r.get("top_random_baseline", [])),
+        })
+    return out_rows
 
 
 # --------------------------------------------------------------------------- #
@@ -385,7 +420,7 @@ def run_position_contrast(cfg, models, languages, contrast, position, preset,
     scen_trivial = ("scenario", position) in TRIVIAL
     frame_trivial = ("frame", position) in TRIVIAL
 
-    rows, semantic_rows = [], []
+    rows, semantic_rows, sweep_rows = [], [], []
     frame_curves, scen_curves, bind_curves = {}, {}, {}
     for model_key in models:
         frame_curves[model_key], scen_curves[model_key], bind_curves[model_key] = {}, {}, {}
@@ -397,8 +432,11 @@ def run_position_contrast(cfg, models, languages, contrast, position, preset,
             if fc: frame_curves[model_key][lang] = fc
             if sc: scen_curves[model_key][lang] = sc
             if bc: bind_curves[model_key][lang] = bc
-            semantic_rows.append(semantic_row(cfg, model_key, lang, contrast, position, preset,
-                                              row["scenario_peak_layer"]))
+            # fetch the full per-layer logit-lens sweep ONCE, feed both the
+            # peak-layer summary and the full-layer export from it
+            ll = logit_lens_report(cfg, model_key, lang, "scenario", contrast, position, preset)
+            semantic_rows.append(semantic_row(model_key, lang, ll, row["scenario_peak_layer"]))
+            sweep_rows.extend(all_layer_rows(model_key, lang, ll))
 
     if not rows:
         print(f"[{contrast}/{position}] no data at all -- skipping outputs")
@@ -426,7 +464,15 @@ def run_position_contrast(cfg, models, languages, contrast, position, preset,
     with open(table_c_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(semantic_rows[0].keys()))
         w.writeheader(); w.writerows(semantic_rows)
-    print(f"[table] {table_c_path}")
+    print(f"[table] {table_c_path} (peak-layer-only summary)")
+
+    if sweep_rows:
+        table_c_all_path = out / "table_c_semantic_all_layers.csv"
+        with open(table_c_all_path, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(sweep_rows[0].keys()))
+            w.writeheader(); w.writerows(sweep_rows)
+        print(f"[table] {table_c_all_path} ({len(sweep_rows)} rows -- every layer, "
+              f"every (model, language), no scoring applied)")
 
     for model_key in models:
         plot_auc_by_layer(scen_curves[model_key], frame_curves[model_key],
