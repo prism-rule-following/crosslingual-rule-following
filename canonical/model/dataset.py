@@ -365,19 +365,9 @@ class LLMJudgeChecker(_CheckerBase):
     checker_type: Literal[CheckerType.llm_judge] = Field(
         default=CheckerType.llm_judge, description="Discriminator: LLM-judged checker."
     )
-    instruction: str = Field(
-        description="Flat prompt string handed to the judge model."
-    )
     rubric: LLMJudgeRubric = Field(
         description="Structured natural-language rubric for the judge."
     )
-
-    @field_validator("instruction")
-    @classmethod
-    def _instruction_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            raise ValueError("instruction must be a non-empty string")
-        return v.strip()
 
 
 class DeterministicChecker(_CheckerBase):

@@ -1,0 +1,307 @@
+# Obligation direction extraction (difference-in-means)
+
+Extracts obligation directions from Qwen3-8B and Llama-3.1-8B by contrasting
+minimal-pair system rules that differ by a single modal token.
+
+- **must_text (clean) - may_text (corrupt)**   -> obligation vs permission
+- **must_text (clean) - neutral_text (corrupt)** -> obligation vs descriptive-norm
+
+Method follows Arditi et al. 2024 (diff-in-means over the residual stream, per
+layer), extended with three token-position anchors and causal selection.
+
+## Positions
+| anchor | what it reads | aggregation |
+|---|---|---|
+| `contrast_token`   | the swapped token (`mandatory`/`optional`/`customary` ...) | **per-frame DIM, then averaged** (avoids cross-frame index misalignment) |
+| `rule_clause_end`  | last token of the system rule clause | pooled |
+| `post_instruction` | last prompt token before generation (Arditi's anchor) | pooled |
+
+Positions are located by **token-id sub-span matching**, so indexing is correct
+for both tokenizers despite different word-boundary handling.
+
+## Files
+- `hyperparameters.json` - all model/data/extraction/selection config
+- `extract_dim.py` - caches resid_post, builds per-layer DIMs for both contrasts
+  at all three positions, computes per-layer Cohen's d separation, runs the
+  adj->modal transfer check. Outputs `dim_report_<model>.json` +
+  `dim_candidates_<model>.pt`.
+- `intervene_select.py` - ablate / add / KL causal selection of (l*, i*) over the
+  candidate directions. Outputs `intervention_report_<model>.json`.
+
+## Run
+```bash
+pip install -r requirements.txt
+# put obligation_full.json next to the scripts (or pass --data)
+
+python extract_dim.py      --model qwen3-8b    --config hyperparameters.json --data obligation_full.json
+python extract_dim.py      --model llama3.1-8b --config hyperparameters.json --data obligation_full.json
+
+python intervene_select.py --model qwen3-8b    --config hyperparameters.json --data obligation_full.json
+python intervene_select.py --model llama3.1-8b --config hyperparameters.json --data obligation_full.json
+```
+Add `--limit 8` for a quick smoke test.
+
+## Notes / knobs
+- **Prompt construction**: system = `"<context> Rule: <must/may/neutral_text>"`,
+  user = the constant `user_query` (L0). The obligation manipulation lives in the
+  system rule; the query is held fixed, so any activation difference is
+  attributable to the rule.
+- **Qwen3 thinking**: `enable_thinking:false` in config keeps the template
+  non-reasoning so the post-instruction anchor is well-defined.
+- **normalize_directions**: unit-norm the saved DIMs (default true). Raw norms
+  are always saved per layer in the report.
+- **Selection scoring** (`selection.intervention.comply_words` / `permit_words`):
+  the target-token lists are a starting point. For a rigorous behaviour score,
+  replace with a held-out judged generation eval; the hooks (ablate/add) are the
+  reusable part.
+- **Transfer check**: compares the DIM built from adjective frames
+  (`adj_mandatory`,`adj_obligatory`) against modal frames
+  (`modal_core`,`modal_have`) at `contrast_token`. High cosine => the direction
+  encodes obligation, not the surface string "must".
+
+## HF + checkpointing + optimizations (added)
+
+### Repos (auto-created, private by default)
+- dataset in:  `nunaa/canonical_obligation_dataset`
+- activations:  `nunaa/crosslingual_rf-activations`  (row cache; off by default)
+- directions:   `nunaa/crosslingual_rf-directions`   (`dim_candidates_<model>.pt`)
+- results:      `nunaa/crosslingual_rf-results`       (`dim_report_<model>.json`)
+
+Set `export HF_TOKEN=hf_...` first. All repo names live in `hyperparameters.json -> hf`.
+
+### Run (pulls dataset from hub, pushes artifacts)
+```bash
+python extract_dim.py --model qwen3-8b    --config hyperparameters.json
+python extract_dim.py --model llama3.1-8b --config hyperparameters.json
+```
+`--no-push` to skip upload, `--data file.json` to use a local dataset, `--limit N` to smoke-test.
+
+Manual HF ops:
+```bash
+python hf_io.py pull-dataset --out obligation_full.json
+python hf_io.py push --kind directions --model qwen3-8b --path dim_out/dim_candidates_qwen3-8b.pt
+```
+
+### Checkpointing (`hyperparameters.json -> checkpoint`)
+Row-level, Drive-backed. Each row's activations (all members x positions) are written
+atomically to `<drive_dir>/<model>/row_activations/<row_id>.pt` as soon as it's computed.
+On restart the run skips any row already on disk, so a crash resumes mid-extraction with
+no recompute. Point `drive_dir` at your mounted Drive (Colab:
+`/content/drive/MyDrive/...`). The DIM math reloads from the row cache, so extraction and
+analysis are decoupled.
+
+### Optimizations (`hyperparameters.json -> optim`)
+- batched forward (`batch_size`), bf16, `use_cache=false`
+- `attn_implementation`: `sdpa` (default) or `flash_attention_2` (falls back to sdpa if unavailable)
+- `torch_compile` with `compile_mode`
+- right-padding + per-prompt unpadding so batching never corrupts position indices
+- `empty_cache_every_n_batches` clears CUDA cache + gc; model is freed before the CPU DIM math
+- hooks are only used in `intervene_select.py`, and only on needed layers
+
+## Two experiments, one pipeline (stimulus_mode + presets)
+
+The concept experiment and the rule-following experiment differ only in how the
+stimulus reaches the model. Select with `--preset`:
+
+| preset | stimulus_mode | prompt | positions | answers |
+|---|---|---|---|---|
+| `rule_following` | `system_user` | system=`<context> Rule: <rule>`, user=`<query>` | contrast_token, rule_clause_end, post_instruction | does the model *follow* the rule? |
+| `concept` | `user_only` | single user turn = the rule sentence | contrast_token, sentence_end | does the model *represent* obligation? |
+| `concept_raw` | `raw_sentence` | raw sentence, **no chat template** | contrast_token, sentence_end | concept, stripped of all chat framing |
+
+```bash
+python extract_dim.py --model qwen3-8b    --preset rule_following
+python extract_dim.py --model qwen3-8b    --preset concept
+python extract_dim.py --model qwen3-8b    --preset concept_raw
+```
+
+Why three: `concept_raw` -> `concept` -> `rule_following` is a ladder of added
+framing. If the obligation direction survives all three, it's a concept, not an
+artifact of one prompt format. `must_may` is the headline contrast
+(obligation vs permission); `must_neutral`, and any `should`/`can` you add later,
+are a *different deontic axis* -- report them separately, don't average them in.
+
+**Guardrails (fail loud):**
+- `post_instruction` is rejected unless `stimulus_mode=system_user` (it only reads
+  chat scaffolding otherwise).
+- unknown `stimulus_mode` is rejected.
+- the transfer check auto-skips when the dataset has <2 frames (expected for the
+  concept/cross-lingual stimuli, which have no adj/modal frame structure).
+
+**Checkpoint / output namespacing:** artifacts and the Drive row cache are keyed by
+`<model>__<preset>`, so the three experiments never overwrite each other and each
+resumes independently.
+
+### Notes for the cross-lingual (Igbo/Yoruba) concept run
+- Use `concept` or `concept_raw`. Provide a dataset whose rows carry the deontic
+  sentence per language with `must_token`/`may_token` set to the language's modal
+  marker so `contrast_token` locates correctly (token-id matching is language-agnostic).
+- The transfer check is frame-based and will skip; the cross-lingual patch
+  (English obligation dir -> Yoruba/Igbo permission run, with within-language
+  positive controls) lives in the patching script, not here.
+
+## Per-language, per-concept runs (required flags)
+
+Every run is one homogeneous dataset for one `(concept, language)`, passed as flags.
+`--language` and `--concept` are **required** on both scripts. This keeps runs from
+ever overwriting each other as you extend to new languages and concept types.
+
+```bash
+python extract_dim.py --model qwen3-8b --preset concept --concept obligation --language en
+python extract_dim.py --model qwen3-8b --preset concept --concept obligation --language yoruba
+python extract_dim.py --model qwen3-8b --preset concept --concept obligation --language igbo
+python extract_dim.py --model qwen3-8b --preset concept --concept negation   --language yoruba
+```
+
+### Naming (identical everywhere)
+`run_tag = <model>__<preset>` and `group = <concept>/<language>/<run_tag>`.
+
+| artifact | path |
+|---|---|
+| local directions | `dim_out/<concept>/<language>/<model>__<preset>/dim_candidates.pt` |
+| local report | `dim_out/<concept>/<language>/<model>__<preset>/dim_report.json` |
+| intervention report | `dim_out/<concept>/<language>/<model>__<preset>/intervention_report.json` |
+| Drive row cache | `<drive_dir>/<concept>__<language>__<model>__<preset>/row_activations/` |
+| HF (each of the 3 repos) | `<concept>/<language>/<model>__<preset>/...` |
+
+So `nunaa/crosslingual_rf-directions` grows as:
+```
+obligation/en/qwen3-8b__concept/dim_candidates.pt
+obligation/yoruba/qwen3-8b__concept/dim_candidates.pt
+obligation/igbo/qwen3-8b__concept/dim_candidates.pt
+negation/yoruba/qwen3-8b__concept/dim_candidates.pt
+...
+```
+
+### Dataset resolution (`hf.dataset_files`)
+When pulling from the hub, the file inside `nunaa/canonical_obligation_dataset` is
+resolved by, in order: an explicit `hf.dataset_files["<concept>/<language>"]` entry,
+then `"<concept>_<language>.json"` at repo root, then `"<concept>/<language>.json"`,
+then a warned fallback to the first json. Add new languages/concepts to
+`hf.dataset_files` as you create them, or just name the files `<concept>_<language>.json`.
+
+Local runs skip the hub: pass `--data <concept>_<language>.json` (or set
+`hf.dataset_load: local`).
+
+### Intervention (same flags)
+```bash
+python intervene_select.py --model qwen3-8b --preset rule_following \
+    --concept obligation --language en
+```
+It loads `dim_candidates.pt` from the matching group dir and writes
+`intervention_report.json` beside it. Push it with:
+```bash
+python hf_io.py push --kind results \
+    --group-path obligation/en/qwen3-8b__rule_following \
+    --path dim_out/obligation/en/qwen3-8b__rule_following/intervention_report.json
+```
+
+## Held-out evaluation (train/test splits)
+
+The DIM is now **fit on train and evaluated on both train (in-sample) and test
+(held-out)**, so the in-sample inflation is visible next to the honest number.
+
+- The dataset repo carries `train` and `test` splits (pulled separately).
+- Direction = difference-in-means fit on **train only** (per-frame-mean at
+  contrast_token when the train set has frames; pooled otherwise).
+- Metrics per layer/position: **Cohen's d** and **AUC** (rank-based, threshold-free,
+  matches sklearn's roc_auc_score). Reported for:
+  - `in_sample`  : train projected on the train direction
+  - `held_out.at_train_best_layer` : test at the layer chosen on train (the honest headline)
+  - `held_out.own_best_layer`      : test's own best layer (diagnostic)
+
+```bash
+# pulls train + test splits from HF automatically
+python extract_dim.py --model qwen3-8b --preset concept_raw --concept obligation --language en
+
+# or point at local files
+python extract_dim.py --model qwen3-8b --preset concept_raw --concept obligation --language en \
+    --data obligation_full.json --test-data obligation_en_test.json --no-push
+```
+
+Console prints a side-by-side table: in-sample d/AUC, held-out d/AUC at the
+train-selected layer, and held-out own-best. Full per-layer arrays are in
+`dim_report.json` under each direction's `in_sample` / `held_out` keys.
+
+**Split resolution on HF** (`hf_io.pull_dataset(..., split=)`): tries
+`load_dataset(split=...)`, filters by a `split` column if present, and for raw
+files matches split-aware names like `<concept>_<language>_<split>.parquet`,
+`<split>/<concept>_<language>.json`, etc.
+
+Note: the held-out direction is still fit on train; the test set only ever gets
+**projected**, never used to build the direction, and its own frames (e.g.
+`impersonal`, `lexeme_set`) are not required to match the train frames.
+
+## Ablation-based causal selection (ablate_select.py)
+
+Selects an obligation direction by causal effect under Arditi directional
+ablation, gated against generic model damage. The winner feeds the cross-lingual
+patching experiment; this script does NOT run a final 3-judge pass (the causal
+claim lives in the Yoruba patch).
+
+Pipeline: shortlist top-2 held-out-AUC candidates at contrast_token + top-2 at
+sentence_end (4 total) + 1 random-direction control per candidate layer ->
+for each: project its own-layer unit vector out of resid at all layers >= its
+layer during generation on 100 English sweep prompts -> KL guard (mean
+first-token KL vs baseline on neutral refs, pre-registered cutoff 0.2) ->
+coherence guard (local heuristic, pre-registered rate >= 0.90) -> inline
+GPT-mini judge (imported from judge_gpt_mini.py) -> HELD-drop vs baseline
+computed on the EXACT sweep ids -> winner = max HELD-drop among candidates
+passing both gates. Fails loud (selects none) if no candidate passes.
+
+```bash
+# All data pulled from HF (repos in hyperparameters.json -> ablation).
+# Only the judge script is local. Set HF_TOKEN + the Azure GPT env vars first.
+python ablate_select.py \
+  --model Qwen/Qwen3-8B \
+  --model-key qwen3-8b \
+  --concept obligation --language en --preset concept_raw \
+  --judge-script judge_gpt_mini.py \
+  --n-sweep 100 --n-ref 40 \
+  --temperature 1.0 --do-sample true \
+  --out ablate_out
+```
+
+HF sources (hyperparameters.json -> ablation):
+- directions  : `nunaa/crosslingual_rf-directions` at `<concept>/<lang>/<model_key>__<preset>/`
+- sweep        : `crosslingual-rule-following/model-inference-responses`, `active_only_768_n3/<slug>/<lang>.parquet`
+- baseline     : `crosslingual-rule-following/judge-results-active-only`, `gpt_mini/results.jsonl`
+- KL refs      : derived on the fly from NON-obligation-category rows of the sweep repo
+  (obligation categories = mandatory_referral, refuse_with_reason, no_verdict, scope_lock),
+  kept disjoint from the sweep ids.
+
+Any of these can be overridden with a local path: `--dim-report`, `--dim-candidates`,
+`--sweep-data`, `--kl-ref-data`, `--baseline-results`. `--model-key` maps to the HF
+model slug via `ablation.model_slug_map`.
+
+Correctness points (from review): separate neutral KL refs; one canonical `eval_rows`
+(HELD/VIOLATED baseline only) used for baseline, ablated, and drop; match generation
+config to baseline; startup asserts direction-dim == hidden size and verifies the
+resid_post hook; records `n_invalid_judgments` + `judge_valid_rate>=0.95` gate; one fixed
+random control per layer with numeric `specificity_gap`; the 100 prompts are the
+SELECTION set (causal claim = cross-lingual patch).
+
+Key correctness points (from review):
+- `--kl-ref-data` is a SEPARATE neutral, non-obligation prompt set (the KL guard must
+  measure generic distortion, not distortion on obligation text).
+- One canonical `eval_rows` = sweep rows with a HELD/VIOLATED baseline verdict; the same
+  set is used for baseline rate, ablated rate, and drop (identical denominator).
+- Match `--temperature`/`--do-sample` to the baseline inference run so ablation is the
+  only changed variable.
+- Startup asserts the direction dim == hidden size and verifies the decoder block's
+  `output[0]` last-dim == hidden size (resid_post hook sanity) before running.
+- Random control is one fixed direction PER LAYER; `specificity_gap` (winner drop minus
+  control drop) is recorded numerically, not just printed.
+- Report records `n_invalid_judgments` and gates on `judge_valid_rate >= 0.95`.
+- The 100 prompts are the SELECTION set; the causal effect is the cross-lingual patch.
+
+Pre-registered gates (fixed before results): mean first-token KL <= 0.2;
+coherence_rate >= 0.90. selection_report.json records per-candidate
+baseline_held / ablated_held / held_drop / mean+median+p95+max KL /
+coherence_rate / per-response coherence metrics / kl_pass / coherence_pass /
+is_control / selected. selected_direction.pt carries the winner vector + layer +
+metadata for the patching step.
+
+Needs: torch+CUDA, the model, HF access to the baseline results, and the Azure
+GPT env vars judge_gpt_mini.py expects. resid layer = dim_index - 1 (dim index 0
+is the embedding layer).
