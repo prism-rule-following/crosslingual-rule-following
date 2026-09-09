@@ -1,0 +1,186 @@
+# Per-language configuration for the translation pipeline.
+#
+# Per-language fields:
+#   status_words            the 5 representation-contrast pairs; substituted into an
+#                           otherwise identical carrier sentence, so the two members of
+#                           a pair differ only in this span. 
+#   yes_no_labels           accepted surface forms for the ack_invert deterministic
+#                           checker. First entry is used when composing correct_answer;
+#                           all entries are accepted when scoring a reply.
+
+de:
+  name: German
+  script: Latin
+  register: informal
+  status_words:
+    active_cancelled: { "active": aktiv, "cancelled": aufgehoben }
+    on_off:           { "on": ein, "off": aus }
+    true_false:       { "true": wahr, "false": falsch }
+    valid_invalid:    { "valid": gültig, "invalid": ungültig }
+    enabled_disabled: { "enabled": aktiviert, "disabled": deaktiviert }
+  yes_no_labels:
+    "yes": [ja]
+    "no": [nein]
+
+ru:
+  name: Russian
+  script: Cyrillic
+  register: formal
+  status_words:
+    active_cancelled: { "active": активно, "cancelled": отменено }
+    on_off:           { "on": вкл, "off": выкл }
+    true_false:       { "true": истина, "false": ложь }
+    valid_invalid:    { "valid": действительно, "invalid": недействительно }
+    enabled_disabled: { "enabled": включено, "disabled": отключено }
+  yes_no_labels:
+    "yes": [да]
+    "no": [нет]
+
+tr:
+  name: Turkish
+  script: Latin
+  register: informal
+  status_words:
+    active_cancelled: { "active": aktif, "cancelled": iptal edildi }
+    on_off:           { "on": açık, "off": kapalı }
+    true_false:       { "true": doğru, "false": yanlış }
+    valid_invalid:    { "valid": geçerli, "invalid": geçersiz }
+    enabled_disabled: { "enabled": etkin, "disabled": devre dışı }
+  yes_no_labels:
+    "yes": [evet]
+    "no": [hayır]
+
+ko:
+  name: Korean
+  script: Hangul
+  register: informal
+  status_words:
+    active_cancelled: { "active": 활성, "cancelled": 취소됨 }
+    on_off:           { "on": 켜짐, "off": 꺼짐 }
+    true_false:       { "true": 참, "false": 거짓 }
+    valid_invalid:    { "valid": 유효, "invalid": 무효 }
+    enabled_disabled: { "enabled": 활성화됨, "disabled": 비활성화됨 }
+  yes_no_labels:
+    "yes": [예, 네]
+    "no": [아니요, 아니오]
+
+it:
+  name: Italian
+  script: Latin
+  register: informal
+  status_words:
+    active_cancelled: { "active": attivo, "cancelled": annullato }
+    on_off:           { "on": acceso, "off": spento }
+    true_false:       { "true": vero, "false": falso }
+    valid_invalid:    { "valid": valido, "invalid": non valido }
+    enabled_disabled: { "enabled": abilitato, "disabled": disabilitato }
+  yes_no_labels:
+    "yes": [sì]
+    "no": [no]
+
+sw:
+  name: Swahili
+  script: Latin
+  register: none
+  status_words:
+    active_cancelled: { "active": inatumika, "cancelled": imeghairiwa }
+    on_off:           { "on": imewashwa, "off": imezimwa }
+    true_false:       { "true": kweli, "false": uongo }
+    valid_invalid:    { "valid": halali, "invalid": batili }
+    enabled_disabled: { "enabled": imewezeshwa, "disabled": imelemazwa }
+  yes_no_labels:
+    "yes": [ndiyo, ndio]
+    "no": [hapana, la]
+
+ig:
+  name: Igbo
+  script: Latin
+  register: none
+  status_words:
+    active_cancelled: { "active": nọ n'ọrụ, "cancelled": akagbuola }
+    on_off:           { "on": agbanyere, "off": agbanyụọla }
+    true_false:       { "true": eziokwu, "false": ụgha }
+    valid_invalid:    { "valid": ziri ezi, "invalid": ezighi ezi }
+    enabled_disabled: { "enabled": enyerela ike, "disabled": gbanyụrụ }
+  yes_no_labels:
+    "yes": [ee]
+    "no": [mba]
+
+yo:
+  name: Yoruba
+  script: Latin
+  register: informal
+  status_words:
+    active_cancelled: { "active": ń ṣiṣẹ́, "cancelled": fagilé }
+    on_off:           { "on": tàn, "off": pa }
+    true_false:       { "true": òtítọ́, "false": irọ́ }
+    valid_invalid:    { "valid": wúlò, "invalid": kò wúlò }
+    enabled_disabled: { "enabled": ṣíṣẹ́, "disabled": dídúró }
+  yes_no_labels:
+    "yes": [bẹ́ẹ̀ni]
+    "no": [bẹ́ẹ̀kọ́, rárá]
+
+am:
+  name: Amharic
+  script: Ethiopic
+  register: formal
+  templates:
+    # Ethiopic full stop — the default template's Latin '.' is wrong in this script.
+    rule_text_tmpl: "{clause}። {status_label} {status_word}።"
+  status_words:
+    active_cancelled: { "active": ንቁ, "cancelled": ተሰርዟል }
+    on_off:           { "on": በርቷል, "off": ጠፍቷል }
+    true_false:       { "true": እውነት, "false": ሐሰት }
+    valid_invalid:    { "valid": ልክ, "invalid": ልክ ያልሆነ }
+    enabled_disabled: { "enabled": ነቅቷል, "disabled": ተሰናክሏል }
+  yes_no_labels:
+    "yes": [አዎ]
+    "no": [አይደለም, አይ]
+
+hi:
+  name: Hindi
+  script: Devanagari
+  register: informal
+  templates:
+    # Devanagari danda — the default template's Latin '.' is wrong in this script.
+    rule_text_tmpl: "{clause}। {status_label} {status_word}।"
+  status_words:
+    active_cancelled: { "active": सक्रिय, "cancelled": रद्द }
+    on_off:           { "on": चालू, "off": बंद }
+    true_false:       { "true": सत्य, "false": असत्य }
+    valid_invalid:    { "valid": वैध, "invalid": अवैध }
+    enabled_disabled: { "enabled": सक्षम, "disabled": अक्षम }
+  yes_no_labels:
+    "yes": [हाँ]
+    "no": [नहीं]
+
+ur:
+  name: Urdu
+  script: Arabic
+  register: informal
+  templates:
+    # Urdu full stop — the default template's Latin '.' is wrong in this script.
+    rule_text_tmpl: "{clause}۔ {status_label} {status_word}۔"
+  status_words:
+    active_cancelled: { "active": سرگرم, "cancelled": منسوخ }
+    on_off:           { "on": چالو, "off": بند }
+    true_false:       { "true": سچ, "false": جھوٹ }
+    valid_invalid:    { "valid": جائز, "invalid": ناجائز }
+    enabled_disabled: { "enabled": فعال شدہ, "disabled": غیر فعال شدہ }
+  yes_no_labels:
+    "yes": [ہاں, جی ہاں]
+    "no": [نہیں]
+
+ta:
+  name: Tamil
+  script: Tamil
+  register: informal
+  status_words:
+    active_cancelled: { "active": செயலில், "cancelled": ரத்து செய்யப்பட்டது }
+    on_off:           { "on": ஆன், "off": ஆஃப் }
+    true_false:       { "true": உண்மை, "false": பொய் }
+    valid_invalid:    { "valid": செல்லுபடியாகும், "invalid": செல்லாது }
+    enabled_disabled: { "enabled": இயக்கப்பட்டது, "disabled": முடக்கப்பட்டது }
+  yes_no_labels:
+    "yes": [ஆம்]
+    "no": [இல்லை]
