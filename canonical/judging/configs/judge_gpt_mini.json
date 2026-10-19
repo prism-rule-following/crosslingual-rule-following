@@ -1,0 +1,16 @@
+{
+    "judge": "gpt_mini",
+    "judge_model": "gpt-5.4-mini",
+    "dataset_repo": "crosslingual-rule-following/crv-model-inference-responses",
+    "dataset_subset": "",
+    "model_ids": ["Qwen/Qwen3-8B", "meta-llama/Llama-3.1-8B-Instruct"],
+    "language_codes": ["en", "de", "hi", "ig", "it", "ko", "ru", "tr", "ur", "yo"],
+    "sample_indices": null,
+    "results_dir": "results/crv",
+    "max_workers": 5,
+    "retry_max_workers": 5,
+    "max_retries": 6,
+    "hf_results_repo": "crosslingual-rule-following/crv-judge-results-active-only",
+    "hf_path_prefix": "",
+    "hf_private": true
+}
