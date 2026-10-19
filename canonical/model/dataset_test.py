@@ -243,7 +243,7 @@ def test_load_from_github_unsupported_raw_type_raises(monkeypatch, tmp_path):
 def test_load_source_dataset_calls_load_dataset(monkeypatch):
     calls = []
 
-    def fake_load_dataset(repo_id):
+    def fake_load_dataset(repo_id, data_files=None):
         calls.append(repo_id)
         return {"train": FakeHFDataset(pd.DataFrame(sample_pairs_static()))}
 
@@ -254,7 +254,7 @@ def test_load_source_dataset_calls_load_dataset(monkeypatch):
 
 
 def test_load_source_dataset_reraises_on_failure(monkeypatch):
-    def fake_load_dataset(repo_id):
+    def fake_load_dataset(repo_id, data_files=None):
         raise RuntimeError("boom")
 
     monkeypatch.setattr(ds, "load_dataset", fake_load_dataset)
@@ -544,7 +544,7 @@ def test_cross_lingual_dataset_gh_source_invalid_path_raises(tmp_path):
 def test_dataset_generator_hf_source_mocked(monkeypatch, sample_pairs):
     calls = []
 
-    def fake_load_source_dataset(repo_id):
+    def fake_load_source_dataset(repo_id, data_files=None):
         calls.append(repo_id)
         return {"train": FakeHFDataset(pd.DataFrame(sample_pairs))}
 
@@ -563,7 +563,7 @@ def test_cross_lingual_dataset_hf_source_mocked(monkeypatch, sample_pairs):
     monkeypatch.setattr(
         ds.HFDataHelper,
         "load_source_dataset",
-        lambda repo_id: {"train": FakeHFDataset(pd.DataFrame(sample_pairs))},
+        lambda repo_id, data_files=None: {"train": FakeHFDataset(pd.DataFrame(sample_pairs))},
     )
     config = DatasetConfig(url="some-org/rule-following-pairs", source=DatasetSource.hf)
     dataset = CrossLingualRuleFollowingDataset(config)
@@ -571,7 +571,7 @@ def test_cross_lingual_dataset_hf_source_mocked(monkeypatch, sample_pairs):
 
 
 def test_dataset_generator_hf_source_propagates_failure(monkeypatch):
-    def fake_load_source_dataset(repo_id):
+    def fake_load_source_dataset(repo_id, data_files=None):
         raise RuntimeError("network down")
 
     monkeypatch.setattr(

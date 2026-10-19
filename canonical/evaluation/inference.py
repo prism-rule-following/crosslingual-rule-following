@@ -28,6 +28,7 @@ from canonical.model.dataset import (
     ACTIVE_STATUSES,
     DatasetConfig,
     DatasetLanguageCode,
+    DatasetSource,
     GrammarType,
     HFDataHelper,
     PairType,
@@ -678,9 +679,15 @@ def run(config: ModelGenerationConfig) -> None:
             ds_config = config.dataset_config
             if ds_config.data_dir:
                 lang = lang_code.value if lang_code is not None else "en"
-                ds_config = ds_config.model_copy(
-                    update={"url": f"{ds_config.data_dir}/{lang}/test.jsonl"}
+                lang_file = f"{ds_config.data_dir}/{lang}/test.jsonl"
+                # hf: `url` stays the repo id and only that language's file is
+                # loaded from it; gh: `url` becomes the local/raw file path.
+                update = (
+                    {"data_files": lang_file}
+                    if ds_config.source == DatasetSource.hf
+                    else {"url": lang_file}
                 )
+                ds_config = ds_config.model_copy(update=update)
             return CrossLingualRuleFollowingDataset(ds_config)
 
         result_helper = (

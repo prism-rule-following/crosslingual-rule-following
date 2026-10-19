@@ -687,7 +687,13 @@ class DatasetConfig(BaseModel):
         default=None,
         description="optional directory of per-language dataset files "
         "({data_dir}/{lang}/test.jsonl); when set, datasets are loaded per "
-        "language instead of from a single url",
+        "language instead of from a single url. For source=hf this is a "
+        "folder inside the HF repo given by `url` (e.g. 'data')",
+    )
+    data_files: Optional[str] = Field(
+        default=None,
+        description="for source=hf: file path inside the HF repo to load "
+        "instead of the whole repo; set per language from data_dir",
     )
     source: DatasetSource = Field(..., description="dataset source")
     split: Optional[str] = Field(
@@ -894,7 +900,7 @@ def _apply_filters(df: pd.DataFrame, config: DatasetConfig) -> pd.DataFrame:
 def dataset_generator(config: DatasetConfig) -> pd.DataFrame:
     """Load -> normalize -> (validate) -> filter. Returns a DataFrame."""
     raw = (
-        HFDataHelper.load_source_dataset(config.url)
+        HFDataHelper.load_source_dataset(config.url, config.data_files)
         if config.source == DatasetSource.hf
         else load_from_github(config.url)
     )
@@ -1011,9 +1017,9 @@ class HFDataHelper:
         self._api = HfApi()
 
     @staticmethod
-    def load_source_dataset(repo_id: str) -> Any:
+    def load_source_dataset(repo_id: str, data_files: Optional[str] = None) -> Any:
         try:
-            return load_dataset(repo_id)
+            return load_dataset(repo_id, data_files=data_files)
         except Exception:
             print(f"An error occurred. Unable to load {repo_id!r} from HuggingFace.")
             raise

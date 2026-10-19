@@ -594,6 +594,8 @@ def test_run_reraises_on_failure(monkeypatch):
         raise RuntimeError("dataset load failed")
 
     monkeypatch.setattr(inf, "CrossLingualRuleFollowingDataset", boom)
+    monkeypatch.setattr(inf, "ModelRunner", FakeRunner)
+    monkeypatch.setattr(inf, "HFDataHelper", FakeHFDataHelper)
 
     config = run_config()
     with pytest.raises(RuntimeError, match="dataset load failed"):

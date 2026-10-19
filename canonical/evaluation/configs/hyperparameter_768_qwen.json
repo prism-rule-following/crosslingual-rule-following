@@ -16,8 +16,9 @@
     "enable_thinking": false,
     "active_only": true,
     "dataset_config": {
-        "data_dir": "/workspace/data",
-        "source": "gh",
+        "url": "crosslingual-rule-following/canonical-dataset",
+        "data_dir": "data",
+        "source": "hf",
         "validate_rows": true,
         "strict": true
     }
