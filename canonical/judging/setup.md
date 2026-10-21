@@ -7,11 +7,14 @@ Gemini 3.7 Flash, DeepSeek-V4-Pro), then analyzes the results.
 ## Repo structure
 
 ```
-judging/
+canonical/judging/
   judge_gpt_mini.py           # Azure GPT-5.4-mini judge
   judge_deepseek.py           # Azure DeepSeek-V4-Pro judge
   judge_gemini.py             # Gemini via OpenRouter
   judge_gemini_vertex.py      # Gemini via direct Vertex AI (faster path)
+  config.py                   # JudgeConfig + --config loader
+  common.py                   # shared prompt, rubric, cross-checks, judging loop
+  configs/                    # one JSON config per judge
   retry_failed_rows.py        # retries transient failures from a judge run
   consolidate.py              # merges an original run + retry pass
   merge_gemini_sources.py     # merges OpenRouter + Vertex Gemini sources
@@ -54,47 +57,63 @@ Fill in:
 - **HF_TOKEN**: needed for `upload_to_hf.py`. Must be issued *after* you've been
   granted org membership on the target HF org, or uploads 403.
 
-### 3. Dataset
+### 3. Config
 
-Judging scripts pull from the HF dataset `crosslingual-rule-following/model-inference-responses`,
-subset `active_only_768_n3`. No local download step needed -- each judge script
-fetches it directly.
+Every judging script takes `--config <file>`, a JSON file validated by
+`JudgeConfig` in `config.py` (same pattern as `canonical/evaluation/inference.py`'s
+`--hyperparameter-file`). One file per judge lives in `configs/`:
+
+| Field | Meaning |
+|---|---|
+| `judge` | `gpt_mini`, `deepseek`, `gemini` (OpenRouter) or `gemini_vertex` |
+| `judge_model` | deployment / model name; overrides the provider's env var |
+| `dataset_repo` | HF repo with inference responses -- the inference config's `hf_result_repo` |
+| `dataset_subset` | folder inside `dataset_repo`; `""` = root `{model}/{lang}.parquet` written by `inference.py`, `"active_only_768_n3"` = the assembled export |
+| `model_ids`, `language_codes` | which (model, language) parquets to judge -- same ids as the inference configs |
+| `sample_indices` | judge only these `sample_idx` values; `null` = all |
+| `results_dir` | local output root; each judge writes to `{results_dir}/{judge}/` |
+| `max_workers`, `retry_max_workers`, `max_retries` | concurrency and rate-limit backoff |
+| `skip_succeeded_from` | other results files whose successful rows are skipped (Vertex skipping OpenRouter rows) |
+| `merge_sources` | files merged by `merge_gemini_sources.py` |
+| `hf_results_repo`, `hf_path_prefix`, `hf_private` | upload target for `upload_to_hf.py` |
+
+Secrets (API keys, endpoints, `HF_TOKEN`) stay in `.env`.
 
 ## Running the judging pipeline
 
-Run each judge independently (they don't depend on each other):
+Run from the repo root. Each judge is independent:
 
 ```bash
-python judging/judge_gpt_mini.py
-python judging/judge_deepseek.py
+python -m canonical.judging.judge_gpt_mini      --config canonical/judging/configs/judge_gpt_mini.json
+python -m canonical.judging.judge_deepseek      --config canonical/judging/configs/judge_deepseek.json
 # Gemini: pick ONE path, or both then merge
-python judging/judge_gemini.py            # OpenRouter -- slower, works everywhere
-python judging/judge_gemini_vertex.py     # Vertex AI -- faster, needs GCP access
+python -m canonical.judging.judge_gemini        --config canonical/judging/configs/judge_gemini.json
+python -m canonical.judging.judge_gemini_vertex --config canonical/judging/configs/judge_gemini_vertex.json
 ```
 
-If any judge run has failures, retry them:
+Retry failures (works for any judge), then merge original + retry into `final.jsonl`:
 
 ```bash
-python judging/retry_failed_rows.py
-python judging/consolidate.py             # merges original + retry -> final.jsonl
+python -m canonical.judging.retry_failed_rows --config canonical/judging/configs/judge_<judge>.json
+python -m canonical.judging.consolidate       --config canonical/judging/configs/judge_<judge>.json
 ```
 
-If you ran Gemini via both paths:
+If you ran Gemini via both paths, merge instead of consolidating (writes the gemini `final.jsonl`):
 
 ```bash
-python judging/merge_gemini_sources.py    # -> results/gemini/final.jsonl
+python -m canonical.judging.merge_gemini_sources --config canonical/judging/configs/judge_gemini.json
 ```
 
-Check for and remove duplicates if a run was interrupted/resumed:
+Remove duplicates if a run was interrupted/resumed:
 
 ```bash
-python judging/dedupe_judge.py <gpt_mini|deepseek|gemini>
+python -m canonical.judging.dedupe_judge --config canonical/judging/configs/judge_<judge>.json
 ```
 
-Push results to HF once each judge's `final.jsonl` is clean:
+Push each judge's clean `final.jsonl` to HF:
 
 ```bash
-python judging/upload_to_hf.py <gpt_mini|deepseek|gemini>
+python -m canonical.judging.upload_to_hf --config canonical/judging/configs/judge_<judge>.json
 ```
 
 ## Running the analysis

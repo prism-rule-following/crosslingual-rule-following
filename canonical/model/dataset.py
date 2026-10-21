@@ -365,19 +365,9 @@ class LLMJudgeChecker(_CheckerBase):
     checker_type: Literal[CheckerType.llm_judge] = Field(
         default=CheckerType.llm_judge, description="Discriminator: LLM-judged checker."
     )
-    instruction: str = Field(
-        description="Flat prompt string handed to the judge model."
-    )
     rubric: LLMJudgeRubric = Field(
         description="Structured natural-language rubric for the judge."
     )
-
-    @field_validator("instruction")
-    @classmethod
-    def _instruction_non_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            raise ValueError("instruction must be a non-empty string")
-        return v.strip()
 
 
 class DeterministicChecker(_CheckerBase):
@@ -697,7 +687,13 @@ class DatasetConfig(BaseModel):
         default=None,
         description="optional directory of per-language dataset files "
         "({data_dir}/{lang}/test.jsonl); when set, datasets are loaded per "
-        "language instead of from a single url",
+        "language instead of from a single url. For source=hf this is a "
+        "folder inside the HF repo given by `url` (e.g. 'data')",
+    )
+    data_files: Optional[str] = Field(
+        default=None,
+        description="for source=hf: file path inside the HF repo to load "
+        "instead of the whole repo; set per language from data_dir",
     )
     source: DatasetSource = Field(..., description="dataset source")
     split: Optional[str] = Field(
@@ -904,7 +900,7 @@ def _apply_filters(df: pd.DataFrame, config: DatasetConfig) -> pd.DataFrame:
 def dataset_generator(config: DatasetConfig) -> pd.DataFrame:
     """Load -> normalize -> (validate) -> filter. Returns a DataFrame."""
     raw = (
-        HFDataHelper.load_source_dataset(config.url)
+        HFDataHelper.load_source_dataset(config.url, config.data_files)
         if config.source == DatasetSource.hf
         else load_from_github(config.url)
     )
@@ -1021,9 +1017,9 @@ class HFDataHelper:
         self._api = HfApi()
 
     @staticmethod
-    def load_source_dataset(repo_id: str) -> Any:
+    def load_source_dataset(repo_id: str, data_files: Optional[str] = None) -> Any:
         try:
-            return load_dataset(repo_id)
+            return load_dataset(repo_id, data_files=data_files)
         except Exception:
             print(f"An error occurred. Unable to load {repo_id!r} from HuggingFace.")
             raise
