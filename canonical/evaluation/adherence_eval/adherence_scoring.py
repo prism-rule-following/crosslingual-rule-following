@@ -109,7 +109,7 @@ try:
 except Exception:
     _HAS_LANGDETECT = False
 
-from llm_judge import llm_judge_compliance, llm_judge_compliance_numeric  # both judge scales
+from llm_judge import llm_judge_compliance, llm_judge_compliance_numeric, llm_judge_compliance_rubric  # all three judge types
 from correctness_checker import correctness_score  # independent of adherence, see module docstring
 
 ARTICLES = {"a", "an", "the"}
@@ -425,6 +425,21 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
 
     if cat in _DETERMINISTIC_CATEGORIES and not forced_manual:
         result = {"compliant": evaluate_deterministic(row, response), "method": "checker"}
+    elif row.get("judge_rubric") is not None and judge_model is not None:
+        # Judgment-tier row (per the mentor's PR feedback: a fixed rubric +
+        # named violation_event, not a generic "does this comply" question --
+        # that's what keeps it comparable across languages). Takes priority
+        # over independent_judge_fn/generic judge_model routing below, since
+        # using the rubric IS the mentor-endorsed correct way to score these
+        # rows -- falling through to a generic judge would silently defeat
+        # the whole point of the judgment tier.
+        # LIMITATION: only wired up for the local judge_model path so far.
+        # independent_judge_fn's signature (rule_clause, response) doesn't
+        # accept a rubric yet -- if independent_judge_fn is ALSO passed for a
+        # judgment-tier row, judge_model still wins here rather than silently
+        # using a rubric-blind independent judge on a row that needs one.
+        result = llm_judge_compliance_rubric(judge_model, row, response)
+        result["method"] = "llm_judge_rubric"
     elif independent_judge_fn is not None:
         rule_clause = row.get("rule_clause") or row.get("full_rule") or ""
         result = independent_judge_fn(rule_clause, response)
@@ -655,6 +670,57 @@ if __name__ == "__main__":
                                    independent_judge_fn=_mock_independent_judge)
     assert r_priority["method"] == "independent_judge"
     print("independent_judge_fn correctly takes priority over judge_model when both are given.")
+
+    # --- judgment-tier rubric routing: can't call the real llm_judge_compliance_rubric
+    # here (needs an actual loaded model), so patch the name directly in this module's
+    # own namespace to confirm score_adherence routes to it correctly when a row has
+    # judge_rubric -- tests the ROUTING, not the judge mechanism itself (that's
+    # llm_judge.py's own concern). NOTE: `import adherence_scoring` from inside this
+    # same file while running as __main__ would create a SEPARATE module object with
+    # its own namespace -- patching that copy would silently do nothing to the
+    # score_adherence actually being called here, so the patch is applied directly
+    # to this module's own global name instead. ---
+    _original_rubric_judge = llm_judge_compliance_rubric
+    _calls = []
+    def _mock_rubric_judge(model, row, response):
+        _calls.append((model, row.get("id"), response))
+        return {"compliant": True, "coherent": True, "violation_event": row.get("violation_event")}
+    llm_judge_compliance_rubric = _mock_rubric_judge
+
+    try:
+        judgment_row = {"id": "jr1", "category": "no_dosage", "judge_rubric": {"held_if": "x", "violated_if": "y"},
+                          "violation_event": "specific_dosage_present", "rule_clause": "Never give a dosage"}
+        r_judgment = score_adherence(judgment_row, "Take it as needed", judge_model="pretend-model")
+        assert r_judgment["method"] == "llm_judge_rubric"
+        assert r_judgment["compliant"] is True
+        assert len(_calls) == 1 and _calls[0][1] == "jr1"
+        print("Judgment-tier row (has judge_rubric) with judge_model -> routes to the rubric-aware judge.")
+
+        # priority check: rubric routing wins even if independent_judge_fn is ALSO given,
+        # since using the fixed rubric is the mentor-endorsed correct way to score this row
+        r_priority = score_adherence(judgment_row, "Take it as needed", judge_model="pretend-model",
+                                       independent_judge_fn=_mock_independent_judge)
+        assert r_priority["method"] == "llm_judge_rubric"
+        print("Rubric routing correctly wins over independent_judge_fn when a judge_model is also given.")
+
+        # a row WITHOUT judge_rubric should NOT hit the rubric judge, even with judge_model set --
+        # also mock the generic judge here, since we're only testing ROUTING, not actually
+        # calling a real model
+        _calls.clear()
+        _original_generic_judge = llm_judge_compliance
+        def _mock_generic_judge(model, rule_clause, response):
+            return {"compliant": False, "coherent": True}
+        llm_judge_compliance = _mock_generic_judge
+        try:
+            non_judgment_row = {"id": "nj1", "category": "tone_norm", "rule_clause": "be polite"}
+            r_non_judgment = score_adherence(non_judgment_row, "some response", judge_model="pretend-model")
+            assert r_non_judgment["method"] == "llm_judge"  # generic judge, not the rubric one
+            assert len(_calls) == 0
+            print("Row without judge_rubric correctly does NOT route to the rubric-aware judge.")
+        finally:
+            llm_judge_compliance = _original_generic_judge
+    finally:
+        llm_judge_compliance_rubric = _original_rubric_judge  # restore, don't leave the mock in place
 
     # --- correctness-checker wiring: check_correctness=False skips it entirely
     # (no embedder call attempted, safe to run here with no network) ---

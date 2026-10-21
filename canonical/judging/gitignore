@@ -1,0 +1,27 @@
+# Secrets -- never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+venv/
+venv312/
+*.egg-info/
+
+# Judged data -- large, regeneratable, push to HF instead (see upload_to_hf.py)
+results/
+*.jsonl
+
+# Notebook checkpoints / local Colab artifacts
+.ipynb_checkpoints/
+*_files/
+
+# Generated charts and PDFs -- regeneratable from the scripts
+*.png
+*.pdf
+!docs/**/*.png
+
+# OS
+.DS_Store
