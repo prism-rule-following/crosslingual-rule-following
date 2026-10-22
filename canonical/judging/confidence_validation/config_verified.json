@@ -1,0 +1,21 @@
+{
+  "scale": "binary",
+  "top_k": 20,
+  "max_output_tokens": 512,
+  "min_scoring_mass": 0.9,
+  "judges": [
+    {
+      "id": "gpt_mini",
+      "provider": "azure_v1",
+      "model_env": "AZURE_GPT_DEPLOYMENT",
+      "env_prefix": "AZURE_GPT",
+      "top_k": 5
+    },
+    {
+      "id": "deepseek",
+      "provider": "azure_v1",
+      "model": "DeepSeek-V4-Pro",
+      "env_prefix": "AZURE_GPT"
+    }
+  ]
+}

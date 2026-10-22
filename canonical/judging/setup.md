@@ -132,3 +132,11 @@ python analysis/build_report.py
   not silently mixed in.
 - 412 rows (0.29%) have no resolvable consensus across all 3 judges -- excluded
   from consensus HELD/VIOLATED percentages, not forced into a guess.
+
+## Camera-ready confidence validation
+
+For new log-probability scoring, confidence-stratified sampling and blinded human
+validation, use [confidence_validation/README.md](confidence_validation/README.md).
+It provides import-safe API adapters, an offline test/demo, a pinned data audit,
+and explicit one-row live pilots. Its versioned direct-score judgments are a new
+label stream; they do not retroactively add confidence to the historical labels.

@@ -1,0 +1,11 @@
+{
+  "scale": "binary",
+  "top_k": 20,
+  "max_output_tokens": 16,
+  "min_scoring_mass": 0.9,
+  "judges": [
+    {"id": "gpt_mini", "provider": "azure_v1", "model_env": "AZURE_GPT_DEPLOYMENT", "env_prefix": "AZURE_GPT"},
+    {"id": "deepseek", "provider": "azure_v1", "model_env": "AZURE_DEEPSEEK_DEPLOYMENT", "env_prefix": "AZURE_DEEPSEEK"},
+    {"id": "gemini_openrouter", "provider": "openrouter", "model_env": "OPENROUTER_GEMINI_MODEL"}
+  ]
+}
