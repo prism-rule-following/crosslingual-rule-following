@@ -1,0 +1,23 @@
+{
+    "judge": "gemini",
+    "judge_model": "google/gemini-3.7-flash",
+    "dataset_repo": "/workspace/baseline_judge_in",
+    "dataset_subset": "",
+    "model_ids": [
+        "Qwen/Qwen3-8B",
+        "meta-llama/Llama-3.1-8B-Instruct"
+    ],
+    "language_codes": [
+        "en",
+        "yo",
+        "sw"
+    ],
+    "sample_indices": null,
+    "results_dir": "results/baseline",
+    "max_workers": 2,
+    "retry_max_workers": 2,
+    "max_retries": 5,
+    "hf_results_repo": "crosslingual-rule-following/crv-norule-baseline-judge-results",
+    "hf_path_prefix": "",
+    "hf_private": true
+}

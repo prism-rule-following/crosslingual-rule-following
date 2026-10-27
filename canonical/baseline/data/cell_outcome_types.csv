@@ -1,0 +1,5 @@
+model,lang,cells,rule_flipped,already_ok,fails_both,rule_hurt,partial_or_mixed
+Qwen3-8B,en,26,11,13,1,0,1
+Qwen3-8B,yo,26,0,11,12,1,2
+Llama-3.1-8B,en,26,7,12,1,2,4
+Llama-3.1-8B,yo,26,0,9,14,3,0
