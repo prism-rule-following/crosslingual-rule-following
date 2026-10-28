@@ -341,9 +341,9 @@ def fig_confidence(T, out):
         g = cd[(cd.judge == judge) & (cd.grouping == "language")].set_index("language").reindex(LANGUAGES)
         y = np.arange(len(LANGUAGES))
         colors = [ORANGE if l in FOCUS else BLUE for l in LANGUAGES]
-        ax.hlines(y, pct(g.p10), pct(g.median), colors=colors, lw=1.4)
+        ax.hlines(y, pct(g.p10), pct(g["median"]), colors=colors, lw=1.4)
         ax.scatter(pct(g.p25), y, s=10, c=colors, lw=0, zorder=3)
-        ax.scatter(pct(g.median), y, s=20, color=INK, lw=0, zorder=4)
+        ax.scatter(pct(g["median"]), y, s=20, color=INK, lw=0, zorder=4)
         ax.set_title(JUDGE_LABELS[judge], loc="left")
         ax.set_xlabel("Certainty (%)")
         ax.grid(axis="y", visible=False)
