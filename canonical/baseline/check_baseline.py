@@ -1,11 +1,11 @@
 """Sanity-check no-rule baseline outputs.
-Usage: python check_baseline.py [dir] [n_samples] [n_prompts]   (defaults: /workspace/baseline_out 10 78)
+Usage: python check_baseline.py [dir] [n_samples] [n_prompts]   (defaults: /workspace/baseline_out 5 26)
 Reads every *_norule_responses.jsonl in dir."""
 import glob, json, random, statistics, sys, collections
 
 d = sys.argv[1] if len(sys.argv) > 1 else "/workspace/baseline_out"
-EXPECT_SAMPLES = int(sys.argv[2]) if len(sys.argv) > 2 else 10
-EXPECT_PROMPTS = int(sys.argv[3]) if len(sys.argv) > 3 else 78
+EXPECT_SAMPLES = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+EXPECT_PROMPTS = int(sys.argv[3]) if len(sys.argv) > 3 else 26
 files = sorted(glob.glob(f"{d}/*_norule_responses.jsonl"))
 if not files:
     sys.exit(f"no *_norule_responses.jsonl in {d} yet")

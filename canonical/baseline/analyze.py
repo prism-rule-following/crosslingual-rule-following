@@ -56,6 +56,8 @@ D["maj"] = np.where(D.n_valid == 3, (vals.sum(axis=1) >= 2).astype(float),
             np.where((D.n_valid == 2) & (vals.sum(axis=1) % 2 == 0), vals.mean(axis=1), np.nan))
 D["unanimous"] = (D.n_valid == 3) & (vals.nunique(axis=1) == 1)
 D.to_pickle(os.path.join(a.out, "_wide.pkl")) if False else None
+PAIRED = sorted(set(B.language) & set(R.language)); BASE_ONLY = sorted(set(B.language) - set(R.language))
+print("paired languages (baseline AND rule run):", PAIRED, "| baseline-only:", BASE_ONLY)
 out = {}
 
 
@@ -108,7 +110,7 @@ def boot_ci(d):
 
 from scipy import stats
 rows = []
-for model, lang in itertools.product(sorted(D.model_id.unique()), ["en", "yo"]):
+for model, lang in itertools.product(sorted(D.model_id.unique()), PAIRED):
     for s in SCORERS:
         b = cell_rates(D[(D.cond == "baseline") & (D.model_id == model) & (D.language == lang)], s)
         r = cell_rates(D[(D.cond == "rule") & (D.model_id == model) & (D.language == lang)], s)
@@ -122,6 +124,23 @@ for model, lang in itertools.product(sorted(D.model_id.unique()), ["en", "yo"]):
         rows.append(dict(model=model, lang=lang, scorer=s, cells=len(c), baseline=c.b.mean(), rule=c.r.mean(),
                          diff=m, ci_lo=lo, ci_hi=hi, up=int((diff > 0).sum()), down=int((diff < 0).sum()),
                          sign_p=sp, wilcoxon_p=wp))
+# pooled over paired languages: average each base query's cell diff across languages -> 26 units (queries are translations
+# of each other, so languages are NOT independent replicates)
+for model in sorted(D.model_id.unique()):
+    for s_ in SCORERS:
+        dd = []
+        for lang in PAIRED:
+            b = cell_rates(D[(D.cond == "baseline") & (D.model_id == model) & (D.language == lang)], s_)
+            r = cell_rates(D[(D.cond == "rule") & (D.model_id == model) & (D.language == lang)], s_)
+            c = pd.concat([b.rename("b"), r.rename("r")], axis=1).dropna(); dd.append((c.r - c.b).droplevel(["model_id", "language"]).rename(lang))
+        diff = pd.concat(dd, axis=1).mean(axis=1).dropna() if dd else pd.Series(dtype=float)
+        if not len(diff): continue
+        m, lo, hi = boot_ci(diff); nz = diff[diff != 0]
+        sp = stats.binomtest(int((nz > 0).sum()), len(nz), 0.5).pvalue if len(nz) else np.nan
+        try: wp = stats.wilcoxon(nz).pvalue if len(nz) else np.nan
+        except Exception: wp = np.nan
+        rows.append(dict(model=model, lang="ALL(per-query mean)", scorer=s_, cells=len(diff), baseline=np.nan, rule=np.nan, diff=m, ci_lo=lo, ci_hi=hi,
+                         up=int((diff > 0).sum()), down=int((diff < 0).sum()), sign_p=sp, wilcoxon_p=wp))
 eff = pd.DataFrame(rows); eff.to_csv(f"{a.out}/rule_effect_by_judge.csv", index=False)
 
 # judge leniency (raw rates)
@@ -130,20 +149,22 @@ len_ = (D.melt(id_vars=["cond", "model_id", "language"], value_vars=JUDGES, var_
 len_.to_csv(f"{a.out}/judge_leniency.csv")
 
 # ---- 3. category tables (consensus) -----------------------------------------------------------
-cat = (D.groupby(["model_id", "language", "category", "cond"]).maj.mean().unstack("cond")
+cat = (D[D.language.isin(PAIRED)].groupby(["model_id", "language", "category", "cond"]).maj.mean().unstack("cond")
        .assign(rule_minus_baseline=lambda x: x.rule - x.baseline).round(3))
 cat.to_csv(f"{a.out}/category_effect_consensus.csv")
 
 # per-judge category effect (shows if any single judge drives a category)
 pj = []
 for s in JUDGES:
-    t = D.groupby(["language", "category", "cond"])[s].mean().unstack("cond")
+    t = D[D.language.isin(PAIRED)].groupby(["language", "category", "cond"])[s].mean().unstack("cond")
     t["judge"] = s; t["diff"] = t.rule - t.baseline; pj.append(t.reset_index())
 pd.concat(pj).round(3).to_csv(f"{a.out}/category_effect_by_judge.csv", index=False)
 
-# ---- 4. swahili baseline (descriptive only) ------------------------------------------------
-sw = D[(D.cond == "baseline") & (D.language == "sw")].groupby(["model_id", "category"]).maj.mean().unstack("model_id").round(3)
-sw.to_csv(f"{a.out}/baseline_swahili_descriptive.csv")
+# ---- 4. baseline adherence for every language (descriptive; baseline-only languages have no rule counterpart) --------------
+bl = D[D.cond == "baseline"].groupby(["model_id", "language", "category"]).maj.mean().unstack("category").round(3)
+bl["ALL"] = D[D.cond == "baseline"].groupby(["model_id", "language"]).maj.mean().round(3)
+bl.to_csv(f"{a.out}/baseline_adherence_by_language_category.csv")
+pd.Series({"paired": ",".join(PAIRED), "baseline_only": ",".join(BASE_ONLY)}).to_csv(f"{a.out}/language_sets.csv", header=False)
 print("ok", a.out)
 for f in ["judge_agreement", "rule_effect_by_judge"]:
     print("\n", f); print(pd.read_csv(f"{a.out}/{f}.csv").round(3).to_string())

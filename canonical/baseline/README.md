@@ -14,6 +14,7 @@ Generations are **not** in git (they live in the HF baseline results repo). `dat
 | `judge_configs/` | configs for `canonical.judging.judge_{gpt_mini,deepseek,gemini}` |
 | `build_consensus.py` | 3-judge consensus per response |
 | `baseline_stats.py` | paired baseline-vs-rule tests per cell |
+| `run_all.sh`, `make_judge_configs.py` | one-command end-to-end driver (all 13 languages, both models) |
 | `analyze.py`, `make_figures.py`, `make_html.py` | judge agreement, per-judge/model/category tables, figures, report |
 
 ## Run order (from the repo root, `source /workspace/.runpod_env`, `export PYTHONPATH=.`)
@@ -40,3 +41,15 @@ python canonical/baseline/analyze.py \
 python canonical/baseline/make_figures.py && python canonical/baseline/make_html.py
 ```
 Unit of analysis is the 26 base-query cells per language; samples and wordings are repeats inside a cell.
+
+## How the 13-language report was built
+The baseline ran in two batches (en, yo, sw first; then am, de, hi, ig, it, ko, ru, ta, tr, ur). Their judge outputs were concatenated per judge and analysed together:
+```bash
+# per judge: cat <batch1>/results/baseline/<judge>/final.jsonl <batch2>/results/baseline/<judge>/final.jsonl > merged/<judge>.jsonl
+python canonical/baseline/build_consensus.py --out canonical/baseline/data/baseline_scored.jsonl merged/gemini.jsonl merged/deepseek.jsonl merged/gpt_mini.jsonl
+python canonical/baseline/analyze.py --baseline gemini=merged/gemini.jsonl gpt_mini=merged/gpt_mini.jsonl deepseek=merged/deepseek.jsonl \
+   --rule gemini=canonical/baseline/data/rule_verdicts_gemini_L0.jsonl gpt_mini=canonical/baseline/data/rule_verdicts_gpt_mini_L0.jsonl deepseek=canonical/baseline/data/rule_verdicts_deepseek_L0.jsonl \
+   --out canonical/baseline/data
+python canonical/baseline/make_figures.py && python canonical/baseline/make_html.py   # make_html needs `pip install markdown`
+```
+The verdict-only files in `data/` (`baseline_verdicts_*.jsonl` + `*_batch2.jsonl`) contain the same verdicts without generations and can be used instead of `final.jsonl`.
