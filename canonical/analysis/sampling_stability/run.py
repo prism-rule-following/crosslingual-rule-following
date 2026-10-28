@@ -1,13 +1,13 @@
 """Run every check and analysis on the 5-sample run and write the result folder.
 
-RUN from the repo root (statsmodels is only needed for the GLMM in A10):
-    uv run --no-project --python .venv/bin/python --with statsmodels \
-        python -W ignore -m canonical.analysis.sampling_stability.run --out <dir> [--upload]
+RUN from the repo root:
+    python -W ignore -m canonical.analysis.sampling_stability.run --out <dir> [--upload]
 
 Inputs are the latest revisions of crv-model-inference-responses and
 crv-judge-confidence-validation (pin with --responses-revision / --judges-revision);
 the revision actually used is recorded in summary.json. ack_invert is excluded
-(not judged in this run).
+(not judged in this run). Only the numeric adherence and confidence scores are
+analysed; the binary verdict is not used.
 Output: <out>/tables/*.csv, <out>/data/labels_long.parquet, <out>/summary.json.
 """
 
@@ -35,7 +35,6 @@ INPUTS = {
 UPLOAD_REPO = f"{ORG}/crv-analysis"
 ANALYSES = [
     ("C1", M.c1_coverage),
-    ("C2", M.c2_label_origin),
     ("C3", M.c3_judge_agreement),
     ("C5", M.c5_qwen_batch),
     ("A1", M.a1_matrices),
@@ -46,7 +45,7 @@ ANALYSES = [
     ("A6", M.a6_confidence),
     ("A7", M.a7_missing),
     ("A8", M.a8_pressure),
-    ("A9", M.a9_flip_rate),
+    ("A9", M.a9_within_prompt),
     ("A10", M.a10_variance_components),
     ("A11", M.a11_bootstrap),
 ]
@@ -71,9 +70,9 @@ def fetch_inputs(cache, revisions):
 
 
 def load_table(paths, cache, resolved):
-    # Cache keyed by input revisions so a new upload is never read from a stale table.
+    # Cache keyed by input revisions (and table schema) so a new upload is never read from a stale table.
     rev = "_".join(v["revision"][:7] for v in resolved.values())
-    path = os.path.join(cache, f"crv_sampling_analysis_{rev}.parquet")
+    path = os.path.join(cache, f"crv_sampling_analysis_scores_{rev}.parquet")
     if not os.path.exists(path):
         D.build(paths["responses"], paths["judges"]).to_parquet(path)
     return pd.read_parquet(path)
@@ -88,6 +87,7 @@ def headline_summary(tables):
 
     return {
         "headline_gap_yo_ig": rec("headline_gap_summary", "focus_language"),
+        "mean_score_by_judge": rec("mean_score_by_judge"),
         "cross_model": rec("cross_model_summary"),
         "cell_stability_overview": rec("cell_stability_overview"),
         "decomposition": rec(
@@ -98,10 +98,10 @@ def headline_summary(tables):
         "pressure": rec(
             "pressure_orderings", "weighting == 'pooled' and levels == 'all_levels'"
         ),
-        "flip_all": rec("flip_classes", "grouping == 'all'"),
-        "variance_components": rec("variance_components"),
-        "confidence_vs_flip": rec("confidence_vs_flip"),
-        "confidence_vs_unanimity": rec("confidence_vs_unanimity", "language == 'all'"),
+        "within_prompt_sd_all": rec("within_prompt_sd", "grouping == 'all'"),
+        "variance_components_all_languages": rec("variance_components", "language == 'all'"),
+        "confidence_vs_within_prompt_sd": rec("confidence_vs_within_prompt_sd"),
+        "confidence_vs_judge_spread": rec("confidence_vs_judge_spread", "language == 'all'"),
         "judge_reasoning_tokens": rec("judge_reasoning_tokens"),
     }
 
@@ -116,7 +116,7 @@ def main():
     ap.add_argument("--judges-revision", default=None, help="default: latest")
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--upload", action="store_true")
-    ap.add_argument("--path-in-repo", default="sampling-stability-2026-10-27")
+    ap.add_argument("--path-in-repo", default="sampling-stability-scores-2026-10-28")
     args = ap.parse_args()
 
     cache = args.cache or os.path.join(
@@ -150,17 +150,17 @@ def main():
         "task",
         "rule_status",
         "pressure_level",
-        "cons_held",
-        "pair_held",
+        "mean_p",
     ]
-    keep += [f"{j}_{k}" for j in D.JUDGES for k in ("status", "held", "p", "cert")]
+    keep += [f"{j}_{k}" for j in D.JUDGES for k in ("status", "p", "cert")]
     df[keep].to_parquet(
         os.path.join(args.out, "data", "labels_long.parquet"), index=False
     )
 
     summary = {
         "inputs": resolved,
-        "scope": "5-sample run only; ack_invert excluded (not judged in this run)",
+        "scope": "5-sample run only; ack_invert excluded (not judged in this run); numeric scores only "
+        "(adherence P(HELD) and confidence), binary verdicts not used",
         "n_responses": len(df),
         "n_boot": args.n_boot,
         "results": headline_summary(tables),

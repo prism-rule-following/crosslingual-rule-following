@@ -5,14 +5,15 @@ Responses: crv-model-inference-responses (2,340 prompts per model x language,
 ack_invert was not judged in this run and is excluded, leaving 66 base items
 (1,980 prompts per model x language, 198,000 responses).
 
+Only the numeric scores are used; the binary verdict fields are not read
+(they are a thresholded collapse of the same score).
+
 One row per (id, model_id, language, sample_idx). Per judge j:
   {j}_status  "ok" or the unscored reason
-  {j}_held    the judge's reported verdict: 1.0 HELD / 0.0 VIOLATED / NaN unjudged
-              (NaN is never treated as VIOLATED)
-  {j}_p       adherence score P(HELD) in [0, 1] -- a continuous score
-  {j}_cert    certainty, 1 - normalized binary entropy, in [0, 1]
-plus "cons_held" (three-judge consensus of the verdicts, primary) and
-"pair_held" (GPT+Gemini agreement, secondary).
+  {j}_p       adherence score P(HELD) in [0, 1] (adherence_score / 100); NaN unless status is "ok"
+  {j}_cert    confidence score, 1 - normalized binary entropy, in [0, 1] (confidence_score / 100)
+plus "mean_p", the 3-judge mean adherence score (primary): the mean of the three
+judges' P(HELD), defined only when all three judges scored the response.
 """
 
 import glob
@@ -61,25 +62,6 @@ def add_design_columns(df):
     return df
 
 
-def pair_consensus(a, b):
-    """GPT+Gemini label: their shared verdict, NaN if either is missing or they disagree."""
-    return np.where(a == b, a, np.nan)
-
-
-def consensus(held):
-    """three_judge_agreement.py rule: 3 labels -> majority; 2 -> agreement or
-    unresolved (NaN); fewer -> NaN. held is an (n, 3) array with NaN = missing."""
-    n_valid = np.sum(~np.isnan(held), axis=1)
-    n_held = np.nansum(held, axis=1)
-    out = np.full(len(held), np.nan)
-    three = n_valid == 3
-    out[three] = (n_held[three] >= 2).astype(float)
-    two = n_valid == 2
-    agree = two & ((n_held == 0) | (n_held == 2))
-    out[agree] = (n_held[agree] == 2).astype(float)
-    return out
-
-
 def load_responses(resp_dir):
     files = sorted(glob.glob(os.path.join(resp_dir, "*", "*.parquet")))
     return pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
@@ -100,7 +82,6 @@ def _read_export(path, judge):
                     "language": r["language"],
                     "sample_idx": r["sample_idx"],
                     f"{judge}_status": status,
-                    f"{judge}_held": float(r["verdict"] == "HELD") if ok else np.nan,
                     f"{judge}_p": s.get("p_held") if ok else np.nan,
                     f"{judge}_cert": 1 - s["normalized_entropy"] if ok else np.nan,
                     f"{judge}_fp": r.get("run_fingerprint"),
@@ -119,7 +100,6 @@ def build(resp_dir, conf_dir):
         assert not ex.duplicated(KEY).any(), j
         df = df.merge(ex, on=KEY, how="left", validate="one_to_one")
         assert df[f"{j}_status"].notna().all(), f"{j}: responses missing from export"
-    held = df[[f"{j}_held" for j in JUDGES]].to_numpy(float)
-    df["cons_held"] = consensus(held)
-    df["pair_held"] = pair_consensus(held[:, 0], held[:, 1])
+    # mean(skipna=False): NaN unless all three judges scored the response.
+    df["mean_p"] = df[[f"{j}_p" for j in JUDGES]].mean(axis=1, skipna=False)
     return df
