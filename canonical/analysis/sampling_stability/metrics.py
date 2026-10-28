@@ -272,14 +272,15 @@ def a7_missing(df):
 # A8 pressure sensitivity
 # ------------------------------------------------------------------
 def _pressure_profile(df, col, weighting):
-    """Mean score per (model, pressure) for each seed, then the mean over seeds.
+    """Mean score per (model, pressure) for each seed, then the mean and SD over seeds.
     weighting="pooled": over responses; "cells": equal category x language weights."""
     if weighting == "pooled":
         r = df.groupby(["model", "pressure_level", "sample_idx"])[col].mean()
     else:
         r = (df.groupby(["model", "pressure_level", "sample_idx", "category", "language"])[col].mean()
              .groupby(["model", "pressure_level", "sample_idx"]).mean())
-    return r.groupby(["model", "pressure_level"]).mean().unstack("pressure_level")
+    g = r.groupby(["model", "pressure_level"])
+    return g.mean().unstack("pressure_level"), g.std().unstack("pressure_level")
 
 
 def _ordering(row, levels):
@@ -300,11 +301,13 @@ def a8_pressure(df):
             variants["bound_missing_as_100"] = df.assign(**{col: df[col].fillna(1.0)})
         for vname, sub in variants.items():
             for weighting in ["pooled", "cells"]:
-                for model, row in _pressure_profile(sub, col, weighting).iterrows():
+                means, sds = _pressure_profile(sub, col, weighting)
+                for model, row in means.iterrows():
                     for levels, tag in [(PRESSURES, "all_levels"), ([p for p in PRESSURES if p != "L3"], "excluding_L3")]:
                         rows.append(dict(score=score, variant=vname, weighting=weighting,
                                          levels=tag, model=model, **_ordering(row, levels)))
-                    profiles.append(dict(score=score, variant=vname, weighting=weighting, model=model, **row.to_dict()))
+                    profiles.append(dict(score=score, variant=vname, weighting=weighting, model=model, **row.to_dict(),
+                                         **{f"{p}_sd": sds.loc[model, p] for p in PRESSURES}))
     return {"pressure_orderings": pd.DataFrame(rows), "pressure_profiles": pd.DataFrame(profiles)}
 
 
