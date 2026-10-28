@@ -22,20 +22,22 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--in", dest="inp", default="/workspace/baseline_out")
 ap.add_argument("--out", default="/workspace/baseline_judge_in")
 ap.add_argument("--source-repo", default="crosslingual-rule-following/canonical-dataset")
+ap.add_argument("--pattern", default="*_norule_responses.jsonl", help="glob of response files inside --in")
+ap.add_argument("--restore-user-query", action="store_true", help="capability runs: put the ORIGINAL question back as user_query (judges see the same input as in the rule run)")
 ap.add_argument("--source-json", default=None, help="local {pairs:[...]} json instead of HF (English only)")
 a = ap.parse_args()
 
 def source_rules(lang):
     if a.source_json:
         pairs = json.load(open(a.source_json, encoding="utf-8"))["pairs"]
-        return {p["id"]: p["system_rule"] for p in pairs if p.get("language", "en") == lang}
+        return {p["id"]: (p["system_rule"], p.get("user_query")) for p in pairs if p.get("language", "en") == lang}
     from datasets import load_dataset
     ds = load_dataset(a.source_repo, data_files=f"data/{lang}/test.jsonl")
     ds = ds["train"] if "train" in ds else ds[next(iter(ds))]
-    return {r["id"]: r["system_rule"] for r in ds}
+    return {r["id"]: (r["system_rule"], r.get("user_query")) for r in ds}
 
-files = sorted(glob.glob(f"{a.inp}/*_norule_responses.jsonl"))
-if not files: sys.exit(f"no *_norule_responses.jsonl in {a.inp}")
+files = sorted(glob.glob(f"{a.inp}/{a.pattern}"))
+if not files: sys.exit(f"no {a.pattern} in {a.inp}")
 cache, total, missing = {}, 0, 0
 for f in files:
     rows = [json.loads(l) for l in open(f, encoding="utf-8")]
@@ -43,11 +45,14 @@ for f in files:
     if lang not in cache: cache[lang] = source_rules(lang)
     out_rows = []
     for r in rows:
-        src_id = r["id"].removeprefix("norule::").removesuffix("_clean")
-        rule_sys = cache[lang].get(src_id)
-        if rule_sys is None: missing += 1; continue
+        src_id = r["id"].split("::", 1)[-1].removesuffix("_clean")   # norule::<id>, capA::<id>, capB::<id>
+        hit = cache[lang].get(src_id)
+        if hit is None: missing += 1; continue
+        rule_sys, orig_q = hit
         r["baseline_system"] = r["system"]   # what the model actually saw
         r["system"] = rule_sys               # what the judges treat as the rule
+        if a.restore_user_query and orig_q:
+            r["capability_user_query"] = r["user_query"]; r["user_query"] = orig_q
         out_rows.append(r)
     d = os.path.join(a.out, model.replace("/", "__")); os.makedirs(d, exist_ok=True)
     pd.DataFrame(out_rows).to_parquet(os.path.join(d, f"{lang}.parquet"), index=False)
