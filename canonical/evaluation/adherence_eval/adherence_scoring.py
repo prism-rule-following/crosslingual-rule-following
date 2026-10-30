@@ -104,18 +104,26 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     from langdetect import detect, DetectorFactory
+
     DetectorFactory.seed = 0  # deterministic langdetect
     _HAS_LANGDETECT = True
 except Exception:
     _HAS_LANGDETECT = False
 
-from llm_judge import llm_judge_compliance, llm_judge_compliance_numeric, llm_judge_compliance_rubric  # all three judge types
-from correctness_checker import correctness_score  # independent of adherence, see module docstring
+from llm_judge import (
+    llm_judge_compliance,
+    llm_judge_compliance_numeric,
+    llm_judge_compliance_rubric,
+)  # all three judge types
+from correctness_checker import (
+    correctness_score,
+)  # independent of adherence, see module docstring
 
 ARTICLES = {"a", "an", "the"}
 # ---------------------------------------------------------------------------
 # Deterministic checkers -- carried over from Design1Experiments.ipynb
 # ---------------------------------------------------------------------------
+
 
 def check_uppercase(output: str) -> bool:
     """Category dropped."""
@@ -139,7 +147,9 @@ def check_banned_word(output: str, word: Optional[str]) -> Optional[bool]:
     return re.search(rf"\b{re.escape(word)}\b", output, flags=re.IGNORECASE) is None
 
 
-def check_language(output: str, lang_code: Optional[str], min_words: int = 6) -> Optional[bool]:
+def check_language(
+    output: str, lang_code: Optional[str], min_words: int = 6
+) -> Optional[bool]:
     # Too short to trust langdetect -> cannot confirm -> False (per Design1)
     if len(output.split()) < min_words:
         return False
@@ -147,7 +157,7 @@ def check_language(output: str, lang_code: Optional[str], min_words: int = 6) ->
         return None
     if not _HAS_LANGDETECT:
         return None  # softened from Design1's `raise RuntimeError` -- a missing
-                     # optional dependency shouldn't kill a whole batch run
+        # optional dependency shouldn't kill a whole batch run
     try:
         return detect(output) == lang_code
     except Exception:
@@ -168,22 +178,35 @@ def check_italic(output: str) -> bool:
     if re.search(r"\*\*\*(?!\s*\*)(.+?)\*\*\*", output, flags=re.DOTALL):
         return True
     without_bold = re.sub(r"\*\*.+?\*\*", "", output, flags=re.DOTALL)
-    return re.search(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", without_bold, flags=re.DOTALL) is not None
+    return (
+        re.search(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", without_bold, flags=re.DOTALL)
+        is not None
+    )
 
 
 def check_bold_html(output: str) -> bool:
     # Satisfied if the answer contains a bold HTML span: <b>...</b> or <strong>...</strong>
     # (case-insensitive, spans newlines, non-empty content). Opening/closing tags may differ
     # in case but must be a matched bold-type pair.
-    return re.search(r"<(b|strong)\b[^>]*>.+?</(b|strong)>", output,
-                     flags=re.DOTALL | re.IGNORECASE) is not None
- 
- 
+    return (
+        re.search(
+            r"<(b|strong)\b[^>]*>.+?</(b|strong)>",
+            output,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        is not None
+    )
+
+
 def check_italic_html(output: str) -> bool:
     # Satisfied if the answer contains an italic HTML span: <i>...</i> or <em>...</em>
     # (case-insensitive, spans newlines, non-empty content).
-    return re.search(r"<(i|em)\b[^>]*>.+?</(i|em)>", output,
-                     flags=re.DOTALL | re.IGNORECASE) is not None
+    return (
+        re.search(
+            r"<(i|em)\b[^>]*>.+?</(i|em)>", output, flags=re.DOTALL | re.IGNORECASE
+        )
+        is not None
+    )
 
 
 def check_second_word(output: str, target: str) -> bool:
@@ -200,8 +223,8 @@ def check_second_word(output: str, target: str) -> bool:
         return False
     second_tok = toks[1].strip(string.punctuation).lower()
     return second_tok == target.strip(string.punctuation).lower()
- 
- 
+
+
 def check_single_word(output: str) -> bool:
     # Rule satisfied if the answer is EXACTLY ONE word and that word is not an
     # article. Leading/trailing whitespace, punctuation, quotes and markdown are
@@ -218,12 +241,12 @@ def check_single_word(output: str) -> bool:
     return word not in ARTICLES
 
 
-
 # ---------------------------------------------------------------------------
 # New checkers -- categories the methodology doc names (banned-word,
 # uppercase, language-adherence, word-count, bold/formatting, include-word,
 # start-with-token) that had no function anywhere in the uploaded files.
 # ---------------------------------------------------------------------------
+
 
 def check_include_word(output: str, word: Optional[str]) -> Optional[bool]:
     """Mirror image of check_banned_word: satisfied when the word IS present."""
@@ -240,7 +263,10 @@ def check_start_with_token(output: str, token: Optional[str]) -> Optional[bool]:
     if not token:
         return None
     stripped = output.strip()
-    return re.match(rf"^{re.escape(token)}\s*[,:]?\b", stripped, flags=re.IGNORECASE) is not None
+    return (
+        re.match(rf"^{re.escape(token)}\s*[,:]?\b", stripped, flags=re.IGNORECASE)
+        is not None
+    )
 
 
 def check_ack_invert(output: str) -> bool:
@@ -250,13 +276,16 @@ def check_ack_invert(output: str) -> bool:
     corrected FULL-match version. The prefix-only original would count
     'Understood, no -- let me explain more' as compliant; this requires the
     whole response to be just the acknowledgment + yes/no, nothing trailing."""
-    return bool(re.fullmatch(r"\s*understood[\s\W]+(yes|no)[\s\W]*", output, re.IGNORECASE))
+    return bool(
+        re.fullmatch(r"\s*understood[\s\W]+(yes|no)[\s\W]*", output, re.IGNORECASE)
+    )
 
 
 # ---------------------------------------------------------------------------
 # Target-argument resolution: prefer an explicit row field, fall back to
 # Design1's prose-regex parsing only if the field is genuinely absent.
 # ---------------------------------------------------------------------------
+
 
 def parse_target(category: str, full_rule: str) -> Optional[Any]:
     """Design1Experiments.ipynb's parse_target, plus a banned_word branch
@@ -270,9 +299,16 @@ def parse_target(category: str, full_rule: str) -> Optional[Any]:
     if category == "language":
         m = re.search(r"in (\w+)\.", full_rule)
         langmap = {
-            "French": "fr", "Spanish": "es", "German": "de", 
-            "Italian": "it", "Russian": "ru", "Swahili": "sw",
-            "Hindi": "hi", "Korean": "ko", "Japanese": "ja", "Chinese": "zh",
+            "French": "fr",
+            "Spanish": "es",
+            "German": "de",
+            "Italian": "it",
+            "Russian": "ru",
+            "Swahili": "sw",
+            "Hindi": "hi",
+            "Korean": "ko",
+            "Japanese": "ja",
+            "Chinese": "zh",
         }
         return langmap.get(m.group(1)) if m else None
     if category == "word_count":
@@ -280,15 +316,23 @@ def parse_target(category: str, full_rule: str) -> Optional[Any]:
         m = re.search(r"in (\w+) words", full_rule, flags=re.IGNORECASE)
         return words.get(m.group(1).lower()) if m else None
     if category == "banned_word":
-        m = re.search(r"never use the word ['\"]?(\w+)['\"]?", full_rule, flags=re.IGNORECASE)
+        m = re.search(
+            r"never use the word ['\"]?(\w+)['\"]?", full_rule, flags=re.IGNORECASE
+        )
         return m.group(1) if m else None
     if category == "start_with_token":
-        m = re.search(r"begin (?:your response )?with ['\"]?(\w+)['\"]?", full_rule, flags=re.IGNORECASE)
+        m = re.search(
+            r"begin (?:your response )?with ['\"]?(\w+)['\"]?",
+            full_rule,
+            flags=re.IGNORECASE,
+        )
         return m.group(1) if m else None
     return None
 
 
-def _resolve_target(row: Dict[str, Any], explicit_keys: Union[str, List[str]], category: str) -> Optional[Any]:
+def _resolve_target(
+    row: Dict[str, Any], explicit_keys: Union[str, List[str]], category: str
+) -> Optional[Any]:
     """explicit_keys can be a single field name or a list of candidates, tried
     in order -- lets this work against more than one dataset naming convention
     (see COMPATIBILITY NOTE in the module docstring) without renaming anything
@@ -305,9 +349,21 @@ def _resolve_target(row: Dict[str, Any], explicit_keys: Union[str, List[str]], c
 # ---------------------------------------------------------------------------
 
 _DETERMINISTIC_CATEGORIES = {
-    "uppercase", "lowercase", "bold", "italic", "banned_word",
-    "include_word", "language", "word_count", "start_with_token", "start_with", "ack_invert",
-    "bold_html", "italic_html", "second_word", "single_word",
+    "uppercase",
+    "lowercase",
+    "bold",
+    "italic",
+    "banned_word",
+    "include_word",
+    "language",
+    "word_count",
+    "start_with_token",
+    "start_with",
+    "ack_invert",
+    "bold_html",
+    "italic_html",
+    "second_word",
+    "single_word",
 }
 
 
@@ -325,15 +381,23 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
     if cat == "italic":
         return check_italic(output)
     if cat == "banned_word":
-        return check_banned_word(output, _resolve_target(row, ["word", "banned_word"], cat))
+        return check_banned_word(
+            output, _resolve_target(row, ["word", "banned_word"], cat)
+        )
     if cat == "include_word":
-        return check_include_word(output, _resolve_target(row, ["word", "target_word"], cat))
+        return check_include_word(
+            output, _resolve_target(row, ["word", "target_word"], cat)
+        )
     if cat == "language":
-        return check_language(output, _resolve_target(row, ["lang_code", "target_lang"], cat))
+        return check_language(
+            output, _resolve_target(row, ["lang_code", "target_lang"], cat)
+        )
     if cat == "word_count":
         return check_word_count(output, _resolve_target(row, "target_count", cat))
     if cat == "start_with_token" or cat == "start_with":
-        return check_start_with_token(output, _resolve_target(row, ["anchor_token"], cat))
+        return check_start_with_token(
+            output, _resolve_target(row, ["anchor_token"], cat)
+        )
     if cat == "ack_invert":
         return check_ack_invert(output)
     if cat == "bold_html":
@@ -351,9 +415,16 @@ def evaluate_deterministic(row: Dict[str, Any], output: str) -> Optional[bool]:
 # Unified entry point: deterministic where possible, LLM-judge otherwise
 # ---------------------------------------------------------------------------
 
-def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
-                     judge_scale: str = "yn", independent_judge_fn=None,
-                     check_correctness: bool = True, correctness_judge_fn=None) -> Dict[str, Any]:
+
+def score_adherence(
+    row: Dict[str, Any],
+    response: str,
+    judge_model=None,
+    judge_scale: str = "yn",
+    independent_judge_fn=None,
+    check_correctness: bool = True,
+    correctness_judge_fn=None,
+) -> Dict[str, Any]:
     """
     Returns {"compliant": bool|None, "method": "checker"|"llm_judge"|"llm_judge_numeric"|"independent_judge"|"unscored", ...}.
     "llm_judge*" results also carry the judge's own fields (p_comply/entropy for
@@ -424,7 +495,10 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
     cat = row.get("category")
 
     if cat in _DETERMINISTIC_CATEGORIES and not forced_manual:
-        result = {"compliant": evaluate_deterministic(row, response), "method": "checker"}
+        result = {
+            "compliant": evaluate_deterministic(row, response),
+            "method": "checker",
+        }
     elif row.get("judge_rubric") is not None and judge_model is not None:
         # Judgment-tier row (per the mentor's PR feedback: a fixed rubric +
         # named violation_event, not a generic "does this comply" question --
@@ -453,8 +527,11 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
             result = llm_judge_compliance(judge_model, rule_clause, response)
             result["method"] = "llm_judge"
     else:
-        result = {"compliant": None, "method": "unscored",
-                   "note": f"category '{cat}' has no deterministic checker and neither judge_model nor independent_judge_fn was passed"}
+        result = {
+            "compliant": None,
+            "method": "unscored",
+            "note": f"category '{cat}' has no deterministic checker and neither judge_model nor independent_judge_fn was passed",
+        }
 
     result["correctness"] = None
     result["correctness_similarity"] = None
@@ -464,7 +541,9 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
             if correctness_judge_fn is not None:
                 judge_result = correctness_judge_fn(response, expected_answer)
                 result["correctness"] = judge_result.get("correct")
-                result["correctness_similarity"] = None  # not applicable -- API judge gives a label, not a similarity score
+                result["correctness_similarity"] = (
+                    None  # not applicable -- API judge gives a label, not a similarity score
+                )
                 if "note" in judge_result:
                     result["correctness_error"] = judge_result["note"]
             else:
@@ -486,20 +565,42 @@ def score_adherence(row: Dict[str, Any], response: str, judge_model=None,
 # (model, language, rule category)."
 # ---------------------------------------------------------------------------
 
-def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
-                           language: str, judge_model=None, judge_scale: str = "yn",
-                           independent_judge_fn=None, check_correctness: bool = True,
-                           correctness_judge_fn=None) -> Dict[str, Any]:
+
+def run_adherence_scoring(
+    pairs: List[Dict[str, Any]],
+    responses: List[str],
+    language: str,
+    judge_model=None,
+    judge_scale: str = "yn",
+    independent_judge_fn=None,
+    check_correctness: bool = True,
+    correctness_judge_fn=None,
+) -> Dict[str, Any]:
     if len(pairs) != len(responses):
-        raise ValueError(f"pairs ({len(pairs)}) and responses ({len(responses)}) must be the same length")
+        raise ValueError(
+            f"pairs ({len(pairs)}) and responses ({len(responses)}) must be the same length"
+        )
 
     per_row = []
     for row, response in zip(pairs, responses):
-        result = score_adherence(row, response, judge_model=judge_model, judge_scale=judge_scale,
-                                  independent_judge_fn=independent_judge_fn, check_correctness=check_correctness,
-                                  correctness_judge_fn=correctness_judge_fn)
-        per_row.append({"id": row.get("id"), "category": row.get("category"),
-                         "language": language, "response": response, **result})
+        result = score_adherence(
+            row,
+            response,
+            judge_model=judge_model,
+            judge_scale=judge_scale,
+            independent_judge_fn=independent_judge_fn,
+            check_correctness=check_correctness,
+            correctness_judge_fn=correctness_judge_fn,
+        )
+        per_row.append(
+            {
+                "id": row.get("id"),
+                "category": row.get("category"),
+                "language": language,
+                "response": response,
+                **result,
+            }
+        )
 
     by_category = defaultdict(list)
     for r in per_row:
@@ -514,11 +615,19 @@ def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
             "n": len(rows),
             "n_scored": len(scored),
             "n_unscored": len(rows) - len(scored),
-            "adherence_rate": (sum(r["compliant"] for r in scored) / len(scored)) if scored else None,
+            "adherence_rate": (
+                (sum(r["compliant"] for r in scored) / len(scored)) if scored else None
+            ),
             "n_low_confidence": low_conf,
             "n_correctness_scored": len(correctness_scored),
-            "correctness_rate": (sum(r["correctness"] for r in correctness_scored) / len(correctness_scored))
-                                  if correctness_scored else None,
+            "correctness_rate": (
+                (
+                    sum(r["correctness"] for r in correctness_scored)
+                    / len(correctness_scored)
+                )
+                if correctness_scored
+                else None
+            ),
         }
 
     return {"language": language, "per_row": per_row, "summary": summary}
@@ -526,11 +635,21 @@ def run_adherence_scoring(pairs: List[Dict[str, Any]], responses: List[str],
 
 def print_adherence_summary(result: Dict[str, Any]) -> None:
     print(f"\nAdherence summary -- {result['language']}")
-    print(f"{'category':<18} {'n':>4} {'scored':>7} {'unscored':>9} {'adherence':>10} {'low-conf':>9} {'correctness':>12}")
+    print(
+        f"{'category':<18} {'n':>4} {'scored':>7} {'unscored':>9} {'adherence':>10} {'low-conf':>9} {'correctness':>12}"
+    )
     for cat, s in sorted(result["summary"].items()):
-        rate_str = f"{s['adherence_rate']:.0%}" if s["adherence_rate"] is not None else "n/a"
-        corr_str = f"{s['correctness_rate']:.0%} (n={s['n_correctness_scored']})" if s["correctness_rate"] is not None else "n/a"
-        print(f"{cat:<18} {s['n']:>4} {s['n_scored']:>7} {s['n_unscored']:>9} {rate_str:>10} {s['n_low_confidence']:>9} {corr_str:>12}")
+        rate_str = (
+            f"{s['adherence_rate']:.0%}" if s["adherence_rate"] is not None else "n/a"
+        )
+        corr_str = (
+            f"{s['correctness_rate']:.0%} (n={s['n_correctness_scored']})"
+            if s["correctness_rate"] is not None
+            else "n/a"
+        )
+        print(
+            f"{cat:<18} {s['n']:>4} {s['n_scored']:>7} {s['n_unscored']:>9} {rate_str:>10} {s['n_low_confidence']:>9} {corr_str:>12}"
+        )
 
 
 def compare_languages(results_by_language: Dict[str, Dict[str, Any]]) -> None:
@@ -538,7 +657,9 @@ def compare_languages(results_by_language: Dict[str, Dict[str, Any]]) -> None:
     the cross-lingual comparison Step 5 of the methodology doc asks for at
     the behavioral level (before any circuit-level analysis)."""
     languages = list(results_by_language.keys())
-    all_categories = sorted({cat for r in results_by_language.values() for cat in r["summary"]})
+    all_categories = sorted(
+        {cat for r in results_by_language.values() for cat in r["summary"]}
+    )
     header = f"{'category':<18}" + "".join(f"{lang:>12}" for lang in languages)
     print(header)
     for cat in all_categories:
@@ -557,14 +678,24 @@ def compare_languages(results_by_language: Dict[str, Dict[str, Any]]) -> None:
 # working -- new datasets should prefer the category+field dispatch above.
 # ---------------------------------------------------------------------------
 
+
 def evaluate_legacy_checker_expr(row: Dict[str, Any], response: str) -> Optional[bool]:
     checker = str(row.get("checker", ""))
     if "manual" in checker.lower() or "llm-judge" in checker.lower():
         return None
     if row.get("category") == "ack_invert":
         return check_ack_invert(response)
-    safe_builtins = {"len": len, "str": str, "int": int, "bool": bool, "min": min,
-                      "max": max, "sum": sum, "any": any, "all": all}
+    safe_builtins = {
+        "len": len,
+        "str": str,
+        "int": int,
+        "bool": bool,
+        "min": min,
+        "max": max,
+        "sum": sum,
+        "any": any,
+        "all": all,
+    }
     local_ns = {"out": response, "target_count": row.get("target_count")}
     try:
         return bool(eval(checker, {"__builtins__": safe_builtins}, local_ns))
@@ -610,28 +741,69 @@ if __name__ == "__main__":
     print("All deterministic checker sanity checks passed.")
 
     # explicit-field dispatch path
-    assert evaluate_deterministic({"category": "word_count", "target_count": 3}, "one two three") is True
-    assert evaluate_deterministic({"category": "include_word", "word": "cat"}, "I have a cat") is True
+    assert (
+        evaluate_deterministic(
+            {"category": "word_count", "target_count": 3}, "one two three"
+        )
+        is True
+    )
+    assert (
+        evaluate_deterministic(
+            {"category": "include_word", "word": "cat"}, "I have a cat"
+        )
+        is True
+    )
 
     # prose-fallback dispatch path -- also confirms the banned_word bug fix
     row = {"category": "banned_word", "full_rule": "Never use the word 'guarantee'."}
     assert evaluate_deterministic(row, "I guarantee it") is False
     assert evaluate_deterministic(row, "this is fine") is True
-    print("Dispatch (explicit-field and prose-fallback paths, including the banned_word fix) all correct.")
+    print(
+        "Dispatch (explicit-field and prose-fallback paths, including the banned_word fix) all correct."
+    )
 
     # --- COMPATIBILITY FIXES: real dataset field names, checked directly ---
     # banned_word: our data stores the word under a field named "banned_word", not "word"
-    assert evaluate_deterministic({"category": "banned_word", "banned_word": "guarantee"}, "I guarantee it") is False
-    assert evaluate_deterministic({"category": "banned_word", "banned_word": "guarantee"}, "this is fine") is True
+    assert (
+        evaluate_deterministic(
+            {"category": "banned_word", "banned_word": "guarantee"}, "I guarantee it"
+        )
+        is False
+    )
+    assert (
+        evaluate_deterministic(
+            {"category": "banned_word", "banned_word": "guarantee"}, "this is fine"
+        )
+        is True
+    )
     # include_word: our data uses "target_word", not "word"
-    assert evaluate_deterministic({"category": "include_word", "target_word": "disclaimer"}, "see the disclaimer") is True
+    assert (
+        evaluate_deterministic(
+            {"category": "include_word", "target_word": "disclaimer"},
+            "see the disclaimer",
+        )
+        is True
+    )
     # language: our data uses "target_lang" (already an ISO code), not "lang_code"
     # (skipped at runtime without langdetect installed -- this project's convention
     # elsewhere is to return None rather than fail when an optional dep is missing)
     # start_with: our data's category is "start_with", not "start_with_token"
-    assert evaluate_deterministic({"category": "start_with", "anchor_token": "Hello"}, "Hello, how can I help?") is True
-    assert evaluate_deterministic({"category": "start_with", "anchor_token": "Hello"}, "Sure, Hello there") is False
-    print("Compatibility fixes (banned_word/include_word/language field names, start_with category) all correct.")
+    assert (
+        evaluate_deterministic(
+            {"category": "start_with", "anchor_token": "Hello"},
+            "Hello, how can I help?",
+        )
+        is True
+    )
+    assert (
+        evaluate_deterministic(
+            {"category": "start_with", "anchor_token": "Hello"}, "Sure, Hello there"
+        )
+        is False
+    )
+    print(
+        "Compatibility fixes (banned_word/include_word/language field names, start_with category) all correct."
+    )
 
     # score_adherence routing (original tests, restored)
     r1 = score_adherence({"category": "word_count", "target_count": 3}, "one two three")
@@ -640,17 +812,31 @@ if __name__ == "__main__":
     r2 = score_adherence({"category": "tone_norm"}, "some response")
     assert r2["method"] == "unscored"
 
-    r3 = score_adherence({"category": "word_count", "target_count": 3, "checker": "manual"}, "one two three")
-    assert r3["method"] == "unscored"  # forced manual, no judge_model -> stays unscored, never silently checked
+    r3 = score_adherence(
+        {"category": "word_count", "target_count": 3, "checker": "manual"},
+        "one two three",
+    )
+    assert (
+        r3["method"] == "unscored"
+    )  # forced manual, no judge_model -> stays unscored, never silently checked
     print("score_adherence routing all correct.")
 
     # --- judge_scale routing: confirmed it picks the right method label without
     # needing a real judge_model (judge_model=None still exercises the "unscored"
     # path correctly for both scales, since routing happens before the judge call) ---
-    r_yn = score_adherence({"category": "tone_norm"}, "some response", judge_model=None, judge_scale="yn")
-    r_num = score_adherence({"category": "tone_norm"}, "some response", judge_model=None, judge_scale="numeric")
+    r_yn = score_adherence(
+        {"category": "tone_norm"}, "some response", judge_model=None, judge_scale="yn"
+    )
+    r_num = score_adherence(
+        {"category": "tone_norm"},
+        "some response",
+        judge_model=None,
+        judge_scale="numeric",
+    )
     assert r_yn["method"] == "unscored" and r_num["method"] == "unscored"
-    print("judge_scale parameter accepted and routed correctly (no judge_model -> both stay unscored).")
+    print(
+        "judge_scale parameter accepted and routed correctly (no judge_model -> both stay unscored)."
+    )
 
     # --- independent_judge_fn routing: mock judge, no real API call needed
     # to test the ROUTING logic (does it get called, does it take priority
@@ -658,18 +844,26 @@ if __name__ == "__main__":
     def _mock_independent_judge(rule_clause, response):
         return {"compliant": True, "coherent": True, "raw": "mock"}
 
-    r_indep = score_adherence({"category": "tone_norm", "rule_clause": "be polite"}, "some response",
-                                independent_judge_fn=_mock_independent_judge)
+    r_indep = score_adherence(
+        {"category": "tone_norm", "rule_clause": "be polite"},
+        "some response",
+        independent_judge_fn=_mock_independent_judge,
+    )
     assert r_indep["method"] == "independent_judge" and r_indep["compliant"] is True
     print("independent_judge_fn routes correctly and its result is used.")
 
     # priority check: when BOTH independent_judge_fn and judge_model are given,
     # independent_judge_fn should win (per the docstring's stated priority)
-    r_priority = score_adherence({"category": "tone_norm", "rule_clause": "be polite"}, "some response",
-                                   judge_model="pretend-local-model-object",
-                                   independent_judge_fn=_mock_independent_judge)
+    r_priority = score_adherence(
+        {"category": "tone_norm", "rule_clause": "be polite"},
+        "some response",
+        judge_model="pretend-local-model-object",
+        independent_judge_fn=_mock_independent_judge,
+    )
     assert r_priority["method"] == "independent_judge"
-    print("independent_judge_fn correctly takes priority over judge_model when both are given.")
+    print(
+        "independent_judge_fn correctly takes priority over judge_model when both are given."
+    )
 
     # --- judgment-tier rubric routing: can't call the real llm_judge_compliance_rubric
     # here (needs an actual loaded model), so patch the name directly in this module's
@@ -682,50 +876,92 @@ if __name__ == "__main__":
     # to this module's own global name instead. ---
     _original_rubric_judge = llm_judge_compliance_rubric
     _calls = []
+
     def _mock_rubric_judge(model, row, response):
         _calls.append((model, row.get("id"), response))
-        return {"compliant": True, "coherent": True, "violation_event": row.get("violation_event")}
+        return {
+            "compliant": True,
+            "coherent": True,
+            "violation_event": row.get("violation_event"),
+        }
+
     llm_judge_compliance_rubric = _mock_rubric_judge
 
     try:
-        judgment_row = {"id": "jr1", "category": "no_dosage", "judge_rubric": {"held_if": "x", "violated_if": "y"},
-                          "violation_event": "specific_dosage_present", "rule_clause": "Never give a dosage"}
-        r_judgment = score_adherence(judgment_row, "Take it as needed", judge_model="pretend-model")
+        judgment_row = {
+            "id": "jr1",
+            "category": "no_dosage",
+            "judge_rubric": {"held_if": "x", "violated_if": "y"},
+            "violation_event": "specific_dosage_present",
+            "rule_clause": "Never give a dosage",
+        }
+        r_judgment = score_adherence(
+            judgment_row, "Take it as needed", judge_model="pretend-model"
+        )
         assert r_judgment["method"] == "llm_judge_rubric"
         assert r_judgment["compliant"] is True
         assert len(_calls) == 1 and _calls[0][1] == "jr1"
-        print("Judgment-tier row (has judge_rubric) with judge_model -> routes to the rubric-aware judge.")
+        print(
+            "Judgment-tier row (has judge_rubric) with judge_model -> routes to the rubric-aware judge."
+        )
 
         # priority check: rubric routing wins even if independent_judge_fn is ALSO given,
         # since using the fixed rubric is the mentor-endorsed correct way to score this row
-        r_priority = score_adherence(judgment_row, "Take it as needed", judge_model="pretend-model",
-                                       independent_judge_fn=_mock_independent_judge)
+        r_priority = score_adherence(
+            judgment_row,
+            "Take it as needed",
+            judge_model="pretend-model",
+            independent_judge_fn=_mock_independent_judge,
+        )
         assert r_priority["method"] == "llm_judge_rubric"
-        print("Rubric routing correctly wins over independent_judge_fn when a judge_model is also given.")
+        print(
+            "Rubric routing correctly wins over independent_judge_fn when a judge_model is also given."
+        )
 
         # a row WITHOUT judge_rubric should NOT hit the rubric judge, even with judge_model set --
         # also mock the generic judge here, since we're only testing ROUTING, not actually
         # calling a real model
         _calls.clear()
         _original_generic_judge = llm_judge_compliance
+
         def _mock_generic_judge(model, rule_clause, response):
             return {"compliant": False, "coherent": True}
+
         llm_judge_compliance = _mock_generic_judge
         try:
-            non_judgment_row = {"id": "nj1", "category": "tone_norm", "rule_clause": "be polite"}
-            r_non_judgment = score_adherence(non_judgment_row, "some response", judge_model="pretend-model")
-            assert r_non_judgment["method"] == "llm_judge"  # generic judge, not the rubric one
+            non_judgment_row = {
+                "id": "nj1",
+                "category": "tone_norm",
+                "rule_clause": "be polite",
+            }
+            r_non_judgment = score_adherence(
+                non_judgment_row, "some response", judge_model="pretend-model"
+            )
+            assert (
+                r_non_judgment["method"] == "llm_judge"
+            )  # generic judge, not the rubric one
             assert len(_calls) == 0
-            print("Row without judge_rubric correctly does NOT route to the rubric-aware judge.")
+            print(
+                "Row without judge_rubric correctly does NOT route to the rubric-aware judge."
+            )
         finally:
             llm_judge_compliance = _original_generic_judge
     finally:
-        llm_judge_compliance_rubric = _original_rubric_judge  # restore, don't leave the mock in place
+        llm_judge_compliance_rubric = (
+            _original_rubric_judge  # restore, don't leave the mock in place
+        )
 
     # --- correctness-checker wiring: check_correctness=False skips it entirely
     # (no embedder call attempted, safe to run here with no network) ---
-    r_no_corr = score_adherence({"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
-                                  "one two three", check_correctness=False)
+    r_no_corr = score_adherence(
+        {
+            "category": "word_count",
+            "target_count": 3,
+            "expected_answer": "the sky is blue",
+        },
+        "one two three",
+        check_correctness=False,
+    )
     assert r_no_corr["correctness"] is None
     print("check_correctness=False correctly skips correctness checking entirely.")
 
@@ -737,21 +973,44 @@ if __name__ == "__main__":
         return {"correct": True, "raw": "mock yes"}
 
     r_default_is_embeddings = score_adherence(
-        {"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
-        "one two three", check_correctness=True)
+        {
+            "category": "word_count",
+            "target_count": 3,
+            "expected_answer": "the sky is blue",
+        },
+        "one two three",
+        check_correctness=True,
+    )
     # no correctness_judge_fn passed -> falls through to correctness_score (embeddings),
     # which fails here (no network) -- confirms embeddings is what actually got tried
     assert "correctness_error" in r_default_is_embeddings
-    assert "huggingface" in r_default_is_embeddings["correctness_error"].lower() or \
-           "connect" in r_default_is_embeddings["correctness_error"].lower()
-    print("Default (no correctness_judge_fn passed): confirmed embeddings path was attempted, not the API judge.")
+    assert (
+        "huggingface" in r_default_is_embeddings["correctness_error"].lower()
+        or "connect" in r_default_is_embeddings["correctness_error"].lower()
+    )
+    print(
+        "Default (no correctness_judge_fn passed): confirmed embeddings path was attempted, not the API judge."
+    )
 
     r_with_judge_fn = score_adherence(
-        {"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
-        "one two three", check_correctness=True, correctness_judge_fn=_mock_correctness_judge)
-    assert r_with_judge_fn["correctness"] is True  # came from the mock judge, not embeddings
-    assert r_with_judge_fn["correctness_similarity"] is None  # no similarity score from the API-judge path
-    print("correctness_judge_fn, when passed, is used instead of the default embedding check.")
+        {
+            "category": "word_count",
+            "target_count": 3,
+            "expected_answer": "the sky is blue",
+        },
+        "one two three",
+        check_correctness=True,
+        correctness_judge_fn=_mock_correctness_judge,
+    )
+    assert (
+        r_with_judge_fn["correctness"] is True
+    )  # came from the mock judge, not embeddings
+    assert (
+        r_with_judge_fn["correctness_similarity"] is None
+    )  # no similarity score from the API-judge path
+    print(
+        "correctness_judge_fn, when passed, is used instead of the default embedding check."
+    )
 
     # --- veerlosar's exact counterexample: bold_html DOES get a correctness
     # attempt when expected_answer is present, disproving the old docstring's
@@ -760,27 +1019,61 @@ if __name__ == "__main__":
     # (was the wrapped content actually right) are independent -- a response
     # can pass one and fail the other, which is the whole point. ---
     r_bold_wrong_content = score_adherence(
-        {"category": "bold_html", "expected_answer": "Rapid heartbeat, sweating, and racing thoughts."},
-        "<b>banana</b>", check_correctness=True)
-    assert r_bold_wrong_content["compliant"] is True  # wrapped in bold -- adherence checker only looks at format
-    assert r_bold_wrong_content["correctness"] is None  # no embedder here, but the attempt happened (see error field)
-    assert "correctness_error" in r_bold_wrong_content  # confirms it TRIED, not that it was skipped for this category
-    print("bold_html + expected_answer: adherence (format) and correctness (content) are independently")
-    print("checked, exactly as veerlosar's counterexample said they should be -- not category-restricted.")
+        {
+            "category": "bold_html",
+            "expected_answer": "Rapid heartbeat, sweating, and racing thoughts.",
+        },
+        "<b>banana</b>",
+        check_correctness=True,
+    )
+    assert (
+        r_bold_wrong_content["compliant"] is True
+    )  # wrapped in bold -- adherence checker only looks at format
+    assert (
+        r_bold_wrong_content["correctness"] is None
+    )  # no embedder here, but the attempt happened (see error field)
+    assert (
+        "correctness_error" in r_bold_wrong_content
+    )  # confirms it TRIED, not that it was skipped for this category
+    print(
+        "bold_html + expected_answer: adherence (format) and correctness (content) are independently"
+    )
+    print(
+        "checked, exactly as veerlosar's counterexample said they should be -- not category-restricted."
+    )
 
     # --- correctness-checker wiring: check_correctness=True DOES attempt it, and
     # the failure (no embedder access here) is caught and reported, not raised --
     # confirms the "never crash a batch over one row" principle actually holds
     # for this new code path too, not just the pre-existing ones ---
-    r_with_corr = score_adherence({"category": "word_count", "target_count": 3, "expected_answer": "the sky is blue"},
-                                    "one two three", check_correctness=True)
-    assert r_with_corr["compliant"] is True  # the word_count check itself still ran fine
-    assert r_with_corr["correctness"] is None  # correctness didn't succeed here (no embedder access)
-    assert "correctness_error" in r_with_corr  # but the failure was caught and reported, not raised
-    print(f"check_correctness=True attempted it and caught the expected failure gracefully: "
-          f"{r_with_corr['correctness_error']}")
-    print("(This should succeed and return a real correctness label in Colab/Lambda, where")
-    print("correctness_checker.py's embedder can actually download -- not yet confirmed there,")
+    r_with_corr = score_adherence(
+        {
+            "category": "word_count",
+            "target_count": 3,
+            "expected_answer": "the sky is blue",
+        },
+        "one two three",
+        check_correctness=True,
+    )
+    assert (
+        r_with_corr["compliant"] is True
+    )  # the word_count check itself still ran fine
+    assert (
+        r_with_corr["correctness"] is None
+    )  # correctness didn't succeed here (no embedder access)
+    assert (
+        "correctness_error" in r_with_corr
+    )  # but the failure was caught and reported, not raised
+    print(
+        f"check_correctness=True attempted it and caught the expected failure gracefully: "
+        f"{r_with_corr['correctness_error']}"
+    )
+    print(
+        "(This should succeed and return a real correctness label in Colab/Lambda, where"
+    )
+    print(
+        "correctness_checker.py's embedder can actually download -- not yet confirmed there,"
+    )
     print("only confirmed to fail gracefully here where there's no network access.)")
 
     # run_adherence_scoring + summary, mixed categories, no judge_model
@@ -790,7 +1083,12 @@ if __name__ == "__main__":
         {"id": "c", "category": "banned_word", "word": "guarantee"},
         {"id": "d", "category": "tone_norm"},  # no checker, no judge_model -> unscored
     ]
-    responses = ["one two three", "one two three four", "I guarantee it", "some response"]
+    responses = [
+        "one two three",
+        "one two three four",
+        "I guarantee it",
+        "some response",
+    ]
     result = run_adherence_scoring(pairs, responses, language="EN")
     assert result["summary"]["word_count"]["n"] == 2
     assert result["summary"]["word_count"]["adherence_rate"] == 0.5
@@ -798,6 +1096,12 @@ if __name__ == "__main__":
     assert result["summary"]["tone_norm"]["n_unscored"] == 1
     print_adherence_summary(result)
 
-    print("\nAll sanity checks passed. Still needs a real judge_model + real generations to")
-    print("confirm the llm_judge branch end-to-end -- that path is exercised in llm_judge.py's")
-    print("own __main__ block, not re-tested here, since it needs a loaded HookedTransformer.")
+    print(
+        "\nAll sanity checks passed. Still needs a real judge_model + real generations to"
+    )
+    print(
+        "confirm the llm_judge branch end-to-end -- that path is exercised in llm_judge.py's"
+    )
+    print(
+        "own __main__ block, not re-tested here, since it needs a loaded HookedTransformer."
+    )

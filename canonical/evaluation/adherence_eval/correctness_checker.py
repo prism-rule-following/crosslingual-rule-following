@@ -36,15 +36,17 @@ version when there isn't. Both are available; nothing auto-switches between
 them yet -- that's a reasonable next step if it'd help, but for now it's a
 manual choice of which to call.
 """
+
 import numpy as np
 
-
 _embedder = None
+
 
 def get_embedder():
     global _embedder
     if _embedder is None:
         from sentence_transformers import SentenceTransformer
+
         _embedder = SentenceTransformer("all-MiniLM-L6-v2")
     return _embedder
 
@@ -69,7 +71,10 @@ def correctness_score(response, expected_answer, threshold=0.5):
         return 0.0, False
     embedder = get_embedder()
     embs = embedder.encode([response, expected_answer])
-    sim = float(np.dot(embs[0], embs[1]) / (np.linalg.norm(embs[0]) * np.linalg.norm(embs[1]) + 1e-12))
+    sim = float(
+        np.dot(embs[0], embs[1])
+        / (np.linalg.norm(embs[0]) * np.linalg.norm(embs[1]) + 1e-12)
+    )
     return sim, sim > threshold
 
 
@@ -96,18 +101,24 @@ def make_independent_correctness_judge(api_key, model_name="claude-haiku-4-5-202
     it's a drop-in alternative wherever that's used.
     """
     import anthropic
+
     client = anthropic.Anthropic(api_key=api_key)
 
     def judge_fn(response, expected_answer):
-        prompt = (f'Expected answer: "{expected_answer}"\n'
-                  f'Actual response: "{response}"\n\n'
-                  f"Does the actual response convey the same substantive answer as the expected "
-                  f"answer, even if worded differently? Answer no if the response contradicts the "
-                  f"expected answer, even if the wording is similar.\n\n"
-                  f"Answer with only one word: yes or no.\nAnswer:")
+        prompt = (
+            f'Expected answer: "{expected_answer}"\n'
+            f'Actual response: "{response}"\n\n'
+            f"Does the actual response convey the same substantive answer as the expected "
+            f"answer, even if worded differently? Answer no if the response contradicts the "
+            f"expected answer, even if the wording is similar.\n\n"
+            f"Answer with only one word: yes or no.\nAnswer:"
+        )
         try:
-            message = client.messages.create(model=model_name, max_tokens=5,
-                                                messages=[{"role": "user", "content": prompt}])
+            message = client.messages.create(
+                model=model_name,
+                max_tokens=5,
+                messages=[{"role": "user", "content": prompt}],
+            )
             text = message.content[0].text.strip().lower()
             correct = text.startswith("yes") if text.startswith(("yes", "no")) else None
             return {"correct": correct, "raw": text}
@@ -117,8 +128,13 @@ def make_independent_correctness_judge(api_key, model_name="claude-haiku-4-5-202
     return judge_fn
 
 
-def evaluate_adherence_and_correctness(row, response, check_rule_following_fn, expected_answer=None,
-                                          correctness_threshold=0.5):
+def evaluate_adherence_and_correctness(
+    row,
+    response,
+    check_rule_following_fn,
+    expected_answer=None,
+    correctness_threshold=0.5,
+):
     """
     Combines both checks for one response, per nuna's proposed split:
       - Did the output satisfy the system rule? (existing checker, e.g. from
@@ -143,7 +159,10 @@ def evaluate_adherence_and_correctness(row, response, check_rule_following_fn, e
         "rule_following": rule_following,
         "correctness": correctness,
         "correctness_similarity": sim,
-        "category": (rule_following, correctness),  # the four-way breakdown nuna asked for, at a glance
+        "category": (
+            rule_following,
+            correctness,
+        ),  # the four-way breakdown nuna asked for, at a glance
     }
 
 
@@ -157,8 +176,11 @@ def evaluate_adherence_and_correctness(row, response, check_rule_following_fn, e
 if __name__ == "__main__":
     # combination-logic check with mocked correctness_score
     def _mock_evaluate(rule_following, correctness):
-        return {"rule_following": rule_following, "correctness": correctness,
-                "category": (rule_following, correctness)}
+        return {
+            "rule_following": rule_following,
+            "correctness": correctness,
+            "category": (rule_following, correctness),
+        }
 
     cases = [
         (True, True, "followed rule AND correct -- the good case"),
@@ -170,8 +192,12 @@ if __name__ == "__main__":
     for rf, corr, desc in cases:
         result = _mock_evaluate(rf, corr)
         print(f"  rule_following={rf}, correctness={corr} -> {desc}")
-    print("\nThis is exactly the distinction a single combined adherence score can't make --")
-    print("confirmed the logic keeps both labels independent rather than collapsing them.")
+    print(
+        "\nThis is exactly the distinction a single combined adherence score can't make --"
+    )
+    print(
+        "confirmed the logic keeps both labels independent rather than collapsing them."
+    )
 
     # make_independent_correctness_judge: response-parsing logic tested with
     # a mock, since a real call needs an API key and network access -- same
@@ -195,8 +221,16 @@ if __name__ == "__main__":
         ("The earth is a sphere, not flat.", "The earth is round.", True),
         # WRONG, but shares most of its vocabulary with the expected answer --
         # the exact failure mode this test exists to catch
-        ("The earth is flat, despite what most people believe.", "The earth is round.", False),
-        ("I don't know.", "The earth is round.", False),  # correct rejection -- should score low
+        (
+            "The earth is flat, despite what most people believe.",
+            "The earth is round.",
+            False,
+        ),
+        (
+            "I don't know.",
+            "The earth is round.",
+            False,
+        ),  # correct rejection -- should score low
     ]
 
     try:
@@ -205,24 +239,44 @@ if __name__ == "__main__":
     except Exception as e:
         embedder_available = False
         print(f"Embedder not available here ({type(e).__name__}: {e}).")
-        print("This is expected in an environment without huggingface.co access -- run this")
-        print("same file in Colab/Lambda (where sentence-transformers can actually download")
-        print("the model) to get real results before trusting correctness_score on real data.")
+        print(
+            "This is expected in an environment without huggingface.co access -- run this"
+        )
+        print(
+            "same file in Colab/Lambda (where sentence-transformers can actually download"
+        )
+        print(
+            "the model) to get real results before trusting correctness_score on real data."
+        )
 
     if embedder_available:
         all_ok = True
         for response, expected, should_be_correct in adversarial_cases:
             sim, is_correct = correctness_score(response, expected)
-            ok = (is_correct == should_be_correct)
+            ok = is_correct == should_be_correct
             all_ok &= ok
-            status = "OK" if ok else "FAILED -- similarity didn't distinguish correct from incorrect"
+            status = (
+                "OK"
+                if ok
+                else "FAILED -- similarity didn't distinguish correct from incorrect"
+            )
             print(f"[{status}] sim={sim:.3f}  response={response!r}")
         print()
         if all_ok:
-            print("All three cases passed -- similarity is distinguishing correct from incorrect here.")
+            print(
+                "All three cases passed -- similarity is distinguishing correct from incorrect here."
+            )
         else:
-            print("At least one case failed -- likely the flat-earth/round-earth pair, since it shares")
-            print("almost all its vocabulary with the correct answer while asserting the opposite.")
-            print("That confirms the concern raised in the PR thread: this checker needs an upgrade")
-            print("(e.g. an NLI/entailment model instead of raw cosine similarity) before it's")
+            print(
+                "At least one case failed -- likely the flat-earth/round-earth pair, since it shares"
+            )
+            print(
+                "almost all its vocabulary with the correct answer while asserting the opposite."
+            )
+            print(
+                "That confirms the concern raised in the PR thread: this checker needs an upgrade"
+            )
+            print(
+                "(e.g. an NLI/entailment model instead of raw cosine similarity) before it's"
+            )
             print("trustworthy for this failure mode -- not just a threshold tweak.")

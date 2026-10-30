@@ -6,6 +6,7 @@ uploading results (responses, activations) to the Hugging Face Hub.
 import argparse
 import json
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
@@ -28,6 +29,7 @@ from canonical.model.dataset import (
     ACTIVE_STATUSES,
     DatasetConfig,
     DatasetLanguageCode,
+    DatasetSource,
     GrammarType,
     HFDataHelper,
     PairType,
@@ -544,9 +546,15 @@ class ModelRunner:
             1, self.config.generation_batch_size // self.config.n_samples
         )
 
+        print(
+            f"Generating {len(dataset)} prompts x {self.config.n_samples} samples "
+            f"for {self.model_id}/{lang_code.value} "
+            f"({len(completed_ids)} prompts already checkpointed)",
+            flush=True,
+        )
         for start in tqdm(
             range(0, len(dataset), rows_per_batch),
-            desc="Generating responses...",
+            desc=f"Generating responses [{self.model_id}/{lang_code.value}]",
         ):
             batch_rows = [
                 nan_to_none(row)
@@ -678,9 +686,15 @@ def run(config: ModelGenerationConfig) -> None:
             ds_config = config.dataset_config
             if ds_config.data_dir:
                 lang = lang_code.value if lang_code is not None else "en"
-                ds_config = ds_config.model_copy(
-                    update={"url": f"{ds_config.data_dir}/{lang}/test.jsonl"}
+                lang_file = f"{ds_config.data_dir}/{lang}/test.jsonl"
+                # hf: `url` stays the repo id and only that language's file is
+                # loaded from it; gh: `url` becomes the local/raw file path.
+                update = (
+                    {"data_files": lang_file}
+                    if ds_config.source == DatasetSource.hf
+                    else {"url": lang_file}
                 )
+                ds_config = ds_config.model_copy(update=update)
             return CrossLingualRuleFollowingDataset(ds_config)
 
         result_helper = (
@@ -694,11 +708,20 @@ def run(config: ModelGenerationConfig) -> None:
             else None
         )
 
-        for model_name in config.model_ids:
+        n_models, n_langs = len(config.model_ids), len(config.language_codes)
+        for model_idx, model_name in enumerate(config.model_ids, start=1):
+            print(f"\n{'=' * 70}\n[model {model_idx}/{n_models}] {model_name}\n{'=' * 70}", flush=True)
             model_runner = ModelRunner(config)
             model_runner.load(model_id=model_name)
 
-            for lang_code in config.language_codes:
+            for lang_idx, lang_code in enumerate(config.language_codes, start=1):
+                lang_start = time.time()
+                print(
+                    f"\n--- [model {model_idx}/{n_models}] {model_name} | "
+                    f"[lang {lang_idx}/{n_langs}] {lang_code.value} | "
+                    f"started {time.strftime('%Y-%m-%d %H:%M:%S')} ---",
+                    flush=True,
+                )
                 lang_dataset = load_dataset(lang_code).subset(language=lang_code.value)
                 if config.active_only:
                     lang_dataset = lang_dataset.subset(
@@ -758,6 +781,13 @@ def run(config: ModelGenerationConfig) -> None:
                                 f"Skipping activation upload for {model_name}/{lang_code}"
                             )
 
+                print(
+                    f"--- done {model_name}/{lang_code.value} "
+                    f"[lang {lang_idx}/{n_langs}] in {(time.time() - lang_start) / 60:.1f} min ---",
+                    flush=True,
+                )
+
+            print(f"[model {model_idx}/{n_models}] finished {model_name}", flush=True)
             del model_runner
             torch.cuda.empty_cache()
     except Exception:

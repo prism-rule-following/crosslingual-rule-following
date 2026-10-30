@@ -1,0 +1,27 @@
+language,grp,baseline,rule
+am,action (do X),0.175,
+am,prohibition (no_*),0.9,
+de,action (do X),0.3375,0.8847222222222222
+de,prohibition (no_*),0.58,0.9177777777777778
+en,action (do X),0.425,0.9201388888888888
+en,prohibition (no_*),0.75,0.9433333333333334
+hi,action (do X),0.2,0.6604166666666667
+hi,prohibition (no_*),0.55,0.8177777777777778
+ig,action (do X),0.1,0.1625
+ig,prohibition (no_*),0.91,0.8611111111111112
+it,action (do X),0.3125,0.8048611111111111
+it,prohibition (no_*),0.58,0.9244444444444444
+ko,action (do X),0.26875,0.8638888888888889
+ko,prohibition (no_*),0.61,0.8155555555555556
+ru,action (do X),0.28125,0.9159722222222222
+ru,prohibition (no_*),0.74,0.98
+sw,action (do X),0.09375,
+sw,prohibition (no_*),0.74,
+ta,action (do X),0.10625,
+ta,prohibition (no_*),0.6,
+tr,action (do X),0.1875,0.7055555555555556
+tr,prohibition (no_*),0.67,0.83
+ur,action (do X),0.0875,0.6513888888888889
+ur,prohibition (no_*),0.56,0.8144444444444444
+yo,action (do X),0.15625,0.18541666666666667
+yo,prohibition (no_*),0.92,0.8844444444444445
